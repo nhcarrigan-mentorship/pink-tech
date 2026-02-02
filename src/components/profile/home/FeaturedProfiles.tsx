@@ -15,7 +15,7 @@ import LoadingState from "../../ui/LoadingState";
 
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;
-  const { profiles, loading } = useProfilesContext();
+  const { profiles, loading, error } = useProfilesContext();
   const featuredProfiles = profiles.slice(0, FEATURED_COUNT);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -120,7 +120,7 @@ export default function FeaturedProfiles() {
           </p>
         </div>
 
-        {/* Profile Card */}
+        {/* Loading State or Profile Card */}
         {loading ? (
           <LoadingState message="Loading featured profiles..." />
         ) : (
