@@ -1,17 +1,16 @@
 import { AlertCircle } from "lucide-react";
-import { useProfilesContext } from "../../contexts/ProfilesContext";
 
 interface ErrorStateProps {
   heading?: string;
   message?: string;
+  refetch: () => {};
 }
 
 export default function ErrorState({
   heading = "Unable to Load Profiles",
   message = "An error occurred. Please try again later.",
+  refetch,
 }: ErrorStateProps) {
-  const { refetch } = useProfilesContext();
-
   return (
     <div className="flex flex-col justify-center items-center gap-2 py-16 border border-2 border-pink-200 rounded">
       <AlertCircle className="w-12 h-12 mb-2 text-pink-500" />

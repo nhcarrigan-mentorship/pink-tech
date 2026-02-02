@@ -16,12 +16,14 @@ import ErrorState from "../../ui/ErrorState";
 
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;
-  const { profiles, loading, error } = useProfilesContext();
+  const { profiles, loading, refetch } = useProfilesContext();
   const featuredProfiles = profiles.slice(0, FEATURED_COUNT);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [direction, setDirection] = useState(0);
   const navigate = useNavigate();
+
+  const error = true;
 
   // Minimum swipe distance (in px)
   const swipeConfidenceThreshold = 10000;
@@ -115,6 +117,7 @@ export default function FeaturedProfiles() {
       <ErrorState
         heading="Unable to Load Featured Profiles"
         message="An error occurred while loading the featured profiles. Please try again later."
+        refetch={refetch}
       />
     );
   } else if (loading) {
