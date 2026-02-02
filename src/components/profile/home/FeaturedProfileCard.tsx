@@ -12,13 +12,12 @@ export default function FeaturedProfileCard({
   profile,
   onLearnMore,
 }: FeaturedProfileCardProps) {
-  const imageStyle = profile?.image
-    ? "h-[250px] md:h-[400px]"
-    : "h-full w-full";
   return (
     <div className="grid md:grid-cols-3 gap-0">
       {/* Image */}
-      <div className={`md:col-span-1 relative border-r-2 border-pink-200 ${imageStyle}`}>
+      <div
+        className={`md:col-span-1 relative h-[250px] md:h-[400px] border-r-2 border-pink-200`}
+      >
         <ImageWithFallback
           src={profile?.image ? profile.image : ""}
           alt={profile?.name}

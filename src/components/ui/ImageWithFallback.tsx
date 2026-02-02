@@ -16,13 +16,8 @@ export default function ImageWithFallback(
   // If no src provided or empty string, show placeholder
   if (!src || src.trim() === "") {
     return (
-      <div
-        className={`inline-block bg-pink-50 ${className ?? ""}`}
-        style={style}
-      >
-        <div className="w-full h-full">
-          <UserPlaceholderIcon />
-        </div>
+      <div className={`${className ?? ""} block`} style={style}>
+        <UserPlaceholderIcon />
       </div>
     );
   }
