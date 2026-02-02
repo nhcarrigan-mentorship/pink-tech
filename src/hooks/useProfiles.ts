@@ -1,5 +1,5 @@
 import camelcaseKeys from "camelcase-keys";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import supabase from "../config/supabaseClient";
 import type { UserProfile } from "../types/UserProfile";
 
@@ -30,5 +30,7 @@ export default function useProfiles() {
     fetchProfiles();
   }, []);
 
-  return { profiles, loading, error };
+  const refetch = useCallback(fetchProfiles, []);
+
+  return { profiles, loading, error, refetch };
 }
