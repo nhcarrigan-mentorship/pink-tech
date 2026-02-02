@@ -215,7 +215,7 @@ export default function FeaturedProfiles() {
           </div>
 
           {/* Mobile Swipe Hint - Only show on first load */}
-          {currentIndex === 0 && (
+          {currentIndex === 0 && featuredProfiles.length > 1 && (
             <motion.div
               initial={{ opacity: 1 }}
               animate={{ opacity: 0 }}
