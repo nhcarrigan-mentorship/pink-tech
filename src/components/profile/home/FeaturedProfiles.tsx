@@ -11,10 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import FeaturedProfileCard from "./FeaturedProfileCard";
 import Pagination from "../../ui/Pagination";
+import LoadingState from "../../ui/LoadingState";
 
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;
-  const { profiles } = useProfilesContext();
+  const { profiles, loading } = useProfilesContext();
   const featuredProfiles = profiles.slice(0, FEATURED_COUNT);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -120,114 +121,118 @@ export default function FeaturedProfiles() {
         </div>
 
         {/* Profile Card */}
-        <div
-          className="max-w-5xl mx-auto relative"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Navigation Arrows - Desktop Only */}
+        {loading ? (
+          <LoadingState message="Loading featured profiles..." />
+        ) : (
+          <div
+            className="max-w-5xl mx-auto relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {/* Navigation Arrows - Desktop Only */}
 
-          {currentIndex > 0 && (
-            <button
-              onClick={handlePrevious}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
-              aria-label="Previous profile"
-            >
-              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
-            </button>
-          )}
-          {currentIndex < featuredProfiles.length - 1 && (
-            <button
-              onClick={handleNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
-              aria-label="Next profile"
-            >
-              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
-            </button>
-          )}
-
-          {/* Mobile Swipe Indicators */}
-          <div className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
             {currentIndex > 0 && (
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 0.6, x: 0 }}
-                className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-pink-500/90 to-transparent rounded-r-lg"
+              <button
+                onClick={handlePrevious}
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
+                aria-label="Previous profile"
               >
-                <ChevronsLeft className="w-4 h-4 text-white" />
-              </motion.div>
+                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
+              </button>
             )}
-          </div>
-
-          <div className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-            {currentIndex < profiles.length - 1 && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 0.6, x: 0 }}
-                className="flex items-center gap-1 px-2 py-1 bg-gradient-to-l from-pink-500/90 to-transparent rounded-l-lg"
+            {currentIndex < featuredProfiles.length - 1 && (
+              <button
+                onClick={handleNext}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
+                aria-label="Next profile"
               >
-                <ChevronsRight className="w-4 h-4 text-white" />
-              </motion.div>
+                <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
+              </button>
             )}
-          </div>
 
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={currentIndex}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              custom={direction}
-              transition={{
-                duration: 0.3,
-                ease: "easeInOut",
-              }}
-              onClick={handleCardClick}
-              onDragEnd={handleDragEnd}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              style={{
-                willChange: "transform, opacity",
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-              }}
-              className="bg-white border-2 border-pink-200 rounded overflow-hidden cursor-pointer hover:border-pink-400 md:cursor-pointer select-none"
-            >
-              <FeaturedProfileCard
-                profile={currentProfile}
-                onLearnMore={handleLearnMore}
+            {/* Mobile Swipe Indicators */}
+            <div className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+              {currentIndex > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 0.6, x: 0 }}
+                  className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-pink-500/90 to-transparent rounded-r-lg"
+                >
+                  <ChevronsLeft className="w-4 h-4 text-white" />
+                </motion.div>
+              )}
+            </div>
+
+            <div className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+              {currentIndex < profiles.length - 1 && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 0.6, x: 0 }}
+                  className="flex items-center gap-1 px-2 py-1 bg-gradient-to-l from-pink-500/90 to-transparent rounded-l-lg"
+                >
+                  <ChevronsRight className="w-4 h-4 text-white" />
+                </motion.div>
+              )}
+            </div>
+
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentIndex}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                custom={direction}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeInOut",
+                }}
+                onClick={handleCardClick}
+                onDragEnd={handleDragEnd}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                style={{
+                  willChange: "transform, opacity",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }}
+                className="bg-white border-2 border-pink-200 rounded overflow-hidden cursor-pointer hover:border-pink-400 md:cursor-pointer select-none"
+              >
+                <FeaturedProfileCard
+                  profile={currentProfile}
+                  onLearnMore={handleLearnMore}
+                />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Number Pagination - All screens */}
+            <div className="flex items-center justify-center gap-1 md:gap-2 mt-4">
+              <Pagination
+                currentPage={currentIndex + 1}
+                totalPages={featuredProfiles.length}
+                onPageChange={(page) => {
+                  setDirection(page - 1 > currentIndex ? 1 : -1);
+                  setCurrentIndex(page - 1);
+                }}
               />
-            </motion.div>
-          </AnimatePresence>
+            </div>
 
-          {/* Number Pagination - All screens */}
-          <div className="flex items-center justify-center gap-1 md:gap-2 mt-4">
-            <Pagination
-              currentPage={currentIndex + 1}
-              totalPages={featuredProfiles.length}
-              onPageChange={(page) => {
-                setDirection(page - 1 > currentIndex ? 1 : -1);
-                setCurrentIndex(page - 1);
-              }}
-            />
+            {/* Mobile Swipe Hint - Only show on first load */}
+            {currentIndex === 0 && featuredProfiles.length > 1 && (
+              <motion.div
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                transition={{ delay: 3, duration: 1 }}
+                className="md:hidden flex items-center justify-center gap-2 mt-3 text-xs text-gray-500"
+              >
+                <ChevronsLeft className="w-3 h-3" />
+                <span>Swipe to explore more profiles</span>
+                <ChevronsRight className="w-3 h-3" />
+              </motion.div>
+            )}
           </div>
-
-          {/* Mobile Swipe Hint - Only show on first load */}
-          {currentIndex === 0 && featuredProfiles.length > 1 && (
-            <motion.div
-              initial={{ opacity: 1 }}
-              animate={{ opacity: 0 }}
-              transition={{ delay: 3, duration: 1 }}
-              className="md:hidden flex items-center justify-center gap-2 mt-3 text-xs text-gray-500"
-            >
-              <ChevronsLeft className="w-3 h-3" />
-              <span>Swipe to explore more profiles</span>
-              <ChevronsRight className="w-3 h-3" />
-            </motion.div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
