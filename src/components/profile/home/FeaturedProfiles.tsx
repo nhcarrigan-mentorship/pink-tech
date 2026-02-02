@@ -126,21 +126,25 @@ export default function FeaturedProfiles() {
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Navigation Arrows - Desktop Only */}
-          <button
-            onClick={handlePrevious}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
-            aria-label="Previous profile"
-          >
-            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
-          </button>
 
-          <button
-            onClick={handleNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
-            aria-label="Next profile"
-          >
-            <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
-          </button>
+          {currentIndex > 0 && (
+            <button
+              onClick={handlePrevious}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
+              aria-label="Previous profile"
+            >
+              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
+            </button>
+          )}
+          {currentIndex < featuredProfiles.length - 1 && (
+            <button
+              onClick={handleNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-50 p-1.5 md:p-2 rounded-full shadow-md border border-pink-200 transition-all cursor-pointer hidden md:block"
+              aria-label="Next profile"
+            >
+              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
+            </button>
+          )}
 
           {/* Mobile Swipe Indicators */}
           <div className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
