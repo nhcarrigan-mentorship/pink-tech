@@ -113,7 +113,12 @@ export default function FeaturedProfiles() {
   let content;
 
   if (error) {
-    content = <ErrorState />;
+    content = (
+      <ErrorState
+        heading="Unable to Load Featured Profiles"
+        message="An error occurred while loading the featured profiles. Please try again later."
+      />
+    );
   } else if (loading) {
     content = <LoadingState message="Loading featured profiles..." />;
   } else {
