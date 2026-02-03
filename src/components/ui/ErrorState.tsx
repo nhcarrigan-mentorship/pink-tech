@@ -7,8 +7,8 @@ interface ErrorStateProps {
 }
 
 export default function ErrorState({
-  heading = "Unable to Load Profiles",
-  message = "An error occurred. Please try again later.",
+  heading = "Unable to Load Data",
+  message = "An error occurred when fetching data. Please try again later.",
   onRetry,
 }: ErrorStateProps) {
   return (
