@@ -89,6 +89,7 @@ export default function Search() {
       <FilteredProfiles
         filteredProfiles={filteredProfiles}
         onClearFilters={clearAllFilters}
+        isFiltered={search != "" || selectedExpertise.length > 0}
       />
     );
   }

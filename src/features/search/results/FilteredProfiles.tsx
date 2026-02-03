@@ -8,6 +8,7 @@ interface FilteredProfilesProps {
   filteredProfiles: UserProfile[];
   onClearFilters: () => void;
   profilesPerPage?: number;
+  isFiltered: boolean;
 }
 
 const DEFAULT_PROFILES_PER_PAGE = 10;
@@ -16,6 +17,7 @@ export default function FilteredProfiles({
   filteredProfiles,
   onClearFilters,
   profilesPerPage = DEFAULT_PROFILES_PER_PAGE,
+  isFiltered,
 }: FilteredProfilesProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -38,7 +40,12 @@ export default function FilteredProfiles({
   return (
     <div className="py-4">
       {filteredProfiles.length === 0 ? (
-        <EmptyProfiles onClearFilters={onClearFilters} />
+        <EmptyProfiles
+          onClearFilters={onClearFilters}
+          message={
+            isFiltered ? "No profiles match your search." : "No profiles exist."
+          }
+        />
       ) : (
         <ProfileList filteredProfiles={paginatedProfiles} />
       )}
