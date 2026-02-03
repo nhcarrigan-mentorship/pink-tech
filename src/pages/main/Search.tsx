@@ -6,6 +6,7 @@ import ProfileSearchBar from "../../features/search/components/ProfileSearchBar"
 import MobileFilterModal from "../../features/search/responsive/MobileFilterModal";
 import { useProfilesContext } from "../../contexts/ProfilesContext";
 import LoadingState from "../../components/ui/LoadingState";
+import ErrorState from "../../components/ui/ErrorState";
 
 export default function Search() {
   const [search, setSearch] = useState("");
@@ -13,9 +14,7 @@ export default function Search() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  const { profiles, loading } = useProfilesContext();
-
-  console.log(profiles);
+  const { profiles, loading, error, refetch } = useProfilesContext();
 
   // Get all unique expertise areas
   const allExpertise = useMemo(() => {
@@ -68,6 +67,27 @@ export default function Search() {
     setSelectedExpertise([]);
   };
 
+  let content;
+
+  if (error) {
+    content = (
+      <ErrorState
+        heading="Unable to Load Profiles"
+        message="An error occurred while loading profiles. Please try again later."
+        onRetry={refetch}
+      />
+    );
+  } else if (loading) {
+    content = <LoadingState message="Loading profiles..." />;
+  } else {
+    content = (
+      <FilteredProfiles
+        filteredProfiles={filteredProfiles}
+        onClearFilters={clearAllFilters}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <SearchHeader />
@@ -83,14 +103,7 @@ export default function Search() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        {loading ? (
-          <LoadingState message="Loading profiles..." />
-        ) : (
-          <FilteredProfiles
-            filteredProfiles={filteredProfiles}
-            onClearFilters={clearAllFilters}
-          />
-        )}
+        {content}
       </div>
 
       <div ref={ctaRef}>
