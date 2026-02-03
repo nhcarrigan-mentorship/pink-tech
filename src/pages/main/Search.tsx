@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import CallToAction from "../../components/layout/CallToAction";
 import SearchHeader from "../../features/search/components/SearchHeader";
 import FilteredProfiles from "../../features/search/results/FilteredProfiles";
@@ -16,6 +16,11 @@ export default function Search() {
 
   const { profiles, loading, error, refetch } = useProfilesContext();
 
+  useEffect(() => {
+    setSearch("");
+    setSelectedExpertise([]);
+  }, []);
+
   // Get all unique expertise areas
   const allExpertise = useMemo(() => {
     const expertiseSet = new Set<string>();
@@ -27,7 +32,7 @@ export default function Search() {
         }),
     );
     return Array.from(expertiseSet).sort();
-  }, []);
+  }, [profiles]);
 
   // Filter profiles based on search and expertise
   const filteredProfiles = useMemo(() => {
@@ -50,7 +55,7 @@ export default function Search() {
 
       return matchesSearch && matchesExpertise;
     });
-  }, [search, selectedExpertise]);
+  }, [search, selectedExpertise, profiles]);
 
   // Toggle expertise filter
   const toggleExpertise = (expertise: string) => {
