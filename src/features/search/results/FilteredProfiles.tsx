@@ -41,7 +41,7 @@ export default function FilteredProfiles({
     <div className="py-4">
       {filteredProfiles.length === 0 ? (
         <EmptyProfiles
-          onClearFilters={onClearFilters}
+          {...(isFiltered ? { onClearFilters } : {})}
           message={
             isFiltered ? "No profiles match your search." : "No profiles exist."
           }
