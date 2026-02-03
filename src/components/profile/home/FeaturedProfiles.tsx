@@ -16,14 +16,12 @@ import ErrorState from "../../ui/ErrorState";
 
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;
-  const { profiles, loading, refetch } = useProfilesContext();
+  const { profiles, loading, error, refetch } = useProfilesContext();
   const featuredProfiles = profiles.slice(0, FEATURED_COUNT);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [direction, setDirection] = useState(0);
   const navigate = useNavigate();
-
-  const error = true;
 
   // Minimum swipe distance (in px)
   const swipeConfidenceThreshold = 10000;
@@ -110,14 +108,17 @@ export default function FeaturedProfiles() {
     },
   };
 
-  let content;
+  const onRetry = () => {
+    refetch();
+  };
 
+  let content;
   if (error) {
     content = (
       <ErrorState
         heading="Unable to Load Featured Profiles"
         message="An error occurred while loading the featured profiles. Please try again later."
-        refetch={refetch}
+        onRetry={onRetry}
       />
     );
   } else if (loading) {
@@ -130,7 +131,6 @@ export default function FeaturedProfiles() {
         onMouseLeave={() => setIsPaused(false)}
       >
         {/* Navigation Arrows - Desktop Only */}
-
         {currentIndex > 0 && (
           <button
             onClick={handlePrevious}
@@ -149,7 +149,6 @@ export default function FeaturedProfiles() {
             <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
           </button>
         )}
-
         {/* Mobile Swipe Indicators */}
         <div className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
           {currentIndex > 0 && (
@@ -162,7 +161,6 @@ export default function FeaturedProfiles() {
             </motion.div>
           )}
         </div>
-
         <div className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
           {currentIndex < profiles.length - 1 && (
             <motion.div
@@ -174,7 +172,6 @@ export default function FeaturedProfiles() {
             </motion.div>
           )}
         </div>
-
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={currentIndex}
@@ -205,7 +202,6 @@ export default function FeaturedProfiles() {
             />
           </motion.div>
         </AnimatePresence>
-
         {/* Number Pagination - All screens */}
         <div className="flex items-center justify-center gap-1 md:gap-2 mt-4">
           <Pagination
@@ -217,7 +213,6 @@ export default function FeaturedProfiles() {
             }}
           />
         </div>
-
         {/* Mobile Swipe Hint - Only show on first load */}
         {currentIndex === 0 && featuredProfiles.length > 1 && (
           <motion.div

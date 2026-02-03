@@ -3,13 +3,13 @@ import { AlertCircle } from "lucide-react";
 interface ErrorStateProps {
   heading?: string;
   message?: string;
-  refetch: () => {};
+  onRetry: () => void;
 }
 
 export default function ErrorState({
   heading = "Unable to Load Profiles",
   message = "An error occurred. Please try again later.",
-  refetch,
+  onRetry,
 }: ErrorStateProps) {
   return (
     <div className="flex flex-col justify-center items-center gap-2 py-16 border border-2 border-pink-200 rounded">
@@ -18,7 +18,7 @@ export default function ErrorState({
       <p className="mb-2 text-center text-gray-900">{message}</p>
 
       <button
-        onClick={() => refetch}
+        onClick={onRetry}
         className="px-6 py-2 bg-white border-2 border-pink-500 text-pink-600 font-bold rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-500 hover:text-white hover:border-transparent transition-all cursor-pointer"
       >
         Retry
