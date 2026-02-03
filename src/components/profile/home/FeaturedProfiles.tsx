@@ -108,17 +108,13 @@ export default function FeaturedProfiles() {
     },
   };
 
-  const onRetry = () => {
-    refetch();
-  };
-
   let content;
   if (error) {
     content = (
       <ErrorState
         heading="Unable to Load Featured Profiles"
         message="An error occurred while loading the featured profiles. Please try again later."
-        onRetry={onRetry}
+        onRetry={refetch}
       />
     );
   } else if (loading) {
