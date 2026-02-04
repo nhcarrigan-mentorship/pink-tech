@@ -6,6 +6,7 @@ import { Eye, EyeOff, Lock, Mail, User, UserPlus } from "lucide-react";
 export default function SignUpForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function SignUpForm() {
     setIsLoading(true);
 
     try {
-      await signup(email, password, name);
+      await signup(email, password, username, name);
       navigate("/");
     } catch (err) {
       setError(
@@ -95,6 +96,30 @@ export default function SignUpForm() {
               required
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              disabled={isLoading}
+              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            ></input>
+          </div>
+        </div>
+
+        {/* Username Field */}
+        <div>
+          <label htmlFor="username" className="block mb-2 text-sm font-medium">
+            Username
+          </label>
+
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+            <input
+              type="text"
+              name="username"
+              id="username"
+              autoComplete="username"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="janesmith"
               disabled={isLoading}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
