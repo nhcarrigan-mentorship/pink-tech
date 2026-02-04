@@ -68,33 +68,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(profile);
   };
 
-  // const signup = async (
-  //   username: string,
-  //   email: string,
-  //   _password: string,
-  //   name: string,
-  // ) => {
-  //   // Mock signup - in real app, this would call an API
-  //   await new Promise((resolve) => setTimeout(resolve, 500));
+  const signup = async (
+    username: string,
+    email: string,
+    password: string,
+    name: string,
+  ) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-  //   const newUser: UserProfile = {
-  //     id: crypto.randomUUID(),
-  //     createdAt: new Date().toISOString(),
-  //     lastLogin: new Date().toISOString(),
-  //     lastUpdated: new Date().toISOString(),
-  //     image: "",
-  //     name,
-  //     role: "",
-  //     company: "",
-  //     location: "",
-  //     bio: "",
-  //     expertise: [],
-  //     linkedin: "",
-  //     twitter: "",
-  //   };
+    if (error) throw error;
 
-  //   setUser(newUser);
-  // };
+    const user = data.user;
+
+    if (!user) throw new Error("No user returned from Supabase");
+
+    const { error: profileError } = await supabase.from("profiles").insert([
+      {
+        id: user.id,
+        username,
+        name,
+        lastUpdated: new Date().toISOString(),
+      },
+    ]);
+
+    if (profileError) throw error;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user?.id)
+      .single();
+    setUser(profile);
+  };
+
 
   const logout = () => {
     setUser(null);
