@@ -1,10 +1,6 @@
 export interface UserProfile {
   readonly id: string;
   name: string;
-  username: string;
-  email: string;
-  createdAt: string | null;
-  lastLogin: string | null;
   lastUpdated: string | null;
   image?: string | null;
   bio?: string | null; // Short summary for cards/previews (1-2 sentences)
