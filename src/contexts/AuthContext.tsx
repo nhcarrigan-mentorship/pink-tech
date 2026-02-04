@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { type ReactNode } from "react";
 import type { UserProfile } from "../types/UserProfile";
+import supabase from "../config/supabaseClient";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -43,63 +44,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const login = async (_email: string, _password: string) => {
+  const login = async (email: string, password: string) => {
     // Mock authentication - in real app, this would call an API
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Create a mock user
-    const mockUser: UserProfile = {
-      id: crypto.randomUUID(),
-      username: "janesmith",
-      email: "janesmith@example.com",
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400",
-      name: "Jane Smith",
-      role: "Software Engineer",
-      company: "Tech Company",
-      location: "San Francisco, CA",
-      bio: "Passionate about creating innovative solutions and empowering women in technology.",
-      expertise: ["Software Development", "Leadership"],
-      website: "https://example.com",
-      linkedin: "https://linkedin.com/in/janesmith",
-      twitter: "@janesmith",
-    };
-
-    setUser(mockUser);
-  };
-
-  const signup = async (
-    username: string,
-    email: string,
-    _password: string,
-    name: string,
-  ) => {
-    // Mock signup - in real app, this would call an API
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const newUser: UserProfile = {
-      id: crypto.randomUUID(),
-      username,
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
-      image: "",
-      name,
-      role: "",
-      company: "",
-      location: "",
-      bio: "",
-      expertise: [],
-      linkedin: "",
-      twitter: "",
-    };
+      password,
+    });
 
-    setUser(newUser);
+    if (error) throw error;
+
+    const user = data.user;
+    if (!user) throw new Error("No user returned from Supabase");
+
+    // Fetch profile from profiles table using user.id
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) throw profileError;
+
+    setUser(profile);
   };
+
+  // const signup = async (
+  //   username: string,
+  //   email: string,
+  //   _password: string,
+  //   name: string,
+  // ) => {
+  //   // Mock signup - in real app, this would call an API
+  //   await new Promise((resolve) => setTimeout(resolve, 500));
+
+  //   const newUser: UserProfile = {
+  //     id: crypto.randomUUID(),
+  //     createdAt: new Date().toISOString(),
+  //     lastLogin: new Date().toISOString(),
+  //     lastUpdated: new Date().toISOString(),
+  //     image: "",
+  //     name,
+  //     role: "",
+  //     company: "",
+  //     location: "",
+  //     bio: "",
+  //     expertise: [],
+  //     linkedin: "",
+  //     twitter: "",
+  //   };
+
+  //   setUser(newUser);
+  // };
 
   const logout = () => {
     setUser(null);
