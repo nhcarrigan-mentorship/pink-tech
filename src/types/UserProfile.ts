@@ -2,7 +2,7 @@ export interface UserProfile {
   readonly id: string;
   name: string;
   username: string;
-  lastUpdated: string | null;
+  lastUpdated: string;
   image?: string | null;
   bio?: string | null; // Short summary for cards/previews (1-2 sentences)
   role?: string | null;
