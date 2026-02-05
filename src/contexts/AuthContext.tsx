@@ -8,10 +8,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (
-    username: string,
     email: string,
-    password: string,
     name: string,
+    username: string,
+    password: string,
   ) => Promise<void>;
   logout: () => void;
   updateProfile: (updates: Partial<UserProfile>) => void;
@@ -69,10 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signup = async (
-    username: string,
     email: string,
+    display_name: string,
+    username: string,
     password: string,
-    name: string,
   ) => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -85,16 +85,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!user) throw new Error("No user returned from Supabase");
 
-    const { error: profileError } = await supabase.from("profiles").insert([
-      {
-        id: user.id,
-        username,
-        name,
-        lastUpdated: new Date().toISOString(),
-      },
-    ]);
+    // Debug: log the data being inserted
+    const profileData = {
+      id: user.id,
+      display_name,
+      username,
+      last_updated: new Date().toISOString(),
+    };
+    // console.log("Inserting profile:", profileData);
 
-    if (profileError) throw error;
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert([profileData]);
+
+    if (profileError) {
+      // Log the error message for easier debugging
+      console.error(
+        "Profile insert error:",
+        profileError.message,
+        profileError.details,
+      );
+      throw profileError;
+    }
 
     const { data: profile } = await supabase
       .from("profiles")
@@ -103,7 +115,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .single();
     setUser(profile);
   };
-
 
   const logout = () => {
     setUser(null);
