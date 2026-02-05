@@ -38,7 +38,7 @@ export default function DesktopNavigationMenu() {
           <Link
             to={`/${user?.username}`}
             className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-              isActive("/my-profile")
+              isActive(`/${user?.username}`)
                 ? "bg-pink-50 text-pink-700"
                 : "text-gray-600 hover:bg-gray-50"
             }`}

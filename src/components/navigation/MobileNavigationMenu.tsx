@@ -5,10 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 export default function MobileNavigationMenu() {
   // Add a class to allow hiding when modal is open
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  console.log(user?.username, location.pathname);
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-bottom mobile-nav-hide-on-modal">
@@ -38,14 +40,16 @@ export default function MobileNavigationMenu() {
         {isAuthenticated ? (
           <>
             <Link
-              to="/my-profile"
+              to={`/${user?.username}`}
               className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-colors min-w-[70px] ${
-                isActive("/my-profile") ? "text-pink-600" : "text-gray-600"
+                isActive(`/${user?.username}`)
+                  ? "text-pink-600"
+                  : "text-gray-600"
               }`}
             >
               <User
                 className={`w-6 h-6 ${
-                  isActive("/my-profile") ? "stroke-[2.5]" : ""
+                  isActive(`/${user?.username}`) ? "stroke-[2.5]" : ""
                 }`}
               />
               <span className="text-xs font-medium">Profile</span>
