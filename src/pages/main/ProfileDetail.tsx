@@ -7,10 +7,11 @@ import ProfileCard from "../../components/profile/detail/ProfileCard";
 import ProfileNotFound from "../../features/search/results/ProfileNotFound";
 import { useProfilesContext } from "../../contexts/ProfilesContext";
 import ErrorState from "../../components/ui/ErrorState";
+import LoadingState from "../../components/ui/LoadingState";
 
 export default function ProfileDetail() {
   const { username } = useParams();
-  const { profiles, refetch, error } = useProfilesContext();
+  const { profiles, loading, error, refetch } = useProfilesContext();
   const profile = profiles.find((profile) => profile.username === username);
 
   const { isAuthenticated, user } = useAuth();
@@ -38,6 +39,8 @@ export default function ProfileDetail() {
         onRetry={refetch}
       />
     );
+  } else if (loading) {
+    content = <LoadingState message="Loading profile..." />;
   } else if (!profile) {
     content = (
       <div className="flex flex-1 justify-center items-center p-10">
