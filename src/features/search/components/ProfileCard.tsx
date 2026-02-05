@@ -19,7 +19,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
           <div className="w-32 h-32 sm:w-24 sm:h-24 overflow-hidden rounded border border-pink-200 bg-gray-100">
             <ImageWithFallback
               src={profile.image ? profile.image : ""}
-              alt={profile.name}
+              alt={profile.displayName}
               className="w-full h-full object-cover"
             />
           </div>
@@ -29,7 +29,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
         <div className="flex-1 min-w-0">
           {/* Name and Role */}
           <h3 className="text-xl mb-1 text-gray-900 font-bold">
-            {profile.name}
+            {profile.displayName}
           </h3>
           <div className="text-sm text-gray-600 mb-2 space-y-1">
             <div className="flex items-center gap-1.5">
