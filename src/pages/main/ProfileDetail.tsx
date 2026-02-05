@@ -48,8 +48,9 @@ export default function ProfileDetail() {
       </div>
     );
   } else {
-    content = (
+    return (
       <div className="flex-1 py-2">
+        <BackNavigation />
         <ProfileAuthorshipNotice position="top" />
         <ProfileCard profile={profile} isOwner={isOwner} />
         {/* Notice Banner - Bottom (abstracted) */}
