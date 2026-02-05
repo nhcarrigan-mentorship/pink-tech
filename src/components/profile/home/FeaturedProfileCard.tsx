@@ -20,7 +20,7 @@ export default function FeaturedProfileCard({
       >
         <ImageWithFallback
           src={profile?.image ? profile.image : ""}
-          alt={profile?.name}
+          alt={profile?.displayName}
           className="w-full h-full object-cover"
         />
       </div>
@@ -39,7 +39,7 @@ export default function FeaturedProfileCard({
           </div>
 
           <h3 className="text-xl md:text-3xl text-gray-900 mb-2 font-bold border-b border-pink-200 pb-2">
-            {profile?.name}
+            {profile?.displayName}
           </h3>
 
           <div className="space-y-1 md:space-y-1.5 mb-3 md:mb-4 text-xs md:text-sm">

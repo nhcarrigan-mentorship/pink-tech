@@ -39,7 +39,7 @@ export default function Search() {
     return profiles.filter((profile) => {
       const matchesSearch =
         search != ""
-          ? profile?.name.toLowerCase().includes(search.toLowerCase()) ||
+          ? profile?.displayName.toLowerCase().includes(search.toLowerCase()) ||
             (profile?.role &&
               profile?.role.toLowerCase().includes(search.toLowerCase())) ||
             (profile?.company &&

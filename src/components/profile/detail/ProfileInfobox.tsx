@@ -51,7 +51,7 @@ export default function ProfileInfobox({
           <div className="aspect-square overflow-hidden bg-gray-100">
             <ImageWithFallback
               src={profile?.image ? profile.image : ""}
-              alt={profile?.name}
+              alt={profile?.displayName}
               className="w-full h-full object-cover"
             />
           </div>
@@ -61,7 +61,7 @@ export default function ProfileInfobox({
             <div className="pb-3 border-b border-pink-200">
               {/* Profile Name */}
               <h3 className="mb-2 text-base font-bold text-gray-900">
-                {profile?.name}
+                {profile?.displayName}
               </h3>
               <p>{profile?.bio}</p>
             </div>

@@ -1,6 +1,6 @@
 export interface UserProfile {
   readonly id: string;
-  name: string;
+  displayName: string;
   username: string;
   lastUpdated: string;
   featured: boolean;
