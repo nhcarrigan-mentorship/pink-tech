@@ -17,7 +17,9 @@ import ErrorState from "../../ui/ErrorState";
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;
   const { profiles, loading, error, refetch } = useProfilesContext();
-  const featuredProfiles = profiles.slice(0, FEATURED_COUNT);
+  const featuredProfiles = profiles
+    .filter((profile) => profile.featured)
+    .slice(0, FEATURED_COUNT);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [direction, setDirection] = useState(0);
