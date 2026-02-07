@@ -1,6 +1,7 @@
 import { Info, X } from "lucide-react";
 
 interface ProfileAuthorshipNoticeProps {
+  isOwner: boolean;
   position?: "top" | "bottom";
   onClose?: () => void;
   show?: boolean;
@@ -8,6 +9,7 @@ interface ProfileAuthorshipNoticeProps {
 }
 
 export default function ProfileAuthorshipNotice({
+  isOwner,
   position = "top",
   onClose,
   show = true,
@@ -20,7 +22,11 @@ export default function ProfileAuthorshipNotice({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm text-pink-800">
           <Info className="w-4 h-4 flex-shrink-0" />
-          <span>This profile is written and maintained by the member.</span>
+          <span>
+            {isOwner
+              ? "This is your personal profile. Click on 'Edit Profile' to make changes."
+              : "This profile is written and maintained by the member."}
+          </span>
         </div>
         {onClose && (
           <button

@@ -51,11 +51,12 @@ export default function ProfileDetail() {
     return (
       <div className="flex-1 py-2">
         <BackNavigation />
-        <ProfileAuthorshipNotice position="top" />
+        <ProfileAuthorshipNotice isOwner={isOwner} position="top" />
         <ProfileCard profile={profile} isOwner={isOwner} />
         {/* Notice Banner - Bottom (abstracted) */}
         {!isOwner && showBottomNotice && !noticeDismissed && (
           <ProfileAuthorshipNotice
+            isOwner={isOwner}
             position="bottom"
             show={true}
             onClose={() => {
