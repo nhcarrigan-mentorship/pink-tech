@@ -46,7 +46,6 @@ export default function ProfileInfobox({
     <>
       <aside className="md:w-72 lg:w-80 flex-shrink-0">
         <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 rounded">
-          {isOwner && <p>You're the owner</p>}
           {/* Profile Image */}
           <div className="aspect-square overflow-hidden bg-gray-100">
             <ImageWithFallback
@@ -68,31 +67,37 @@ export default function ProfileInfobox({
 
             <div className="space-y-3">
               {/* Profile Role */}
-              <div>
-                <div className="text-pink-700 font-semibold">Role</div>
-                <div className="flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5 text-pink-700" />
-                  <div className="text-gray-900">{profile?.role}</div>
+              {profile?.role && (
+                <div>
+                  <div className="text-pink-700 font-semibold">Role</div>
+                  <div className="flex items-center gap-1">
+                    <Award className="w-3.5 h-3.5 text-pink-700" />
+                    <div className="text-gray-900">{profile.role}</div>
+                  </div>
                 </div>
-              </div>
+              )}
               {/* Profile Company */}
-              <div>
-                <div className="text-pink-700 font-semibold">
-                  Company/Organization
+              {profile?.company && (
+                <div>
+                  <div className="text-pink-700 font-semibold">
+                    Company/Organization
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Building2 className="w-3.5 h-3.5 text-pink-700" />
+                    <div className="text-gray-900">{profile.company}</div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Building2 className="w-3.5 h-3.5 text-pink-700" />
-                  <div className="text-gray-900">{profile?.company}</div>
-                </div>
-              </div>
+              )}
               {/* Profile Location */}
-              <div>
-                <div className="text-pink-700 font-semibold">Location</div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-pink-700" />
-                  <div className="text-gray-900">{profile?.location}</div>
+              {profile?.location && (
+                <div>
+                  <div className="text-pink-700 font-semibold">Location</div>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-pink-700" />
+                    <div className="text-gray-900">{profile?.location}</div>
+                  </div>
                 </div>
-              </div>
+              )}
               {/* Profile Links */}
               {availableSocials.length > 0 && (
                 <div>
