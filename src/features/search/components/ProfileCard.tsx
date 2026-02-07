@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Briefcase, MapPin } from "lucide-react";
+import { Award, Building2, MapPin } from "lucide-react";
 import type { UserProfile } from "../../../types/UserProfile";
 import ImageWithFallback from "../../../components/ui/ImageWithFallback";
 
@@ -27,21 +27,31 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
 
         {/* Profile Content */}
         <div className="flex-1 min-w-0">
-          {/* Name and Role */}
+          {/* Profile Name */}
           <h3 className="text-xl mb-1 text-gray-900 font-bold">
             {profile.displayName}
           </h3>
-          <div className="text-sm text-gray-600 mb-2 space-y-1">
-            <div className="flex items-center gap-1.5">
-              <Briefcase className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
-              <span>
-                {profile.role} at {profile.company}
+          <div className="flex items-center gap-2 mb-2">
+            {/* Profile Role */}
+            {profile?.role && (
+              <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
+                <Award className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                <span>{profile.role}</span>
               </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
-              <span>{profile.location}</span>
-            </div>
+            )}
+            {/* Profile Company */}
+            {profile?.company && (
+              <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
+                <Building2 className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                <span>{profile.company}</span>
+              </span>
+            )}
+            {profile?.location && (
+              <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
+                <MapPin className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                <span>{profile.location}</span>
+              </span>
+            )}
           </div>
 
           {/* Bio Preview */}
