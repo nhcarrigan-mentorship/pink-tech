@@ -10,8 +10,6 @@ export default function MobileNavigationMenu() {
     return location.pathname === path;
   };
 
-  console.log(user?.username, location.pathname);
-
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-bottom mobile-nav-hide-on-modal">
       <div className="flex justify-around items-center h-16 px-2">
