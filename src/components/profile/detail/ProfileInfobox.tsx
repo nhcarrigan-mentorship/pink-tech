@@ -78,7 +78,7 @@ export default function ProfileInfobox({
               )}
               {/* Profile Company */}
               {profile?.company && (
-                <div>
+                <>
                   <div className="text-pink-700 font-semibold">
                     Company/Organization
                   </div>
@@ -86,7 +86,7 @@ export default function ProfileInfobox({
                     <Building2 className="w-3.5 h-3.5 text-pink-700" />
                     <div className="text-gray-900">{profile.company}</div>
                   </div>
-                </div>
+                </>
               )}
               {/* Profile Location */}
               {profile?.location && (
