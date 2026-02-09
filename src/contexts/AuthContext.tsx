@@ -92,7 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       username,
       last_updated: new Date().toISOString(),
     };
-    // console.log("Inserting profile:", profileData);
 
     const { error: profileError } = await supabase
       .from("profiles")
