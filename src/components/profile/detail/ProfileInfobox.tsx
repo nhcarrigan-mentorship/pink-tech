@@ -9,17 +9,19 @@ import {
   Twitter,
   Globe,
 } from "lucide-react";
-import { useState } from "react";
-
+import React, { useState } from "react";
 interface ProfileInfoboxProps {
   isOwner: boolean;
-  profile?: UserProfile;
+  profile: UserProfile;
 }
 
 export default function ProfileInfobox({
   profile,
   isOwner,
 }: ProfileInfoboxProps) {
+  const [editedProfile, setIsEditedProfile] =
+    useState<Partial<UserProfile>>(profile);
+
   const [isEditing, setIsEditing] = useState(false);
 
   const socialClassName = "w-5 h-5 text-pink-600";
@@ -46,16 +48,14 @@ export default function ProfileInfobox({
     ({ key }) => profile && profile[key as keyof UserProfile],
   );
 
-  return isOwner && isEditing ? (
-    <div>Edit Form</div>
-  ) : (
+  return (
     <aside className="md:w-72 lg:w-80 flex-shrink-0">
       <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 rounded">
         {/* Profile Image */}
         <div className="aspect-square overflow-hidden bg-gray-100">
           <ImageWithFallback
-            src={profile?.image ? profile.image : ""}
-            alt={profile?.displayName}
+            src={editedProfile.image ?? undefined}
+            alt={editedProfile.displayName}
             className="w-full h-full object-cover"
           />
         </div>
@@ -65,9 +65,9 @@ export default function ProfileInfobox({
           <div className="pb-3 border-b border-pink-200">
             {/* Profile Name */}
             <h3 className="mb-2 text-base font-bold text-gray-900">
-              {profile?.displayName}
+              {editedProfile.displayName}
             </h3>
-            <p>{profile?.bio}</p>
+            <p>{editedProfile.bio}</p>
             {isOwner && (
               <button
                 className="inline-flex items-center gap-2 mt-2 text-pink-600 text-sm font-bold hover:text-pink-700 hover:cursor-pointer transition-colors"
@@ -81,7 +81,7 @@ export default function ProfileInfobox({
 
           <div className="space-y-3">
             {/* Profile Role */}
-            {profile?.role && (
+            {editedProfile.role && (
               <div>
                 <div className="text-pink-700 font-semibold">Role</div>
                 <div className="flex items-center gap-1">
@@ -91,7 +91,7 @@ export default function ProfileInfobox({
               </div>
             )}
             {/* Profile Company */}
-            {profile?.company && (
+            {editedProfile.company && (
               <>
                 <div className="text-pink-700 font-semibold">
                   Company/Organization
@@ -103,12 +103,12 @@ export default function ProfileInfobox({
               </>
             )}
             {/* Profile Location */}
-            {profile?.location && (
+            {editedProfile.location && (
               <div>
                 <div className="text-pink-700 font-semibold">Location</div>
                 <div className="flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5 text-pink-700" />
-                  <div className="text-gray-900">{profile?.location}</div>
+                  <div className="text-gray-900">{editedProfile.location}</div>
                 </div>
               </div>
             )}
@@ -135,13 +135,13 @@ export default function ProfileInfobox({
               </div>
             )}
             {/* Profile Expertise */}
-            {profile?.expertise && (
+            {editedProfile.expertise && (
               <div>
                 <div className="mb-2 text-pink-700 font-semibold">
                   Expertise
                 </div>
                 <div className="flex items-center flex-wrap gap-1">
-                  {profile.expertise.map((expertise) => (
+                  {editedProfile.expertise?.map((expertise) => (
                     <span className="px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded hover:bg-pink-100 transition-colors">
                       {expertise}
                     </span>
