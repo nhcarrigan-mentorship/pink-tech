@@ -16,12 +16,11 @@ export default function ProfileDetail() {
   const [profile, setProfile] = useState(
     profiles.find((profile) => profile.username === username),
   );
+  const [showBottomNotice, setShowBottomNotice] = useState(false);
+  const [noticeDismissed, setNoticeDismissed] = useState(false);
 
   const { isAuthenticated, user } = useAuth();
   const isOwner = isAuthenticated && user?.id === profile?.id;
-
-  const [showBottomNotice, setShowBottomNotice] = useState(false);
-  const [noticeDismissed, setNoticeDismissed] = useState(false);
 
   useEffect(() => {
     if (noticeDismissed) return;
