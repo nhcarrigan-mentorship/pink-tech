@@ -12,7 +12,10 @@ import LoadingState from "../../components/ui/LoadingState";
 export default function ProfileDetail() {
   const { username } = useParams();
   const { profiles, loading, error, refetch } = useProfilesContext();
-  const profile = profiles.find((profile) => profile.username === username);
+
+  const [profile, setProfile] = useState(
+    profiles.find((profile) => profile.username === username),
+  );
 
   const { isAuthenticated, user } = useAuth();
   const isOwner = isAuthenticated && user?.id === profile?.id;
@@ -52,7 +55,11 @@ export default function ProfileDetail() {
       <div className="flex-1 py-2">
         <BackNavigation />
         <ProfileAuthorshipNotice isOwner={isOwner} position="top" />
-        <ProfileCard profile={profile} isOwner={isOwner} />
+        <ProfileCard
+          profile={profile}
+          setProfile={setProfile}
+          isOwner={isOwner}
+        />
         {/* Notice Banner - Bottom (abstracted) */}
         {!isOwner && showBottomNotice && !noticeDismissed && (
           <ProfileAuthorshipNotice
