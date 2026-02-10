@@ -3,7 +3,7 @@ import ProfileInfobox from "./ProfileInfobox";
 import type { UserProfile } from "../../../types/UserProfile";
 
 interface ProfileCardProps {
-  profile?: UserProfile;
+  profile: UserProfile;
   isOwner: boolean;
 }
 
