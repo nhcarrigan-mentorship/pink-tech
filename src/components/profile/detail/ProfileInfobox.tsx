@@ -33,7 +33,6 @@ export default function ProfileInfobox({
 
   function startEditing() {
     setIsEditing(true);
-    setSaveError(null);
     setEditedProfile(profile);
   }
 
@@ -65,27 +64,36 @@ export default function ProfileInfobox({
 
   async function onSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    setSaveError(null); // clear stale errors
     setIsSaving(true);
 
     const changedFields = getChangedFields(profile, editedProfile);
+
+    let success = false;
 
     try {
       const { error, data } = await supabase
         .from("profiles")
         .update(toSnakeCaseObject(changedFields))
         .eq("id", profile.id)
-        .select();
-      if (error) {
-        setSaveError(error);
-      } else {
-        console.log(data);
-        setProfile(camelcaseKeys(data[0]));
-        setIsEditing(false);
-      }
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Supabase `.single()` returns a single object in `data`.
+      // Convert snake_case -> camelCase and update the local profile.
+      const updated = camelcaseKeys(data, {
+        deep: true,
+      }) as unknown as UserProfile;
+      setProfile(updated);
+      success = true;
     } catch (err) {
       setSaveError(err as Error);
     } finally {
       setIsSaving(false);
+      if (success) setIsEditing(false);
     }
   }
 
