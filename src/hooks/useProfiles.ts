@@ -11,11 +11,18 @@ export default function useProfiles() {
   const fetchProfiles = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from("profiles").select("*");
+      // Only fetch the fields needed for lists and cards to avoid
+      // pulling large `content` blobs on initial app load.
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(
+          `id, display_name, username, image, bio, role, company, location, website, linkedin, twitter, expertise, featured, last_updated`,
+        );
+
       if (error) {
         setError(error);
         console.error(error);
-      } else {
+      } else if (data) {
         setProfiles(camelcaseKeys(data, { deep: true }));
       }
     } catch (err) {
