@@ -1,19 +1,12 @@
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import type { UserProfile } from "../../../types/UserProfile";
-import {
-  Award,
-  Building2,
-  Edit,
-  MapPin,
-  Linkedin,
-  Twitter,
-  Globe,
-} from "lucide-react";
+import LazyIcon from "../../ui/LazyIcon";
 import React, { useState } from "react";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import toSnakeCaseObject from "../../../utils/snakeCase";
 import { getSupabase } from "../../../config/supabaseClient";
 import camelcaseKeys from "camelcase-keys";
+import { Edit, Award, Building2, MapPin } from "lucide-react";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;
@@ -73,13 +66,13 @@ export default function ProfileInfobox({
     let success = false;
 
     try {
-        const supabase = await getSupabase();
-        const { error, data } = await supabase
-          .from("profiles")
-          .update(toSnakeCaseObject(changedFields))
-          .eq("id", profile.id)
-          .select()
-          .single();
+      const supabase = await getSupabase();
+      const { error, data } = await supabase
+        .from("profiles")
+        .update(toSnakeCaseObject(changedFields))
+        .eq("id", profile.id)
+        .select()
+        .single();
 
       if (error) throw error;
 
@@ -109,17 +102,17 @@ export default function ProfileInfobox({
     {
       key: "linkedin",
       label: "Linkedin",
-      icon: <Linkedin className={socialClassName} />,
+      icon: <LazyIcon name="Linkedin" className={socialClassName} />,
     },
     {
       key: "twitter",
       label: "Twitter",
-      icon: <Twitter className={socialClassName} />,
+      icon: <LazyIcon name="Twitter" className={socialClassName} />,
     },
     {
       key: "website",
       label: "website",
-      icon: <Globe className={socialClassName} />,
+      icon: <LazyIcon name="Globe" className={socialClassName} />,
     },
   ];
 
@@ -208,6 +201,9 @@ export default function ProfileInfobox({
             src={profile.image ?? undefined}
             alt={profile.displayName}
             className="w-full h-full object-cover"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
         </div>
 

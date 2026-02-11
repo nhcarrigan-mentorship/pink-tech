@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 
 interface SearchInputProps {
   value: string;
@@ -14,7 +14,10 @@ export default function SearchInput({
   return (
     <div className="w-full relative">
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-400 w-5 h-5 md:w-5 md:h-5 pointer-events-none" />
+        <LazyIcon
+          name="Search"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-400 w-5 h-5 md:w-5 md:h-5 pointer-events-none"
+        />
         <input
           type="text"
           placeholder={placeholder}
@@ -28,7 +31,7 @@ export default function SearchInput({
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-pink-500 transition-colors p-1 rounded-full hover:bg-pink-50"
             aria-label="Clear search"
           >
-            <X className="w-5 h-5" />
+            <LazyIcon name="X" className="w-5 h-5" />
           </button>
         )}
       </div>

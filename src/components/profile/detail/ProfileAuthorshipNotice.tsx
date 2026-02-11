@@ -1,4 +1,4 @@
-import { Info, X } from "lucide-react";
+import LazyIcon from "../../ui/LazyIcon";
 
 interface ProfileAuthorshipNoticeProps {
   isOwner: boolean;
@@ -21,7 +21,7 @@ export default function ProfileAuthorshipNotice({
     <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ${className}`}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm text-pink-800">
-          <Info className="w-4 h-4 flex-shrink-0" />
+          <LazyIcon name="Info" className="w-4 h-4 flex-shrink-0" />
           <span>
             {isOwner
               ? "This is your personal profile. Click on 'Edit Profile' to make changes."
@@ -37,7 +37,7 @@ export default function ProfileAuthorshipNotice({
             className="flex-shrink-0 text-pink-600 hover:text-pink-800 transition-colors p-1"
             aria-label="Close notice"
           >
-            <X className="w-4 h-4" />
+            <LazyIcon name="X" className="w-4 h-4" />
           </button>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { Filter, X } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 import SearchInput from "../components/SearchInput";
 
 interface MobileSearchBarProps {
@@ -33,7 +33,7 @@ export default function MobileSearchBar({
         }`}
       >
         <span className="flex items-center gap-2.5 text-base font-bold">
-          <Filter className="w-5 h-5" />
+          <LazyIcon name="Filter" className="w-5 h-5" />
           <span>
             {selectedExpertiseCount > 0
               ? `${selectedExpertiseCount} Expertise Filter${
@@ -51,7 +51,7 @@ export default function MobileSearchBar({
             className="hover:bg-white/20 rounded-full p-1.5 transition-colors"
             aria-label="Clear expertise filters"
           >
-            <X className="w-5 h-5" />
+            <LazyIcon name="X" className="w-5 h-5" />
           </button>
         )}
       </button>

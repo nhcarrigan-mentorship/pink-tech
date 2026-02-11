@@ -37,6 +37,57 @@ export default function ProfileDetail() {
     }
   }, [username, profile, fetchFullProfile]);
 
+  // Preload the profile image to improve LCP when we have an image URL
+  useEffect(() => {
+    if (!profile?.image) return;
+    const href = profile.image;
+    const existing = document.querySelector(
+      `link[rel=\"preload\"][data-profile-image]`,
+    );
+    if (existing) {
+      existing.setAttribute("href", href);
+      return;
+    }
+
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = href;
+    link.setAttribute("data-profile-image", "true");
+    // attempt to hint high priority for browser
+    link.setAttribute("importance", "high");
+    document.head.appendChild(link);
+
+    // Add a preconnect to Supabase origin to shorten DNS/TCP/TLS time
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (supabaseUrl) {
+        const origin = new URL(supabaseUrl).origin;
+        const existingPre = document.querySelector(
+          `link[rel=\"preconnect\"][href=\"${origin}\"]`,
+        );
+        if (!existingPre) {
+          const pre = document.createElement("link");
+          pre.rel = "preconnect";
+          pre.href = origin;
+          pre.crossOrigin = "anonymous";
+          pre.setAttribute("data-preconnect-supabase", "true");
+          document.head.appendChild(pre);
+        }
+      }
+    } catch (e) {
+      // ignore URL parse errors
+    }
+
+    return () => {
+      try {
+        link.remove();
+      } catch (e) {
+        /* ignore */
+      }
+    };
+  }, [profile?.image]);
+
   let content;
 
   if (error) {

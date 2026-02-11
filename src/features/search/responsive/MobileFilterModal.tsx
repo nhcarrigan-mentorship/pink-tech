@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 // Custom event to hide/show mobile nav
-import { X, Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 
 interface MobileFilterModalProps {
   isOpen: boolean;
@@ -78,7 +78,7 @@ export default function MobileFilterModal({
         <div className="flex-shrink-0 px-6 py-5 border-b-2 border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50 rounded-t-3xl">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2.5">
-              <Filter className="w-6 h-6 text-pink-600" />
+              <LazyIcon name="Filter" className="w-6 h-6 text-pink-600" />
               <h2 className="text-xl font-bold text-gray-900">
                 Filter & Search
               </h2>
@@ -88,7 +88,7 @@ export default function MobileFilterModal({
               className="p-2 hover:bg-pink-100 rounded-full transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               aria-label="Close filters"
             >
-              <X className="w-6 h-6 text-gray-600" />
+              <LazyIcon name="X" className="w-6 h-6 text-gray-600" />
             </button>
           </div>
           <p className="text-sm text-gray-600">
@@ -105,7 +105,10 @@ export default function MobileFilterModal({
                 Search Leaders
               </label>
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-400 w-5 h-5 pointer-events-none" />
+                <LazyIcon
+                  name="Search"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-400 w-5 h-5 pointer-events-none"
+                />
                 <input
                   ref={searchInputRef}
                   type="text"
@@ -120,7 +123,7 @@ export default function MobileFilterModal({
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-pink-500 transition-colors p-1 rounded-full hover:bg-pink-50 cursor-pointer"
                     aria-label="Clear search"
                   >
-                    <X className="w-5 h-5" />
+                    <LazyIcon name="X" className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -178,12 +181,12 @@ export default function MobileFilterModal({
                     {showAllExpertise ? (
                       <>
                         <span>See less</span>
-                        <ChevronUp className="w-4 h-4" />
+                        <LazyIcon name="ChevronUp" className="w-4 h-4" />
                       </>
                     ) : (
                       <>
                         <span>See more ({allExpertise.length - 10} more)</span>
-                        <ChevronDown className="w-4 h-4" />
+                        <LazyIcon name="ChevronDown" className="w-4 h-4" />
                       </>
                     )}
                   </button>

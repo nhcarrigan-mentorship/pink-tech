@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { UserPlus } from "lucide-react";
+import LazyIcon from "../ui/LazyIcon";
 
 export default function CallToAction() {
   return (
@@ -7,7 +7,7 @@ export default function CallToAction() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6 items-center">
         <div className="p-4 bg-white/20 rounded-full">
           {/* Icon */}
-          <UserPlus className="w-8 h-8" />
+          <LazyIcon name="UserPlus" className="w-8 h-8" />
         </div>
 
         {/* Heading */}
@@ -25,7 +25,7 @@ export default function CallToAction() {
           className="inline-flex items-center gap-2 px-8 py-4 bg-white text-pink-500 font-bold text-lg rounded-lg shadow-lg group cursor-pointer hover:bg-pink-500 hover:text-white transition-all hover:scale-105"
         >
           Create Profile
-          <UserPlus className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <LazyIcon name="UserPlus" className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
     </div>

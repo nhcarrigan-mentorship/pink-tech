@@ -1,12 +1,4 @@
-import {
-  User,
-  Briefcase,
-  Award,
-  MapPin,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import LazyIcon from "../../ui/LazyIcon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -38,11 +30,17 @@ export default function ProfileCreation() {
                   </h3>
                   <div className="space-y-1 md:space-y-1.5 text-xs md:text-sm">
                     <div className="flex items-center gap-2 text-gray-700">
-                      <Briefcase className="w-3 h-3 md:w-4 md:h-4 text-pink-600 flex-shrink-0" />
+                      <LazyIcon
+                        name="Briefcase"
+                        className="w-3 h-3 md:w-4 md:h-4 text-pink-600 flex-shrink-0"
+                      />
                       <span>Your Role at Your Company</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-700">
-                      <MapPin className="w-3 h-3 md:w-4 md:h-4 text-pink-600 flex-shrink-0" />
+                      <LazyIcon
+                        name="MapPin"
+                        className="w-3 h-3 md:w-4 md:h-4 text-pink-600 flex-shrink-0"
+                      />
                       <span>Your Location</span>
                     </div>
                   </div>
@@ -53,7 +51,10 @@ export default function ProfileCreation() {
             {/* Bio Section */}
             <div className="p-4 md:p-6 border-b-2 border-pink-200">
               <h4 className="text-base md:text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
-                <User className="w-4 h-4 md:w-5 md:h-5 text-pink-600" />
+                <LazyIcon
+                  name="User"
+                  className="w-4 h-4 md:w-5 md:h-5 text-pink-600"
+                />
                 About
               </h4>
               <p className="text-xs md:text-sm text-gray-700 leading-relaxed">
@@ -65,7 +66,7 @@ export default function ProfileCreation() {
             {/* Achievements Section - Hide on mobile to save space */}
             <div className="hidden md:block p-6 border-b-2 border-pink-200">
               <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <Award className="w-5 h-5 text-pink-600" />
+                <LazyIcon name="Award" className="w-5 h-5 text-pink-600" />
                 Key Achievements
               </h4>
               <ul className="space-y-2 text-sm text-gray-700">
@@ -115,9 +116,15 @@ export default function ProfileCreation() {
                   Why Create a Profile?
                 </h3>
                 {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                  <LazyIcon
+                    name="ChevronUp"
+                    className="w-5 h-5 text-pink-600 flex-shrink-0"
+                  />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                  <LazyIcon
+                    name="ChevronDown"
+                    className="w-5 h-5 text-pink-600 flex-shrink-0"
+                  />
                 )}
               </button>
 
@@ -205,7 +212,10 @@ export default function ProfileCreation() {
                 className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-rose-600 transition-all shadow-md text-sm md:text-base group cursor-pointer"
               >
                 Get Started
-                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                <LazyIcon
+                  name="ArrowRight"
+                  className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform"
+                />
               </Link>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { UserPlus } from "lucide-react";
+import LazyIcon from "../ui/LazyIcon";
 import { Link } from "react-router-dom";
 
 export default function Hero() {
@@ -23,7 +23,7 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-pink-500 font-bold text-lg rounded-lg shadow-lg group cursor-pointer hover:bg-pink-500 hover:text-white transition-all hover:scale-105"
             >
               Create Profile
-              <UserPlus className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <LazyIcon name="UserPlus" className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </>
         </div>

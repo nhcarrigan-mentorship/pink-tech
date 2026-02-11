@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
-import { Eye, EyeOff, Lock, Mail, User, UserPlus } from "lucide-react";
+import LazyIcon from "../ui/LazyIcon";
 
 export default function SignUpForm() {
   const [name, setName] = useState("");
@@ -38,8 +38,8 @@ export default function SignUpForm() {
     <div className="bg-white p-8 border border-pink-100 rounded-2xl shadow-2xl">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex justify-center items-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 text-white">
-          <UserPlus className="w-8 h-8" />
+          <div className="inline-flex justify-center items-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 text-white">
+          <LazyIcon name="UserPlus" className="w-8 h-8" />
         </div>
         <h1 className="mb-2 text-3xl font-bold">Join PinkTech</h1>
         <p className="text-gray-600">
@@ -61,7 +61,7 @@ export default function SignUpForm() {
             Email
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <LazyIcon name="Mail" className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
 
             <input
               type="email"
@@ -85,7 +85,7 @@ export default function SignUpForm() {
           </label>
 
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <LazyIcon name="User" className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
 
             <input
               type="text"
@@ -109,7 +109,7 @@ export default function SignUpForm() {
           </label>
 
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <LazyIcon name="User" className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
 
             <input
               type="text"
@@ -132,7 +132,7 @@ export default function SignUpForm() {
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <LazyIcon name="Lock" className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
 
             <input
               type={showPassword ? "text" : "password"}
@@ -152,9 +152,9 @@ export default function SignUpForm() {
               onClick={() => setShowPassword((prev) => !prev)}
             >
               {showPassword ? (
-                <EyeOff className="w-5 h-5" />
+                <LazyIcon name="EyeOff" className="w-5 h-5" />
               ) : (
-                <Eye className="w-5 h-5" />
+                <LazyIcon name="Eye" className="w-5 h-5" />
               )}
             </button>
           </div>

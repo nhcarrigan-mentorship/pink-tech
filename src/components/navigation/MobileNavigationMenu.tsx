@@ -1,4 +1,4 @@
-import { Home, LogIn, LogOut, User, Search } from "lucide-react";
+import LazyIcon from "../ui/LazyIcon";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useLocation } from "react-router-dom";
 
@@ -19,7 +19,10 @@ export default function MobileNavigationMenu() {
             isActive("/") ? "text-pink-600" : "text-gray-600"
           }`}
         >
-          <Home className={`w-6 h-6 ${isActive("/") ? "stroke-[2.5]" : ""}`} />
+          <LazyIcon
+            name="Home"
+            className={`w-6 h-6 ${isActive("/") ? "stroke-[2.5]" : ""}`}
+          />
           <span className="text-xs font-medium">Home</span>
         </Link>
 
@@ -29,7 +32,8 @@ export default function MobileNavigationMenu() {
             isActive("/search") ? "text-pink-600" : "text-gray-600"
           }`}
         >
-          <Search
+          <LazyIcon
+            name="Search"
             className={`w-6 h-6 ${isActive("/search") ? "stroke-[2.5]" : ""}`}
           />
           <span className="text-xs font-medium">Search</span>
@@ -45,7 +49,8 @@ export default function MobileNavigationMenu() {
                   : "text-gray-600"
               }`}
             >
-              <User
+              <LazyIcon
+                name="User"
                 className={`w-6 h-6 ${
                   isActive(`/${user?.username}`) ? "stroke-[2.5]" : ""
                 }`}
@@ -56,7 +61,7 @@ export default function MobileNavigationMenu() {
               onClick={logout}
               className="flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-colors text-gray-600 cursor-pointer min-w-[70px]"
             >
-              <LogOut className="w-6 h-6" />
+              <LazyIcon name="LogOut" className="w-6 h-6" />
               <span className="text-xs font-medium">Logout</span>
             </button>
           </>
@@ -67,7 +72,8 @@ export default function MobileNavigationMenu() {
               isActive("/login") ? "text-pink-600" : "text-gray-600"
             }`}
           >
-            <LogIn
+            <LazyIcon
+              name="LogIn"
               className={`w-6 h-6 ${isActive("/login") ? "stroke-[2.5]" : ""}`}
             />
             <span className="text-xs font-medium">Login</span>

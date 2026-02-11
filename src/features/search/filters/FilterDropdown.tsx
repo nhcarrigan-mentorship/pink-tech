@@ -1,4 +1,4 @@
-import { Filter } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 
 interface FilterDropdownProps {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export default function FilterDropdown({
       <div className="flex-shrink-0 p-4 border-b border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-pink-600" />
+            <LazyIcon name="Filter" className="w-4 h-4 text-pink-600" />
             <h3 className="text-base font-bold text-gray-900">
               Expertise Areas
             </h3>

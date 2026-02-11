@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
-import { toast } from "sonner";
+import LazyIcon from "../ui/LazyIcon";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -35,16 +34,22 @@ export default function LoginForm() {
   };
 
   const handleForgotPassword = () => {
-    toast("Password reset email sent!", {
-      description:
-        "Please check your email for instructions to reset your password.",
-      duration: 5000,
-      style: {
-        background: "#fdf2f8",
-        border: "1px solid #ec4899",
-        color: "#831843",
-      },
-      className: "font-medium",
+    import("sonner").then((mod) => {
+      try {
+        mod.toast("Password reset email sent!", {
+          description:
+            "Please check your email for instructions to reset your password.",
+          duration: 5000,
+          style: {
+            background: "#fdf2f8",
+            border: "1px solid #ec4899",
+            color: "#831843",
+          },
+          className: "font-medium",
+        });
+      } catch (e) {
+        /* ignore */
+      }
     });
   };
 
@@ -52,7 +57,7 @@ export default function LoginForm() {
     <div className="bg-white p-8 border border-pink-100 rounded-2xl shadow-xl">
       <div className="text-center mb-8">
         <div className="inline-flex justify-center items-center w-16 h-16 mb-4 bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-full">
-          <LogIn className="w-8 h-8" />
+          <LazyIcon name="LogIn" className="w-8 h-8 text-white" />
         </div>
         {/* Header */}
         <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
@@ -78,7 +83,10 @@ export default function LoginForm() {
           </label>
 
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <LazyIcon
+              name="Mail"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+            />
             <input
               id="email"
               type="email"
@@ -103,7 +111,10 @@ export default function LoginForm() {
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <LazyIcon
+              name="Lock"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+            />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -123,9 +134,9 @@ export default function LoginForm() {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {showPassword ? (
-                <EyeOff className="w-5 h-5" />
+                <LazyIcon name="EyeOff" className="w-5 h-5" />
               ) : (
-                <Eye className="w-5 h-5" />
+                <LazyIcon name="Eye" className="w-5 h-5" />
               )}
             </button>
           </div>

@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 
 interface ActiveFiltersProps {
   selectedExpertise: string[];
@@ -21,7 +21,7 @@ export default function ActiveFilters({
           className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border-2 border-pink-500 text-pink-700 rounded-full text-xs font-medium hover:bg-pink-50 transition-colors cursor-pointer group"
         >
           <span>{exp}</span>
-          <X className="w-3 h-3 group-hover:text-pink-900" />
+          <LazyIcon name="X" className="w-3 h-3 group-hover:text-pink-900" />
         </button>
       ))}
     </div>

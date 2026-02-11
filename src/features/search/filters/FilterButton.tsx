@@ -1,4 +1,4 @@
-import { Filter, X } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 
 interface FilterButtonProps {
   activeFilterCount: number;
@@ -23,7 +23,7 @@ export default function FilterButton({
         }`}
       >
         <span className="flex items-center gap-2 text-sm font-medium">
-          <Filter className="w-4 h-4" />
+          <LazyIcon name="Filter" className="w-4 h-4" />
           {activeFilterCount > 0
             ? `${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""}`
             : "Filter by Expertise"}
@@ -37,7 +37,7 @@ export default function FilterButton({
             className="hover:bg-white/20 rounded-full p-1 transition-colors"
             aria-label="Clear all filters"
           >
-            <X className="w-4 h-4" />
+            <LazyIcon name="X" className="w-4 h-4" />
           </button>
         )}
       </button>

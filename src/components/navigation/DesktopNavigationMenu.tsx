@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { LogIn, LogOut, Home, User, Search } from "lucide-react";
+import LazyIcon from "../../components/ui/LazyIcon";
 
 export default function DesktopNavigationMenu() {
   const location = useLocation();
@@ -19,7 +19,7 @@ export default function DesktopNavigationMenu() {
             : "text-gray-600 hover:bg-gray-50"
         }`}
       >
-        <Home className="w-4 h-4" />
+        <LazyIcon name="Home" className="w-4 h-4" />
         <span>Home</span>
       </Link>
       <Link
@@ -30,7 +30,7 @@ export default function DesktopNavigationMenu() {
             : "text-gray-600 hover:bg-gray-50"
         }`}
       >
-        <Search className="w-4 h-4" />
+        <LazyIcon name="Search" className="w-4 h-4" />
         <span>Search</span>
       </Link>
       {isAuthenticated ? (
@@ -43,14 +43,14 @@ export default function DesktopNavigationMenu() {
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <User className="w-4 h-4" />
+            <LazyIcon name="User" className="w-4 h-4" />
             <span>My Profile</span>
           </Link>
           <button
             onClick={logout}
             className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-gray-600 hover:bg-gray-50 cursor-pointer"
           >
-            <LogOut className="w-4 h-4" />
+            <LazyIcon name="LogOut" className="w-4 h-4" />
             <span>Logout</span>
           </button>
         </>
@@ -63,7 +63,7 @@ export default function DesktopNavigationMenu() {
               : "text-gray-600 hover:bg-gray-50"
           }`}
         >
-          <LogIn className="w-4 h-4" />
+          <LazyIcon name="LogIn" className="w-4 h-4" />
           <span>Login</span>
         </Link>
       )}

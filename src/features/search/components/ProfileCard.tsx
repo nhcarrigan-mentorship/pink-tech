@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Award, Building2, MapPin } from "lucide-react";
+import LazyIcon from "../../../components/ui/LazyIcon";
 import type { UserProfile } from "../../../types/UserProfile";
 import ImageWithFallback from "../../../components/ui/ImageWithFallback";
 
@@ -35,20 +35,29 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
             {/* Profile Role */}
             {profile?.role && (
               <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
-                <Award className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                <LazyIcon
+                  name="Award"
+                  className="w-3.5 h-3.5 text-pink-600 flex-shrink-0"
+                />
                 <span>{profile.role}</span>
               </span>
             )}
             {/* Profile Company */}
             {profile?.company && (
               <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
-                <Building2 className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                <LazyIcon
+                  name="Building2"
+                  className="w-3.5 h-3.5 text-pink-600 flex-shrink-0"
+                />
                 <span>{profile.company}</span>
               </span>
             )}
             {profile?.location && (
               <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
-                <MapPin className="w-3.5 h-3.5 text-pink-600 flex-shrink-0" />
+                <LazyIcon
+                  name="MapPin"
+                  className="w-3.5 h-3.5 text-pink-600 flex-shrink-0"
+                />
                 <span>{profile.location}</span>
               </span>
             )}
