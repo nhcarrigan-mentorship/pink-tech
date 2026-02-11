@@ -29,11 +29,11 @@ export default function ProfileInfobox({
     useState<Partial<UserProfile>>(profile);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState(false);
+  const [saveError, setSaveError] = useState<Error | null>(null);
 
   function startEditing() {
     setIsEditing(true);
-    setSaveError(false);
+    setSaveError(null);
     setEditedProfile(profile);
   }
 
@@ -76,7 +76,7 @@ export default function ProfileInfobox({
         .eq("id", profile.id)
         .select();
       if (error) {
-        setSaveError(true);
+        setSaveError(error);
       } else {
         console.log(data);
         setProfile(camelcaseKeys(data[0]));
@@ -89,7 +89,6 @@ export default function ProfileInfobox({
 
   function onCancel() {
     setIsEditing(false);
-    setSaveError(false);
   }
 
   const socialClassName = "w-5 h-5 text-pink-600";
@@ -178,7 +177,7 @@ export default function ProfileInfobox({
                 </button>
               </div>
 
-              {saveError === true && (
+              {saveError && (
                 <div className="text-red-600 font-semibold mt-2">
                   Error saving your changes. Please try again later.
                 </div>
