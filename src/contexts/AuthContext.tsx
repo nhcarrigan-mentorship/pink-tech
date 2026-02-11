@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { type ReactNode } from "react";
 import type { UserProfile } from "../types/UserProfile";
-import supabase from "../config/supabaseClient";
+import { getSupabase } from "../config/supabaseClient";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -46,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     // Mock authentication - in real app, this would call an API
+    const supabase = await getSupabase();
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -74,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     username: string,
     password: string,
   ) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase.auth.signUp({
       email,
       password,

@@ -1,4 +1,4 @@
-import supabase from "../../config/supabaseClient";
+import { getSupabase } from "../../config/supabaseClient";
 import { profiles } from "../../data/profiles";
 
 export default function UploadProfilesOnce() {
@@ -22,6 +22,7 @@ export default function UploadProfilesOnce() {
 
   const snakeCaseProfiles = profiles.map(toSnakeCaseProfile);
   async function upload() {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from("profiles")
       .insert(snakeCaseProfiles);

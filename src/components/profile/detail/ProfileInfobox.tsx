@@ -12,7 +12,7 @@ import {
 import React, { useState } from "react";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import toSnakeCaseObject from "../../../utils/snakeCase";
-import supabase from "../../../config/supabaseClient";
+import { getSupabase } from "../../../config/supabaseClient";
 import camelcaseKeys from "camelcase-keys";
 
 interface ProfileInfoboxProps {
@@ -73,12 +73,13 @@ export default function ProfileInfobox({
     let success = false;
 
     try {
-      const { error, data } = await supabase
-        .from("profiles")
-        .update(toSnakeCaseObject(changedFields))
-        .eq("id", profile.id)
-        .select()
-        .single();
+        const supabase = await getSupabase();
+        const { error, data } = await supabase
+          .from("profiles")
+          .update(toSnakeCaseObject(changedFields))
+          .eq("id", profile.id)
+          .select()
+          .single();
 
       if (error) throw error;
 

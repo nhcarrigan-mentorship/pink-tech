@@ -1,6 +1,6 @@
 import camelcaseKeys from "camelcase-keys";
 import { useState, useEffect, useCallback } from "react";
-import supabase from "../config/supabaseClient";
+import { getSupabase } from "../config/supabaseClient";
 import type { UserProfile } from "../types/UserProfile";
 
 // Module-level promise cache to deduplicate fetches across hook instances
@@ -27,6 +27,7 @@ export default function useProfiles() {
       try {
         // Only fetch the fields needed for lists and cards to avoid
         // pulling large `content` blobs on initial app load.
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from("profiles")
           .select(
@@ -81,6 +82,7 @@ export default function useProfiles() {
 
       const promise = (async () => {
         try {
+          const supabase = await getSupabase();
           const { data, error } = await supabase
             .from("profiles")
             .select("*")
