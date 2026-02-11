@@ -6,7 +6,7 @@ import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import toSnakeCaseObject from "../../../utils/snakeCase";
 import { getSupabase } from "../../../config/supabaseClient";
 import camelcaseKeys from "camelcase-keys";
-import { Edit, Award, Building2, MapPin } from "lucide-react";
+import { Camera, Edit, Award, Building2, MapPin } from "lucide-react";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;
@@ -130,6 +130,15 @@ export default function ProfileInfobox({
             alt={editedProfile?.displayName}
             className="w-full h-full object-cover"
           />
+          {isEditing && (
+            <label className="absolute inset-0 flex justify-center items-center bg-pink-600 background-opacity-90 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer">
+              <div className="flex flex-col items-center text-white">
+                <Camera className="w-20 h-20" />
+                <div className="font-bold">Upload photo</div>
+              </div>
+              <input type="file" accept="image/*" className="hidden"></input>
+            </label>
+          )}
         </div>
 
         {isOwner && isEditing ? (
