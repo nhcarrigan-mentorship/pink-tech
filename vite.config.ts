@@ -28,13 +28,27 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Group large deps into separate chunks to avoid duplication
+        // Group large deps into separate chunks to avoid duplication and
+        // prevent a single huge `vendor` chunk (avoids circular chunk edges).
         manualChunks(id: string) {
-          if (id.includes("node_modules/@supabase")) return "supabase-vendor";
-          if (id.includes("node_modules/framer-motion"))
-            return "framer-motion-vendor";
-          if (id.includes("node_modules/react")) return "react-vendor";
-          if (id.includes("node_modules")) return "vendor";
+          if (!id.includes("node_modules")) return undefined;
+          // Use the last occurrence of `node_modules/` to support pnpm's
+          // nested layout (node_modules/.pnpm/*/node_modules/<pkg>/...).
+          const nm = "node_modules/";
+          const idx = id.lastIndexOf(nm);
+          if (idx === -1) return undefined;
+          const parts = id.slice(idx + nm.length).split("/");
+          const pkgName = parts[0].startsWith("@")
+            ? `${parts[0]}/${parts[1]}`
+            : parts[0];
+
+          if (pkgName === "react" || pkgName === "react-dom")
+            return "react-vendor";
+          if (pkgName.startsWith("@supabase")) return "supabase-vendor";
+          if (pkgName === "framer-motion") return "framer-motion-vendor";
+          if (pkgName === "lucide-react") return "icons-vendor";
+
+          return `vendor-${pkgName.replace("@", "").replace("/", "-")}`;
         },
       },
       plugins: [visualizer({ filename: "dist/stats.html", gzipSize: true })],

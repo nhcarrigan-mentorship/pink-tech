@@ -166,15 +166,16 @@ export default function FeaturedProfiles() {
         <div className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
           {currentIndex > 0 && (
             <MotionDiv
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 0.6, x: 0 }}
-              className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-pink-500/90 to-transparent rounded-r-lg"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 0 }}
+              transition={{ delay: 3, duration: 1 }}
+              className="md:hidden flex items-center justify-center gap-2 mt-3 text-xs text-gray-500"
             >
-              <LazyIcon name="ChevronsLeft" className="w-4 h-4 text-white" />
+              <LazyIcon name="ChevronsLeft" className="w-3 h-3" />
+              <span>Swipe to explore more profiles</span>
+              <LazyIcon name="ChevronsRight" className="w-3 h-3" />
             </MotionDiv>
           )}
-        </div>
-        <div className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
           {currentIndex < profiles.length - 1 && (
             <MotionDiv
               initial={{ opacity: 0, x: -10 }}
