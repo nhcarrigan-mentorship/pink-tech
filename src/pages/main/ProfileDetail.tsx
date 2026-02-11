@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import supabase from "../../config/supabaseClient";
-import camelcaseKeys from "camelcase-keys";
 import BackNavigation from "../../components/navigation/BackNavigation";
 import ProfileAuthorshipNotice from "../../components/profile/detail/ProfileAuthorshipNotice";
 import ProfileCard from "../../components/profile/detail/ProfileCard";
@@ -13,9 +11,9 @@ import LoadingState from "../../components/ui/LoadingState";
 
 export default function ProfileDetail() {
   const { username } = useParams();
-  const { profiles, loading, error, refetch } = useProfilesContext();
-
-  const [profile, setProfile] = useState<any | undefined>(undefined);
+  const { profiles, loading, error, refetch, fetchFullProfile } =
+    useProfilesContext();
+  const profile = profiles.find((p) => p.username === username);
   const [showBottomNotice, setShowBottomNotice] = useState(false);
   const [noticeDismissed, setNoticeDismissed] = useState(false);
 
@@ -31,45 +29,13 @@ export default function ProfileDetail() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [noticeDismissed]);
 
-  // Update `profile` when the profiles list or username changes
-  useEffect(() => {
-    const found = profiles.find((p) => p.username === username);
-    if (found) setProfile(found);
-  }, [profiles, username]);
-
-  // Lazy-load full profile (including `content`) if it's missing or not present
+  // Lazy-load full profile (including `content`) via context-level guarded fetch
   useEffect(() => {
     if (!username) return;
-
-    let mounted = true;
-
-    async function fetchFullProfile() {
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("username", username)
-          .single();
-
-        if (error) throw error;
-        if (!mounted) return;
-
-        const full = camelcaseKeys(data, { deep: true });
-        setProfile(full);
-      } catch (err) {
-        console.error("Failed to fetch full profile:", err);
-      }
-    }
-
-    // Only fetch if we don't have a profile yet or the `content` field is missing
     if (!profile || !profile.content) {
-      fetchFullProfile();
+      fetchFullProfile(username);
     }
-
-    return () => {
-      mounted = false;
-    };
-  }, [username, profile]);
+  }, [username, profile, fetchFullProfile]);
 
   let content;
 
@@ -94,11 +60,7 @@ export default function ProfileDetail() {
       <div className="flex-1 py-2">
         <BackNavigation />
         <ProfileAuthorshipNotice isOwner={isOwner} position="top" />
-        <ProfileCard
-          profile={profile}
-          setProfile={setProfile}
-          isOwner={isOwner}
-        />
+        <ProfileCard profile={profile} isOwner={isOwner} />
         {/* Notice Banner - Bottom (abstracted) */}
         {!isOwner && showBottomNotice && !noticeDismissed && (
           <ProfileAuthorshipNotice

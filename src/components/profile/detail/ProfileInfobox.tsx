@@ -10,6 +10,7 @@ import {
   Globe,
 } from "lucide-react";
 import React, { useState } from "react";
+import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import toSnakeCaseObject from "../../../utils/snakeCase";
 import supabase from "../../../config/supabaseClient";
 import camelcaseKeys from "camelcase-keys";
@@ -17,14 +18,13 @@ import camelcaseKeys from "camelcase-keys";
 interface ProfileInfoboxProps {
   isOwner: boolean;
   profile: UserProfile;
-  setProfile: React.Dispatch<React.SetStateAction<UserProfile | undefined>>;
 }
 
 export default function ProfileInfobox({
   profile,
   isOwner,
-  setProfile,
 }: ProfileInfoboxProps) {
+  const { updateProfileInContext } = useProfilesContext();
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
   const [isEditing, setIsEditing] = useState(false);
@@ -87,7 +87,8 @@ export default function ProfileInfobox({
       const updated = camelcaseKeys(data, {
         deep: true,
       }) as unknown as UserProfile;
-      setProfile(updated);
+      // keep global profiles list in sync
+      updateProfileInContext(updated);
       success = true;
     } catch (err) {
       setSaveError(err as Error);

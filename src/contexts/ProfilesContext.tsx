@@ -7,6 +7,8 @@ type ProfilesContextType = {
   loading: boolean;
   error: Error | null;
   refetch: () => {};
+  updateProfileInContext: (updated: UserProfile) => void;
+  fetchFullProfile: (username: string) => Promise<void>;
 };
 
 type Props = {
@@ -18,9 +20,13 @@ const ProfilesContext = createContext<ProfilesContextType | undefined>(
 );
 
 export function ProfilesProvider({ children }: Props) {
-  const { profiles, loading, error, refetch } = useProfiles();
+  const { profiles, loading, error, refetch, updateProfileInContext, fetchFullProfile } =
+    useProfiles();
+
   return (
-    <ProfilesContext.Provider value={{ profiles, loading, error, refetch }}>
+    <ProfilesContext.Provider
+      value={{ profiles, loading, error, refetch, updateProfileInContext, fetchFullProfile }}
+    >
       {children}
     </ProfilesContext.Provider>
   );
