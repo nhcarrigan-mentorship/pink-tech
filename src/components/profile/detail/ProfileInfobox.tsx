@@ -82,6 +82,8 @@ export default function ProfileInfobox({
         setProfile(camelcaseKeys(data[0]));
         setIsEditing(false);
       }
+    } catch (err) {
+      setSaveError(err as Error);
     } finally {
       setIsSaving(false);
     }
