@@ -18,6 +18,8 @@ export default function ProfileInfobox({
   isOwner,
 }: ProfileInfoboxProps) {
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
+  const [imageError, setImageError] = useState<Error | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { updateProfileInContext } = useProfilesContext();
   const [editedProfile, setEditedProfile] =
@@ -30,6 +32,43 @@ export default function ProfileInfobox({
     const file = e.target.files?.[0];
     if (!file) return;
     setNewProfileFile(file);
+  }
+
+  async function saveProfileImage(file: File) {
+    setIsUploading(true);
+
+    try {
+      const supabase = await getSupabase();
+      const filePath = `profiles/${profile.id}/${Date.now()}-${newProfileFile?.name}`;
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      console.log("session", sessionData); // null means not authenticated
+
+      // upload file
+      const uploadRes = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: false });
+      console.log("uploadRes:", uploadRes);
+      if (uploadRes.error) throw uploadRes.error;
+
+      // get public URL
+      const { data: publicURLData, error: urlError } = await supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+      if (urlError) {
+        console.log(urlError);
+        throw urlError;
+      }
+
+      const publicUrl =
+        (publicURLData as any)?.publicUrl ?? (publicURLData as any) ?? null;
+      return publicUrl;
+    } catch (err) {
+      setImageError(err as Error);
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   // Update preview url
@@ -88,6 +127,12 @@ export default function ProfileInfobox({
     let success = false;
 
     try {
+      // upload file first (only if selected)
+      if (newProfileFile) {
+        const publicUrl = await saveProfileImage(newProfileFile);
+        if (publicUrl) changedFields.image = publicUrl;
+      }
+
       const supabase = await getSupabase();
       const { error, data } = await supabase
         .from("profiles")
@@ -98,13 +143,20 @@ export default function ProfileInfobox({
 
       if (error) throw error;
 
-      // Supabase `.single()` returns a single object in `data`.
       // Convert snake_case -> camelCase and update the local profile.
       const updated = camelcaseKeys(data, {
         deep: true,
       }) as unknown as UserProfile;
+
       // keep global profiles list in sync
       updateProfileInContext(updated);
+
+      // update local profile state
+      setEditedProfile(updated);
+
+      // clear selection/preview
+      setNewProfileFile(null);
+
       success = true;
     } catch (err) {
       setSaveError(err as Error);
