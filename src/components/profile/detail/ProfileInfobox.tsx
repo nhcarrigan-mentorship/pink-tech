@@ -88,6 +88,8 @@ export default function ProfileInfobox({
   function startEditing() {
     setIsEditing(true);
     setEditedProfile(profile);
+    setSaveError(null);
+    setImageError(null);
   }
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
