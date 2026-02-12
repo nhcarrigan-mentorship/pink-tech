@@ -19,7 +19,7 @@ export default function ProfileInfobox({
 }: ProfileInfoboxProps) {
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [imageError, setImageError] = useState<Error | null>(null);
-  const [isUploading, setIsUploading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { updateProfileInContext } = useProfilesContext();
   const [editedProfile, setEditedProfile] =
@@ -223,6 +223,7 @@ export default function ProfileInfobox({
               Uploading...
             </div>
           )}
+          {imageError && <div></div>}
         </div>
 
         {isOwner && isEditing ? (
@@ -278,7 +279,9 @@ export default function ProfileInfobox({
 
                 {saveError && (
                   <div className="text-red-600 font-semibold mt-2">
-                    Error saving your changes. Please try again later.
+                    {imageError
+                      ? "Error uploading photo. Please try again later."
+                      : "Error saving your changes. Please try again later."}
                   </div>
                 )}
               </div>
