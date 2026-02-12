@@ -186,26 +186,41 @@ export default function FeaturedProfiles() {
             </MotionDiv>
           )}
         </div>
-        <MotionAnimatePresence mode="wait" initial={false}>
-          <MotionDiv
+        {motionModule ? (
+          <MotionAnimatePresence mode="wait" initial={false}>
+            <MotionDiv
+              key={currentIndex}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              custom={direction}
+              transition={{
+                duration: 0.3,
+                ease: "easeInOut",
+              }}
+              onClick={handleCardClick}
+              onDragEnd={handleDragEnd}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              style={{
+                willChange: "transform, opacity",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }}
+              className="bg-white border-2 border-pink-200 rounded overflow-hidden cursor-pointer hover:border-pink-400 md:cursor-pointer select-none"
+            >
+              <FeaturedProfileCard
+                profile={currentProfile}
+                onLearnMore={handleLearnMore}
+              />
+            </MotionDiv>
+          </MotionAnimatePresence>
+        ) : (
+          <div
             key={currentIndex}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            custom={direction}
-            transition={{
-              duration: 0.3,
-              ease: "easeInOut",
-            }}
             onClick={handleCardClick}
-            onDragEnd={handleDragEnd}
-            // @ts-ignore - string fallback allowed for MotionDiv
-            drag={motionModule ? "x" : undefined}
-            // @ts-ignore
-            dragConstraints={motionModule ? { left: 0, right: 0 } : undefined}
-            // @ts-ignore
-            dragElastic={motionModule ? 0.2 : undefined}
             style={{
               willChange: "transform, opacity",
               backfaceVisibility: "hidden",
@@ -217,8 +232,8 @@ export default function FeaturedProfiles() {
               profile={currentProfile}
               onLearnMore={handleLearnMore}
             />
-          </MotionDiv>
-        </MotionAnimatePresence>
+          </div>
+        )}
         {/* Number Pagination - All screens */}
         <div className="flex items-center justify-center gap-1 md:gap-2 mt-4">
           <Pagination
