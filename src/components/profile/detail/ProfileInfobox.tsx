@@ -170,6 +170,8 @@ export default function ProfileInfobox({
 
   function onCancel() {
     setIsEditing(false);
+    setSaveError(null);
+    setImageError(null);
   }
 
   const socialClassName = "w-5 h-5 text-pink-600";
