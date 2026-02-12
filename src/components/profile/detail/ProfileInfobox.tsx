@@ -148,7 +148,7 @@ export default function ProfileInfobox({
         {/* Profile Image */}
         <div className="relative group aspect-square overflow-hidden bg-gray-100">
           <ImageWithFallback
-            src={previewUrl ?? ""}
+            src={isEditing ? (previewUrl ?? "") : (editedProfile.image ?? "")}
             alt={editedProfile?.displayName}
             className="w-full h-full object-cover"
           />
