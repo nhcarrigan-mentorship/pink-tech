@@ -1,7 +1,7 @@
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import type { UserProfile } from "../../../types/UserProfile";
 import LazyIcon from "../../ui/LazyIcon";
-import React, { useState } from "react";
+import React, { useEffect, useState, type FormEvent } from "react";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import toSnakeCaseObject from "../../../utils/snakeCase";
 import { getSupabase } from "../../../config/supabaseClient";
@@ -17,12 +17,34 @@ export default function ProfileInfobox({
   profile,
   isOwner,
 }: ProfileInfoboxProps) {
+  const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { updateProfileInContext } = useProfilesContext();
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
+
+  function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setNewProfileFile(file);
+  }
+
+  // Update preview url
+  useEffect(() => {
+    let url: string | null = null;
+
+    if (newProfileFile) {
+      url = URL.createObjectURL(newProfileFile);
+      setPreviewUrl(url);
+    } else if (editedProfile.image && typeof editedProfile.image === "string") {
+      setPreviewUrl(editedProfile.image);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [newProfileFile, editedProfile.image]);
 
   function startEditing() {
     setIsEditing(true);
@@ -126,7 +148,7 @@ export default function ProfileInfobox({
         {/* Profile Image */}
         <div className="relative group aspect-square overflow-hidden bg-gray-100">
           <ImageWithFallback
-            src={editedProfile.image ? editedProfile.image : ""}
+            src={previewUrl ?? ""}
             alt={editedProfile?.displayName}
             className="w-full h-full object-cover"
           />
@@ -134,9 +156,14 @@ export default function ProfileInfobox({
             <label className="absolute inset-0 flex justify-center items-center bg-pink-600 background-opacity-90 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer">
               <div className="flex flex-col items-center text-white">
                 <Camera className="w-20 h-20" />
-                <div className="font-bold">Upload photo</div>
+                <div className="font-bold">Upload Photo</div>
               </div>
-              <input type="file" accept="image/*" className="hidden"></input>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onPhotoChange}
+              ></input>
             </label>
           )}
         </div>
