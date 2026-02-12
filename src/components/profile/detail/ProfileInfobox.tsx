@@ -1,7 +1,7 @@
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import type { UserProfile } from "../../../types/UserProfile";
 import LazyIcon from "../../ui/LazyIcon";
-import React, { useEffect, useState, type FormEvent } from "react";
+import React, { useEffect, useState } from "react";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import toSnakeCaseObject from "../../../utils/snakeCase";
 import { getSupabase } from "../../../config/supabaseClient";
