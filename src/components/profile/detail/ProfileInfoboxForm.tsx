@@ -4,6 +4,7 @@ import camelcaseKeys from "camelcase-keys";
 import type { UserProfile } from "../../../types/UserProfile";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import { getSupabase } from "../../../config/supabaseClient";
+import ProfileImageEditor from "./ProfileImageEditor";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -112,6 +113,7 @@ export default function ProfileInfoboxForm({
       </div>
       <form onSubmit={(e) => onSave(e)} className="space-y-3">
         <div className="pb-3 border-b border-pink-200">
+          <ProfileImageEditor editedProfile={editedProfile} />
           {/* Profile Name */}
           <label htmlFor="displayName" className="text-pink-600 font-bold">
             Name
@@ -162,7 +164,7 @@ export default function ProfileInfoboxForm({
         </div>
         {saveError && (
           <div className="text-red-600 font-semibold mt-2">
-            "Error saving your changes. Please try again later."
+            `Error saving your changes. Please try again later.`
           </div>
         )}
       </form>
