@@ -2,6 +2,7 @@ import type { UserProfile } from "../../../types/UserProfile";
 import LazyIcon from "../../ui/LazyIcon";
 import { useState } from "react";
 import { Edit, Award, Building2, MapPin } from "lucide-react";
+import ImageWithFallback from "../../ui/ImageWithFallback";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 
 interface ProfileInfoboxProps {
@@ -42,6 +43,16 @@ export default function ProfileInfobox({
   return (
     <aside className="md:w-72 lg:w-80 flex-shrink-0">
       <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 rounded">
+        {/* Profile Image */}
+        {!isEditing && (
+          <div className="relative group aspect-square overflow-hidden bg-gray-100">
+            <ImageWithFallback
+              src={profile.image ? profile.image : ""}
+              alt={profile.displayName}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
         {isOwner && isEditing ? (
           /* Inline Form */
           <ProfileInfoboxForm
