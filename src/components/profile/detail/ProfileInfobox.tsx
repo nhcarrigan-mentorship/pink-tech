@@ -44,7 +44,6 @@ export default function ProfileInfobox({
       <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 rounded">
         {isOwner && isEditing ? (
           /* Inline Form */
-
           <ProfileInfoboxForm
             profile={profile}
             isEditing={isEditing}
