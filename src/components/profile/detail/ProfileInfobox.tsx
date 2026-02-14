@@ -227,7 +227,6 @@ export default function ProfileInfobox({
               Uploading...
             </div>
           )}
-          {imageError && <div></div>}
         </div>
 
         {isOwner && isEditing ? (
