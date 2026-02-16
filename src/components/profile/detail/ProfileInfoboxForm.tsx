@@ -85,9 +85,9 @@ export default function ProfileInfoboxForm({
     return changed as Partial<UserProfile>;
   }
 
-  async function uploadAvatar(file: File | null) {
+  async function uploadAvatar(file: File) {
     // Set file name
-    const fileExt = file?.name.split(".").pop() ?? "png";
+    const fileExt = file.name.split(".").pop() ?? "png";
     const filePath = `${profile.id}-${Date.now()}.${fileExt}`;
     const supabase = await getSupabase();
 
