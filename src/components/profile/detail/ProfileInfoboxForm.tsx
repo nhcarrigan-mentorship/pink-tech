@@ -84,6 +84,28 @@ export default function ProfileInfoboxForm({
     return changed as Partial<UserProfile>;
   }
 
+  async function uploadAvatar(file: File | null) {
+    // Set file name
+    const fileExt = file?.name.split(".").pop() ?? "png";
+    const filePath = `${profile.id}-${Date.now()}.${fileExt}`;
+    const supabase = await getSupabase();
+
+    // Upload file
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
+
+    // Get public url
+    const { data, error: urlError } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath);
+    if (urlError)
+      throw new Error(`Failed to get public URL: ${urlError.message}`);
+    return data.publicUrl;
+  }
+
   async function onSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -94,11 +116,33 @@ export default function ProfileInfoboxForm({
 
     let success = false;
 
-    // Save changes to profiles database
     try {
-      const supabase = await getSupabase();
+      if (newProfileFile) {
+        try {
+          const publicUrl = await uploadAvatar(newProfileFile);
+          if (publicUrl) {
+            (changedFields as any).image = publicUrl;
+            setPreviewUrl(publicUrl);
+          }
+        } catch (err: unknown) {
+          const normalizedError =
+            err instanceof Error ? err : new Error(String(err));
+          setSaveError(normalizedError);
+          setIsSaving(false);
+          return;
+        }
+      }
 
-      const { error, data } = await supabase
+      // if nothing changed, skip the update
+      if (Object.keys(changedFields).length === 0) {
+        setIsSaving(false);
+        setIsEditing(false);
+        return;
+      }
+
+      console.log("updating profiles with", toSnakeCaseObject(changedFields));
+      const supabase = await getSupabase();
+      const { data, error } = await supabase
         .from("profiles")
         .update(toSnakeCaseObject(changedFields))
         .eq("id", profile.id)
@@ -107,7 +151,6 @@ export default function ProfileInfoboxForm({
 
       if (error) throw error;
 
-      // Convert snake_case -> camelCase and update the local profile.
       const updated = camelcaseKeys(data, {
         deep: true,
       }) as unknown as UserProfile;
@@ -120,7 +163,9 @@ export default function ProfileInfoboxForm({
 
       success = true;
     } catch (err) {
-      setSaveError(err as Error);
+      const normalizedError =
+        err instanceof Error ? err : new Error(String(err));
+      setSaveError(normalizedError);
     } finally {
       setIsSaving(false);
       if (success) setIsEditing(false);
