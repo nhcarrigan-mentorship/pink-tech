@@ -22,6 +22,7 @@ export default function ProfileInfoboxForm({
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
 
@@ -119,6 +120,7 @@ export default function ProfileInfoboxForm({
     try {
       if (newProfileFile) {
         try {
+          setIsUploadingImage(true);
           const publicUrl = await uploadAvatar(newProfileFile);
           if (publicUrl) {
             (changedFields as any).image = publicUrl;
@@ -130,6 +132,8 @@ export default function ProfileInfoboxForm({
           setSaveError(normalizedError);
           setIsSaving(false);
           return;
+        } finally {
+          setIsUploadingImage(false);
         }
       }
 
@@ -185,6 +189,7 @@ export default function ProfileInfoboxForm({
             editedProfile={editedProfile}
             setNewProfileFile={setNewProfileFile}
             previewUrl={previewUrl}
+            isUploadingImage={isUploadingImage}
           />
           {/* Profile Name */}
           <label htmlFor="displayName" className="text-pink-600 font-bold">
@@ -221,7 +226,7 @@ export default function ProfileInfoboxForm({
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 mt-4">
           <button
-            disabled={isSaving}
+            disabled={isSaving || isUploadingImage}
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save"}

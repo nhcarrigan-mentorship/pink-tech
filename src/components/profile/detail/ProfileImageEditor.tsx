@@ -8,6 +8,7 @@ interface ProfileImageEditor {
   editedProfile: Partial<UserProfile>;
   setNewProfileFile: React.Dispatch<React.SetStateAction<File | null>>;
   previewUrl: string | null;
+  isUploadingImage: boolean;
 }
 
 export async function saveProfileImage(
@@ -43,9 +44,8 @@ export default function ProfileImageEditor({
   editedProfile,
   setNewProfileFile,
   previewUrl,
+  isUploadingImage,
 }: ProfileImageEditor) {
-  const [isUploading, setIsUploading] = useState(false);
-
   // Set new profile image
   function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -75,7 +75,7 @@ export default function ProfileImageEditor({
       </label>
 
       {/* Edit icon overlay for owners (appears on hover) */}
-      {!isUploading ? (
+      {!isUploadingImage ? (
         <div
           aria-label="Edit profile"
           className="absolute top-2 right-2 p-2 bg-white/80 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -83,11 +83,9 @@ export default function ProfileImageEditor({
           <Edit className="w-4 h-4 text-pink-600" />
         </div>
       ) : (
-        isUploading && (
-          <div className="absolute inset-0 flex justify-center items-center bg-black/60 text-white font-bold">
-            Uploading...
-          </div>
-        )
+        <div className="absolute inset-0 flex justify-center items-center bg-black/60 text-white font-bold">
+          Uploading...
+        </div>
       )}
     </div>
   );
