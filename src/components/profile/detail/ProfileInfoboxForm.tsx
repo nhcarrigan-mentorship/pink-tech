@@ -94,6 +94,7 @@ export default function ProfileInfoboxForm({
 
     let success = false;
 
+    // Save changes to profiles database
     try {
       const supabase = await getSupabase();
 
