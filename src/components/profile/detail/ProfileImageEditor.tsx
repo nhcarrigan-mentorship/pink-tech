@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { UserProfile } from "../../../types/UserProfile";
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import { getSupabase } from "../../../config/supabaseClient";
