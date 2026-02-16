@@ -19,6 +19,8 @@ export default function ProfileInfoboxForm({
 }: ProfileInfoboxFormProps) {
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
+  const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
@@ -29,6 +31,25 @@ export default function ProfileInfoboxForm({
       setSaveError(null);
     }
   }, []);
+
+  // preview effect: create object URL for immediate preview and revoke it on cleanup
+  useEffect(() => {
+    if (!newProfileFile) {
+      setPreviewUrl(editedProfile.image ?? null);
+      return;
+    }
+    const url = URL.createObjectURL(newProfileFile);
+    setPreviewUrl(url);
+
+    return () => {
+      // Revoke the object URL when the file or component changes to avoid memory leaks
+      try {
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        // ignore
+      }
+    };
+  }, [newProfileFile, profile.image]);
 
   function onCancel() {
     setIsEditing(false);
@@ -75,6 +96,7 @@ export default function ProfileInfoboxForm({
 
     try {
       const supabase = await getSupabase();
+
       const { error, data } = await supabase
         .from("profiles")
         .update(toSnakeCaseObject(changedFields))
@@ -113,7 +135,11 @@ export default function ProfileInfoboxForm({
       </div>
       <form onSubmit={(e) => onSave(e)} className="space-y-3">
         <div className="pb-3 border-b border-pink-200">
-          <ProfileImageEditor editedProfile={editedProfile} />
+          <ProfileImageEditor
+            editedProfile={editedProfile}
+            setNewProfileFile={setNewProfileFile}
+            previewUrl={previewUrl}
+          />
           {/* Profile Name */}
           <label htmlFor="displayName" className="text-pink-600 font-bold">
             Name
