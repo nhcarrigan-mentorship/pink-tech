@@ -297,9 +297,9 @@ export default function ProfileInfoboxForm({
           </button>
         </div>
         {saveError && (
-          <div className="text-red-600 font-semibold mt-2">
+          <p className="text-red-600 font-semibold mt-2">
             Error saving your changes. Please try again later.
-          </div>
+          </p>
         )}
       </form>
     </div>
