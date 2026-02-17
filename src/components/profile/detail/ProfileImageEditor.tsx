@@ -25,7 +25,7 @@ export default function ProfileImageEditor({
   }
 
   return (
-    <div className="relative group aspect-square overflow-hidden">
+    <div className="relative group aspect-square overflow-hidden mb-3">
       <label>
         <input
           type="file"
