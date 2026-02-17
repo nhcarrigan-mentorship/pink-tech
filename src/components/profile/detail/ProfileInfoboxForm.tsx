@@ -255,14 +255,14 @@ export default function ProfileInfoboxForm({
         </div>
         <div className="pb-3 border-b border-pink-200">
           {/* Profile Bio */}
-          {visibleOptionalFields.has("bio") ? (
+          {visibleOptionalFields.has("bio") || profile.bio ? (
             <label htmlFor="bio" className="text-pink-600 font-bold">
               Bio
             </label>
           ) : (
             <div className="text-pink-600 font-bold">Bio</div>
           )}
-          {visibleOptionalFields.has("bio") ? (
+          {visibleOptionalFields.has("bio") || profile.bio ? (
             <div className="flex flex-col gap-2">
               <textarea
                 name="bio"
@@ -274,6 +274,7 @@ export default function ProfileInfoboxForm({
               ></textarea>
               <button
                 className="flex flex-end text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
+                type="button"
                 onClick={() => removeOptionalField("bio")}
               >
                 Remove Bio
