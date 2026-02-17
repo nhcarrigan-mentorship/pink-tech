@@ -24,12 +24,17 @@ export default function ProfileInfoboxForm({
   const [visibleOptionalFields, setVisibleOptionalFields] = useState<
     Set<string>
   >(new Set());
+  const [nameError, setNameError] = useState<Error | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
+
+  const NAME_MIN = 2;
+  const NAME_MAX = 50;
+  const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
 
   function addOptionalField(field: string) {
     setVisibleOptionalFields((prev) => new Set(prev.add(field)));
