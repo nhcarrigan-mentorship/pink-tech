@@ -24,7 +24,7 @@ export default function ProfileInfoboxForm({
   const [visibleOptionalFields, setVisibleOptionalFields] = useState<
     Set<string>
   >(new Set());
-  const [nameError, setNameError] = useState<Error | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -35,6 +35,18 @@ export default function ProfileInfoboxForm({
   const NAME_MIN = 2;
   const NAME_MAX = 50;
   const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
+
+  function validateName(name: string): string | null {
+    const trimmed = name.trim();
+    // Return error messages
+    if (trimmed.length < NAME_MIN)
+      return `Name must at least ${NAME_MIN} characters.`;
+    if (trimmed.length > NAME_MAX)
+      return `Name must not be more than ${NAME_MAX} characters.`;
+    if (!NAME_ALLOWED_REGEX.test(trimmed))
+      return `Name can only contain letters, spaces, apostrophes, and hyphens.`;
+    return null;
+  }
 
   function addOptionalField(field: string) {
     setVisibleOptionalFields((prev) => new Set(prev.add(field)));
@@ -93,6 +105,16 @@ export default function ProfileInfoboxForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     const { name, value } = e.target;
+
+    if (name === "displayName") {
+      const invalidName = validateName(value);
+      console.log(invalidName);
+      if (invalidName) {
+        setNameError(invalidName);
+      } else {
+        setNameError(null);
+      }
+    }
 
     setEditedProfile({
       ...editedProfile,
@@ -216,6 +238,11 @@ export default function ProfileInfoboxForm({
             onChange={onInputChange}
             className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
           ></input>
+          {nameError && (
+            <p className="text-red-600 font-semibold mt-2" role="alert">
+              {nameError}
+            </p>
+          )}
         </div>
         <div className="pb-3 border-b border-pink-200">
           {/* Profile Bio */}
@@ -256,7 +283,7 @@ export default function ProfileInfoboxForm({
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 mt-4">
           <button
-            disabled={isSaving || isUploadingImage}
+            disabled={isSaving || isUploadingImage || nameError != null}
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save"}
