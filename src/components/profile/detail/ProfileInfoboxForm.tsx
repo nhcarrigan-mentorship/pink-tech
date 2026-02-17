@@ -6,6 +6,7 @@ import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import ProfileImageEditor from "./ProfileImageEditor";
 import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
+import { Plus } from "lucide-react";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -20,12 +21,19 @@ export default function ProfileInfoboxForm({
 }: ProfileInfoboxFormProps) {
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
+  const [visibleOptionalFields, setVisibleOptionalFields] = useState<
+    Set<string>
+  >(new Set());
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
+
+  function addOptionalField(field: string) {
+    setVisibleOptionalFields((prev) => new Set(prev.add(field)));
+  }
 
   useEffect(() => {
     if (isEditing) {
@@ -201,19 +209,29 @@ export default function ProfileInfoboxForm({
           <label htmlFor="bio" className="text-pink-600 font-bold">
             Bio
           </label>
-          <div className="flex flex-col gap-2">
-            <textarea
-              name="bio"
-              id="bio"
-              value={editedProfile.bio ?? ""}
-              placeholder="e.g., Software engineer passionate about AI and mentoring. Building tools that empower communities."
-              onChange={onInputChange}
-              className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-            ></textarea>
-            <button className="flex flex-end text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700">
-              Remove Bio
+          {visibleOptionalFields.has("bio") ? (
+            <div className="flex flex-col gap-2">
+              <textarea
+                name="bio"
+                id="bio"
+                value={editedProfile.bio ?? ""}
+                placeholder="e.g., Software engineer passionate about AI and mentoring. Building tools that empower communities."
+                onChange={onInputChange}
+                className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+              ></textarea>
+              <button className="flex flex-end text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700">
+                Remove Bio
+              </button>
+            </div>
+          ) : (
+            <button
+              className="flex justify-center items-center gap-1 mt-2 text-pink-600 font-medium cursor-pointer hover:text-pink-700"
+              onClick={() => addOptionalField("bio")}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add Bio
             </button>
-          </div>
+          )}
         </div>
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 mt-4">
