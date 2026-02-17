@@ -35,6 +35,14 @@ export default function ProfileInfoboxForm({
     setVisibleOptionalFields((prev) => new Set(prev.add(field)));
   }
 
+  function removeOptionalField(field: string) {
+    setVisibleOptionalFields((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(field);
+      return newSet;
+    });
+  }
+
   useEffect(() => {
     if (isEditing) {
       setEditedProfile(profile);
@@ -206,9 +214,13 @@ export default function ProfileInfoboxForm({
         </div>
         <div className="pb-3 border-b border-pink-200">
           {/* Profile Bio */}
-          <label htmlFor="bio" className="text-pink-600 font-bold">
-            Bio
-          </label>
+          {visibleOptionalFields.has("bio") ? (
+            <label htmlFor="bio" className="text-pink-600 font-bold">
+              Bio
+            </label>
+          ) : (
+            <div className="text-pink-600 font-bold">Bio</div>
+          )}
           {visibleOptionalFields.has("bio") ? (
             <div className="flex flex-col gap-2">
               <textarea
@@ -219,7 +231,10 @@ export default function ProfileInfoboxForm({
                 onChange={onInputChange}
                 className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
               ></textarea>
-              <button className="flex flex-end text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700">
+              <button
+                className="flex flex-end text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
+                onClick={() => removeOptionalField("bio")}
+              >
                 Remove Bio
               </button>
             </div>
