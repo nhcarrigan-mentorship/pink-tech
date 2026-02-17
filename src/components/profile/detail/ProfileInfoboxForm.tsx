@@ -49,7 +49,11 @@ export default function ProfileInfoboxForm({
   }
 
   function addOptionalField(field: string) {
-    setVisibleOptionalFields((prev) => new Set(prev.add(field)));
+    setVisibleOptionalFields((prev) => {
+      const next = new Set(prev);
+      next.add(field);
+      return next;
+    });
   }
 
   function removeOptionalField(field: string) {
@@ -140,7 +144,7 @@ export default function ProfileInfoboxForm({
         changed[typedKey] =
           edited[typedKey] === undefined ? undefined : edited[typedKey];
       }
-    }); 
+    });
     return changed as Partial<UserProfile>;
   }
 
