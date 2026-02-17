@@ -3,8 +3,9 @@ import toSnakeCaseObject from "../../../utils/snakeCase";
 import camelcaseKeys from "camelcase-keys";
 import type { UserProfile } from "../../../types/UserProfile";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
-import { getSupabase } from "../../../config/supabaseClient";
 import ProfileImageEditor from "./ProfileImageEditor";
+import { getSupabase } from "../../../config/supabaseClient";
+import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -35,22 +36,32 @@ export default function ProfileInfoboxForm({
 
   // preview effect: create object URL for immediate preview and revoke it on cleanup
   useEffect(() => {
-    if (!newProfileFile) {
-      setPreviewUrl(editedProfile.image ?? null);
-      return;
+    if (newProfileFile) {
+      const url = URL.createObjectURL(newProfileFile);
+      setPreviewUrl(url);
+      return () => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          // ignore
+        }
+      };
     }
-    const url = URL.createObjectURL(newProfileFile);
-    setPreviewUrl(url);
+
+    let mounted = true;
+    (async () => {
+      if (editedProfile.image) {
+        const pub = await getAvatarPublicUrl(editedProfile.image as string);
+        if (mounted) setPreviewUrl(pub);
+      } else {
+        if (mounted) setPreviewUrl(null);
+      }
+    })();
 
     return () => {
-      // Revoke the object URL when the file or component changes to avoid memory leaks
-      try {
-        URL.revokeObjectURL(url);
-      } catch (e) {
-        // ignore
-      }
+      mounted = false;
     };
-  }, [newProfileFile, profile.image]);
+  }, [newProfileFile, editedProfile.image]);
 
   function onCancel() {
     setIsEditing(false);
@@ -85,27 +96,7 @@ export default function ProfileInfoboxForm({
     return changed as Partial<UserProfile>;
   }
 
-  async function uploadAvatar(file: File) {
-    // Set file name
-    const fileExt = file.name.split(".").pop() ?? "png";
-    const filePath = `${profile.id}-${Date.now()}.${fileExt}`;
-    const supabase = await getSupabase();
-
-    // Upload file
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
-
-    // Get public url
-    const { data, error: urlError } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(filePath);
-    if (urlError)
-      throw new Error(`Failed to get public URL: ${urlError.message}`);
-    return data.publicUrl;
-  }
+  // uploadAvatar moved to shared util (uploadAvatar)
 
   async function onSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -121,10 +112,11 @@ export default function ProfileInfoboxForm({
       if (newProfileFile) {
         try {
           setIsUploadingImage(true);
-          const publicUrl = await uploadAvatar(newProfileFile);
-          if (publicUrl) {
-            (changedFields as any).image = publicUrl;
-            setPreviewUrl(publicUrl);
+          const filePath = await uploadAvatar(newProfileFile, profile.id);
+          if (filePath) {
+            const pub = await getAvatarPublicUrl(filePath);
+            (changedFields as any).image = pub;
+            setPreviewUrl(pub);
           }
         } catch (err: unknown) {
           const normalizedError =

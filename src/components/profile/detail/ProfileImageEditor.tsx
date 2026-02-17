@@ -1,6 +1,5 @@
 import type { UserProfile } from "../../../types/UserProfile";
 import ImageWithFallback from "../../ui/ImageWithFallback";
-import { getSupabase } from "../../../config/supabaseClient";
 import { Edit } from "lucide-react";
 
 interface ProfileImageEditor {
@@ -8,35 +7,6 @@ interface ProfileImageEditor {
   setNewProfileFile: React.Dispatch<React.SetStateAction<File | null>>;
   previewUrl: string | null;
   isUploadingImage: boolean;
-}
-
-export async function saveProfileImage(
-  file: File,
-  profileId: string,
-): Promise<string | null> {
-  try {
-    const supabase = await getSupabase();
-    const path = `profiles/${profileId}/${Date.now()}-${file.name}`;
-
-    // Upload image
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, file, { upsert: false });
-
-    if (uploadError) throw uploadError;
-
-    // Get image url
-    const { data: publicURLData, error: urlError } = await supabase.storage
-      .from("avatars")
-      .getPublicUrl(path);
-
-    if (urlError) throw urlError;
-
-    return (publicURLData as any)?.publicUrl ?? null;
-  } catch (err) {
-    console.error("saveProfileImage error:", err);
-    return null;
-  }
 }
 
 export default function ProfileImageEditor({
