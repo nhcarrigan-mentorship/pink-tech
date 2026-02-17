@@ -58,6 +58,9 @@ export default function ProfileInfoboxForm({
       newSet.delete(field);
       return newSet;
     });
+
+    // Clear input
+    setEditedProfile((prev) => ({ ...prev, [field]: null }));
   }
 
   useEffect(() => {
@@ -132,10 +135,12 @@ export default function ProfileInfoboxForm({
     (Object.keys(edited) as (keyof UserProfile)[]).forEach((typedKey) => {
       if (typedKey === "id") return;
       if (edited[typedKey] !== original[typedKey]) {
+        // Preserve explicit `null` so the DB receives NULL for cleared fields.
+        // Only omit keys that are `undefined` (meaning not provided).
         changed[typedKey] =
-          edited[typedKey] === null ? undefined : edited[typedKey];
+          edited[typedKey] === undefined ? undefined : edited[typedKey];
       }
-    });
+    }); 
     return changed as Partial<UserProfile>;
   }
 
