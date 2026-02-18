@@ -35,7 +35,8 @@ export default function ProfileInfoboxForm({
   const NAME_MIN = 2;
   const NAME_MAX = 50;
   const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
-  
+
+  console.log("email: ", profile.email);
 
   const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
   // Check if an information field is visible or already has a value
@@ -144,15 +145,24 @@ export default function ProfileInfoboxForm({
   ) {
     const changed: Record<string, any> = {};
 
-    (Object.keys(edited) as (keyof UserProfile)[]).forEach((typedKey) => {
-      if (typedKey === "id") return;
-      if (edited[typedKey] !== original[typedKey]) {
-        // Preserve explicit `null` so the DB receives NULL for cleared fields.
-        // Only omit keys that are `undefined` (meaning not provided).
-        changed[typedKey] =
-          edited[typedKey] === undefined ? undefined : edited[typedKey];
+    for (const key of Object.keys(edited) as (keyof UserProfile)[]) {
+      // Skip id field
+      if (key === "id") continue;
+
+      // only include fields that are present on `edited` and differ from the original
+      if (!(key in edited)) continue;
+
+      const editedVal = edited[key];
+      const originalVal = original[key];
+
+      // If the value is `undefined`, treat it as "no change"
+
+      if (editedVal === undefined) continue;
+      if (editedVal != originalVal) {
+        changed[key] = editedVal;
       }
-    });
+    }
+
     return changed as Partial<UserProfile>;
   }
 
