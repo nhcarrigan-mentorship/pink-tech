@@ -1,7 +1,7 @@
 import type { UserProfile } from "../../../types/UserProfile";
 import LazyIcon from "../../ui/LazyIcon";
 import { useState } from "react";
-import { Edit, Award, Building2, MapPin } from "lucide-react";
+import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 
@@ -109,6 +109,15 @@ export default function ProfileInfobox({
                   <div className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5 text-pink-700" />
                     <div className="text-gray-900">{profile.location}</div>
+                  </div>
+                </div>
+              )}
+              {profile.email && (
+                <div>
+                  <div className="text-pink-700 font-semibold">Email</div>
+                  <div className="flex items-center gap-1">
+                    <Mail className="w-3.5 h-3.5 text-pink-700" />
+                    <div className="text-gray-900">{profile.email}</div>
                   </div>
                 </div>
               )}

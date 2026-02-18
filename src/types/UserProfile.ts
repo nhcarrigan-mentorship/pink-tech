@@ -9,6 +9,7 @@ export interface UserProfile {
   role?: string | null;
   company?: string | null;
   location?: string;
+  email?: string;
   website?: string | null;
   linkedin?: string | null;
   twitter?: string | null;
