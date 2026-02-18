@@ -36,6 +36,17 @@ export default function ProfileInfoboxForm({
   const NAME_MAX = 50;
   const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
 
+  const OPTIONAL_FIELDS = [
+    "bio",
+    "role",
+    "company",
+    "location",
+    "email",
+    "website",
+    "linkedin",
+    "twitter",
+    "expertise",
+  ];
   const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
   // Check if an information field is visible or already has a value
   const hasInformation = INFORMATION_FIELDS.some(
