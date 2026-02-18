@@ -6,7 +6,7 @@ import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import ProfileImageEditor from "./ProfileImageEditor";
 import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
-import { Plus } from "lucide-react";
+import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -35,6 +35,14 @@ export default function ProfileInfoboxForm({
   const NAME_MIN = 2;
   const NAME_MAX = 50;
   const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
+  
+
+  const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
+  // Check if an information field is visible or already has a value
+  const hasInformation = INFORMATION_FIELDS.some(
+    (field) =>
+      visibleOptionalFields.has(field) || Boolean((profile as any)[field]),
+  );
 
   function validateName(name: string): string | null {
     const trimmed = name.trim();
@@ -253,8 +261,8 @@ export default function ProfileInfoboxForm({
             </p>
           )}
         </div>
+        {/* Profile Bio */}
         <div className="pb-3 border-b border-pink-200">
-          {/* Profile Bio */}
           {visibleOptionalFields.has("bio") || profile.bio ? (
             <label htmlFor="bio" className="text-pink-600 font-bold">
               Bio
@@ -273,7 +281,7 @@ export default function ProfileInfoboxForm({
                 className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
               ></textarea>
               <button
-                className="flex flex-end text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
+                className="flex text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
                 type="button"
                 onClick={() => removeOptionalField("bio")}
               >
@@ -288,6 +296,133 @@ export default function ProfileInfoboxForm({
               <Plus className="w-3.5 h-3.5" />
               Add Bio
             </button>
+          )}
+        </div>
+        <div className="pb-3 border-b border-pink-200">
+          {/* Profile Role */}
+          {hasInformation ? (
+            <fieldset className="space-y-1">
+              <legend className="text-pink-600 font-bold">Information</legend>
+
+              {/* Profile Role */}
+              {visibleOptionalFields.has("role") ||
+                (profile.role && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="role">
+                        <span className="hidden">Role</span>
+                        <Award className="w-3.5 h-3.5 text-pink-600" />
+                      </label>
+                      <input
+                        type="text"
+                        name="role"
+                        id="role"
+                        value={editedProfile.role ?? ""}
+                        placeholder="Software Engineer"
+                        onChange={onInputChange}
+                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                      ></input>
+                      <button
+                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                        type="button"
+                        onClick={() => removeOptionalField("role")}
+                      >
+                        <span className="hidden">Remove Role</span>
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              {/* Profile Company */}
+              {visibleOptionalFields.has("company") ||
+                (profile.company && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="company">
+                        <span className="hidden">Company</span>
+                        <Building2 className="w-3.5 h-3.5 text-pink-600" />
+                      </label>
+                      <input
+                        type="text"
+                        name="company"
+                        id="company"
+                        value={editedProfile.company ?? ""}
+                        placeholder="Tech Company"
+                        onChange={onInputChange}
+                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                      ></input>
+                      <button
+                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                        type="button"
+                        onClick={() => removeOptionalField("company")}
+                      >
+                        <span className="hidden">Remove Company</span>
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              {/* Profile Location */}
+              {visibleOptionalFields.has("location") ||
+                (profile.location && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="location">
+                        <span className="hidden">Location</span>
+                        <MapPin className="w-3.5 h-3.5 text-pink-600" />
+                      </label>
+                      <input
+                        type="text"
+                        name="location"
+                        id="location"
+                        value={editedProfile.location ?? ""}
+                        placeholder="San Francisco, CA"
+                        onChange={onInputChange}
+                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                      ></input>
+                      <button
+                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                        type="button"
+                        onClick={() => removeOptionalField("location")}
+                      >
+                        <span className="hidden">Remove Location</span>
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              {/* Profile Email */}
+              {visibleOptionalFields.has("email") ||
+                (profile.email && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="email">
+                        <span className="hidden">Email</span>
+                        <Mail className="w-3.5 h-3.5 text-pink-600" />
+                      </label>
+                      <input
+                        type="text"
+                        name="email"
+                        id="email"
+                        value={editedProfile.email ?? ""}
+                        placeholder="janedoe@email.com"
+                        onChange={onInputChange}
+                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                      ></input>
+                      <button
+                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                        type="button"
+                        onClick={() => removeOptionalField("email")}
+                      >
+                        <span className="hidden">Remove Email</span>
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </fieldset>
+          ) : (
+            <div className="text-pink-600 font-bold">Information</div>
           )}
         </div>
         {/* Action Buttons */}
