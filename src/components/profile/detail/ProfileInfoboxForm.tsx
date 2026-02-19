@@ -7,7 +7,7 @@ import ProfileImageEditor from "./ProfileImageEditor";
 import { socials } from "./ProfileSocials";
 import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
-import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
+import { Award, Building2, Mail, MapPin, X } from "lucide-react";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -22,9 +22,6 @@ export default function ProfileInfoboxForm({
 }: ProfileInfoboxFormProps) {
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
-  const [visibleOptionalFields, setVisibleOptionalFields] = useState<
-    Set<string>
-  >(new Set());
   const [nameError, setNameError] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -36,44 +33,6 @@ export default function ProfileInfoboxForm({
   const NAME_MIN = 2;
   const NAME_MAX = 50;
   const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
-
-  const OPTIONAL_FIELDS = [
-    "bio",
-    "role",
-    "company",
-    "location",
-    "email",
-    "website",
-    "linkedin",
-    "twitter",
-    "expertise",
-  ];
-  const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
-
-  // Check if an information field is visible or already has a value
-  const hasInformation = INFORMATION_FIELDS.some(
-    (field) =>
-      visibleOptionalFields.has(field) || Boolean((profile as any)[field]),
-  );
-
-  // Check if an information field is hidden
-  const hasHiddenInformation = INFORMATION_FIELDS.some(
-    (field) => !visibleOptionalFields.has(field),
-  );
-
-  const LINK_FIELDS = ["website", "linkedin", "twitter"] as const;
-
-  // Check if a link field is visible or already has a value
-  const hasLink = socials.some(
-    (social) =>
-      visibleOptionalFields.has(social.key) ||
-      Boolean((profile as any)[social.key]),
-  );
-
-  // Check if a link field is hidden
-  const hasHiddenLink = LINK_FIELDS.some(
-    (field) => !visibleOptionalFields.has(field),
-  );
 
   function validateName(name: string): string | null {
     const trimmed = name.trim();
@@ -87,40 +46,16 @@ export default function ProfileInfoboxForm({
     return null;
   }
 
-  function addOptionalField(field: string) {
-    setVisibleOptionalFields((prev) => {
-      const next = new Set(prev);
-      next.add(field);
-      return next;
-    });
-  }
-
-  function removeOptionalField(field: string) {
-    setVisibleOptionalFields((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(field);
-      return newSet;
-    });
-
-    // Clear input
+  function clearField(field: string) {
+    // Do not hide the field; only clear its value so the UI stays visible
     setEditedProfile((prev) => ({ ...prev, [field]: null }));
   }
 
   // Initialize when entering edit mode
   useEffect(() => {
     if (isEditing) {
-      const existingFields = new Set<string>();
+      // Make all optional fields visible when entering edit mode
 
-      // Store fields with values
-      OPTIONAL_FIELDS.forEach((field) => {
-        const visibleField = (profile as any)[field];
-        if (visibleField != null && String(visibleField).trim() !== "")
-          existingFields.add(field);
-      });
-
-      // Display fields with values
-      setVisibleOptionalFields(existingFields);
-      console.log(visibleOptionalFields);
       setEditedProfile(profile);
       setSaveError(null);
     }
@@ -316,244 +251,177 @@ export default function ProfileInfoboxForm({
         </div>
         {/* Profile Bio */}
         <div className="pb-3 border-b border-pink-200">
-          {visibleOptionalFields.has("bio") || profile.bio ? (
-            <label htmlFor="bio" className="text-pink-600 font-bold">
-              Bio
-            </label>
-          ) : (
-            <div className="text-pink-600 font-bold">Bio</div>
-          )}
-          {visibleOptionalFields.has("bio") || profile.bio ? (
-            <div className="flex flex-col gap-2">
-              <textarea
-                name="bio"
-                id="bio"
-                value={editedProfile.bio ?? ""}
-                placeholder="e.g., Software engineer passionate about AI and mentoring. Building tools that empower communities."
-                onChange={onInputChange}
-                className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-              ></textarea>
-              <button
-                className="flex text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
-                type="button"
-                onClick={() => removeOptionalField("bio")}
-              >
-                Remove Bio
-              </button>
-            </div>
-          ) : (
+          <label htmlFor="bio" className="text-pink-600 font-bold">
+            Bio
+          </label>
+          <div className="flex flex-col gap-2">
+            <textarea
+              name="bio"
+              id="bio"
+              value={editedProfile.bio ?? ""}
+              placeholder="e.g., Software engineer passionate about AI and mentoring. Building tools that empower communities."
+              onChange={onInputChange}
+              className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+            ></textarea>
             <button
-              className="flex justify-center items-center gap-1 mt-2 text-pink-600 font-medium cursor-pointer hover:text-pink-700"
-              onClick={() => addOptionalField("bio")}
+              className="flex text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
+              type="button"
+              onClick={() => clearField("bio")}
             >
-              <Plus className="w-3.5 h-3.5" />
-              Add Bio
+              Remove Bio
             </button>
-          )}
+          </div>
         </div>
         {/* Profile Information */}
         <div className="pb-3 border-b border-pink-200">
-          {hasInformation ? (
-            <fieldset className="space-y-1">
-              <legend className="text-pink-600 font-bold">Information</legend>
+          <fieldset className="space-y-1">
+            <legend className="text-pink-600 font-bold">Information</legend>
 
-              {/* Profile Role */}
-              {visibleOptionalFields.has("role") && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="role">
-                      <span className="hidden">Role</span>
-                      <Award className="w-3.5 h-3.5 text-pink-600" />
-                    </label>
-                    <input
-                      type="text"
-                      name="role"
-                      id="role"
-                      value={editedProfile.role ?? ""}
-                      placeholder="Software Engineer"
-                      onChange={onInputChange}
-                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                    ></input>
-                    <button
-                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                      type="button"
-                      onClick={() => removeOptionalField("role")}
-                    >
-                      <span className="hidden">Remove Role</span>
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-              {/* Profile Company */}
-              {visibleOptionalFields.has("company") && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="company">
-                      <span className="hidden">Company</span>
-                      <Building2 className="w-3.5 h-3.5 text-pink-600" />
-                    </label>
-                    <input
-                      type="text"
-                      name="company"
-                      id="company"
-                      value={editedProfile.company ?? ""}
-                      placeholder="Tech Company"
-                      onChange={onInputChange}
-                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                    ></input>
-                    <button
-                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                      type="button"
-                      onClick={() => removeOptionalField("company")}
-                    >
-                      <span className="hidden">Remove Company</span>
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-              {/* Profile Location */}
-              {visibleOptionalFields.has("location") && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="location">
-                      <span className="hidden">Location</span>
-                      <MapPin className="w-3.5 h-3.5 text-pink-600" />
-                    </label>
-                    <input
-                      type="text"
-                      name="location"
-                      id="location"
-                      value={editedProfile.location ?? ""}
-                      placeholder="San Francisco, CA"
-                      onChange={onInputChange}
-                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                    ></input>
-                    <button
-                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                      type="button"
-                      onClick={() => removeOptionalField("location")}
-                    >
-                      <span className="hidden">Remove Location</span>
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-              {/* Profile Email */}
-              {visibleOptionalFields.has("email") && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="email">
-                      <span className="hidden">Email</span>
-                      <Mail className="w-3.5 h-3.5 text-pink-600" />
-                    </label>
-                    <input
-                      type="text"
-                      name="email"
-                      id="email"
-                      value={editedProfile.email ?? ""}
-                      placeholder="janedoe@email.com"
-                      onChange={onInputChange}
-                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                    ></input>
-                    <button
-                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                      type="button"
-                      onClick={() => removeOptionalField("email")}
-                    >
-                      <span className="hidden">Remove Email</span>
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </fieldset>
-          ) : (
-            <div className="text-pink-600 font-bold">Information</div>
-          )}
-          {/* Add Field Buttons */}
-          {hasHiddenInformation && (
-            <div className="flex flex-col space-y-1 mt-2">
-              {INFORMATION_FIELDS.map(
-                (field) =>
-                  !visibleOptionalFields.has(field) && (
-                    <button
-                      type="button"
-                      onClick={() => addOptionalField(field)}
-                      className="inline-flex items-center gap-1.5 text-sm
-                      text-pink-600 hover:text-pink-700 font-medium
-                      transition-colors cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Add {`${field.charAt(0).toUpperCase()}${field.slice(1)}`}
-                    </button>
-                  ),
-              )}
+            {/* Profile Role */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <label htmlFor="role">
+                  <span className="hidden">Role</span>
+                  <Award className="w-3.5 h-3.5 text-pink-600" />
+                </label>
+                <input
+                  type="text"
+                  name="role"
+                  id="role"
+                  value={editedProfile.role ?? ""}
+                  placeholder="Software Engineer"
+                  onChange={onInputChange}
+                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                ></input>
+                <button
+                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                  type="button"
+                  onClick={() => clearField("role")}
+                >
+                  <span className="hidden">Remove Role</span>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          )}
+
+            {/* Profile Company */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <label htmlFor="company">
+                  <span className="hidden">Company</span>
+                  <Building2 className="w-3.5 h-3.5 text-pink-600" />
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  id="company"
+                  value={editedProfile.company ?? ""}
+                  placeholder="Tech Company"
+                  onChange={onInputChange}
+                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                ></input>
+                <button
+                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                  type="button"
+                  onClick={() => clearField("company")}
+                >
+                  <span className="hidden">Remove Company</span>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Profile Location */}
+
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <label htmlFor="location">
+                  <span className="hidden">Location</span>
+                  <MapPin className="w-3.5 h-3.5 text-pink-600" />
+                </label>
+                <input
+                  type="text"
+                  name="location"
+                  id="location"
+                  value={editedProfile.location ?? ""}
+                  placeholder="San Francisco, CA"
+                  onChange={onInputChange}
+                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                ></input>
+                <button
+                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                  type="button"
+                  onClick={() => clearField("location")}
+                >
+                  <span className="hidden">Remove Location</span>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Profile Email */}
+
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <label htmlFor="email">
+                  <span className="hidden">Email</span>
+                  <Mail className="w-3.5 h-3.5 text-pink-600" />
+                </label>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  value={editedProfile.email ?? ""}
+                  placeholder="janedoe@email.com"
+                  onChange={onInputChange}
+                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                ></input>
+                <button
+                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                  type="button"
+                  onClick={() => clearField("email")}
+                >
+                  <span className="hidden">Remove Email</span>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </fieldset>
         </div>
         <div className="pb-3 border-b border-pink-200">
           {/* Profile Links */}
-          {hasLink ? (
-            <fieldset className="space-y-1">
-              <legend className="text-pink-600 font-bold">Links</legend>
-              {/* Profile Link */}
-              {socials.map(
-                ({ key, icon }) =>
-                  visibleOptionalFields.has(key) && (
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2">
-                        <label htmlFor="role">
-                          <span className="hidden">{key}</span>
-                          {icon}
-                        </label>
-                        <input
-                          type="text"
-                          name="role"
-                          id="role"
-                          value={(editedProfile as any)[key] ?? ""}
-                          placeholder="www.socialink/username"
-                          onChange={onInputChange}
-                          className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                        ></input>
-                        <button
-                          className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                          type="button"
-                          onClick={() => removeOptionalField(key)}
-                        >
-                          <span className="hidden">Remove Role</span>
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ),
-              )}
-            </fieldset>
-          ) : (
-            <div className="text-pink-600 font-bold">Links</div>
-          )}
-          {/* Add Field Buttons */}
-          {hasHiddenLink && (
-            <div className="flex flex-col space-y-1 mt-2">
-              {LINK_FIELDS.map(
-                (field) =>
-                  !visibleOptionalFields.has(field) && (
-                    <button
-                      type="button"
-                      onClick={() => addOptionalField(field)}
-                      className="inline-flex items-center gap-1.5 text-sm
-                      text-pink-600 hover:text-pink-700 font-medium
-                      transition-colors cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Add {`${field.charAt(0).toUpperCase()}${field.slice(1)}`}
-                    </button>
-                  ),
-              )}
-            </div>
-          )}
+
+          <fieldset className="space-y-1">
+            <legend className="text-pink-600 font-bold">Links</legend>
+            {/* Profile Link */}
+            {socials.map(({ key, icon }) => (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="role">
+                    <span className="hidden">{key}</span>
+                    {icon}
+                  </label>
+                  <input
+                    type="text"
+                    name={key}
+                    id={key}
+                    value={(editedProfile as any)[key] ?? ""}
+                    placeholder="www.socialink/username"
+                    onChange={onInputChange}
+                    className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                  ></input>
+                  <button
+                    className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                    type="button"
+                    onClick={() => clearField(key)}
+                  >
+                    <span className="hidden">Remove Link</span>
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </fieldset>
         </div>
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 mt-4">
