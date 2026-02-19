@@ -24,6 +24,7 @@ export default function ProfileInfoboxForm({
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -44,6 +45,16 @@ export default function ProfileInfoboxForm({
       return `Name must not be more than ${NAME_MAX} characters.`;
     if (!NAME_ALLOWED_REGEX.test(trimmed))
       return `Name can only contain letters, spaces, apostrophes, and hyphens.`;
+    return null;
+  }
+
+  function validateEmail(email: string): string | null {
+    const trimmed = email.trim();
+    const emailAllowedRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+
+    if (trimmed.length < 1) return null;
+    if (!emailAllowedRegex.test(trimmed))
+      return "Please enter a valid email address.";
     return null;
   }
 
@@ -103,11 +114,18 @@ export default function ProfileInfoboxForm({
 
     if (name === "displayName") {
       const invalidName = validateName(value);
-      console.log(invalidName);
       if (invalidName) {
         setNameError(invalidName);
       } else {
         setNameError(null);
+      }
+    }
+
+    if (name === "email") {
+      const invalidEmail = validateEmail(value);
+      if (invalidEmail) setEmailError(invalidEmail);
+      else {
+        setEmailError(null);
       }
     }
 
@@ -386,6 +404,11 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
+              {emailError && (
+                <p className="text-red-600 font-semibold" role="alert">
+                  {emailError}
+                </p>
+              )}
             </div>
           </fieldset>
         </div>
@@ -400,7 +423,10 @@ export default function ProfileInfoboxForm({
                 <div className="flex items-center gap-2">
                   <label htmlFor="role">
                     <span className="hidden">{key}</span>
-                    <LazyIcon name={name} className="w-3.5 h-3.5 text-pink-600" />
+                    <LazyIcon
+                      name={name}
+                      className="w-3.5 h-3.5 text-pink-600"
+                    />
                   </label>
                   <input
                     type="text"
@@ -427,7 +453,12 @@ export default function ProfileInfoboxForm({
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 mt-4">
           <button
-            disabled={isSaving || isUploadingImage || nameError != null}
+            disabled={
+              isSaving ||
+              isUploadingImage ||
+              nameError != null ||
+              emailError != null
+            }
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save"}
