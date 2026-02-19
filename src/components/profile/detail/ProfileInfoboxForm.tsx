@@ -55,6 +55,11 @@ export default function ProfileInfoboxForm({
       visibleOptionalFields.has(field) || Boolean((profile as any)[field]),
   );
 
+  // Check if an information field is visible or already has a value
+  const hasHiddenInformation = INFORMATION_FIELDS.some((field) =>
+    !visibleOptionalFields.has(field),
+  );
+
   function validateName(name: string): string | null {
     const trimmed = name.trim();
     // Return error messages
@@ -452,6 +457,26 @@ export default function ProfileInfoboxForm({
             </fieldset>
           ) : (
             <div className="text-pink-600 font-bold">Information</div>
+          )}
+          {/* Add Field Buttons */}
+          {hasHiddenInformation && (
+            <div className="flex flex-col space-y-1 mt-2">
+              {INFORMATION_FIELDS.map(
+                (field) =>
+                  !visibleOptionalFields.has(field) && (
+                    <button
+                      type="button"
+                      onClick={() => addOptionalField(field)}
+                      className="inline-flex items-center gap-1.5 text-sm
+                      text-pink-600 hover:text-pink-700 font-medium
+                      transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add {`${field.charAt(0).toUpperCase()}${field.slice(1)}`}
+                    </button>
+                  ),
+              )}
+            </div>
           )}
         </div>
         {/* Action Buttons */}
