@@ -4,6 +4,7 @@ import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 import { socials } from "./ProfileSocials";
+import LazyIcon from "../../ui/LazyIcon";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;
@@ -106,7 +107,7 @@ export default function ProfileInfobox({
                 <div>
                   <div className="mb-2 text-pink-700 font-semibold">Links</div>
                   <div className="flex items-center gap-3">
-                    {availableSocials.map(({ key, label, icon }) => {
+                    {availableSocials.map(({ key, name }) => {
                       return (
                         <a
                           href={profile![key as keyof UserProfile] as string}
@@ -115,8 +116,11 @@ export default function ProfileInfobox({
                           rel="noopener noreferrer"
                           className="min-w-[44px] min-h-[44px] bg-white border border-pink-200 hover:bg-pink-100 rounded flex items-center justify-center transition-colors"
                         >
-                          {icon}
-                          <span className="sr-only">{label}</span>
+                          <LazyIcon
+                            name={name}
+                            className="w-5 h-5 text-pink-600"
+                          />
+                          <span className="sr-only">{key}</span>
                         </a>
                       );
                     })}
