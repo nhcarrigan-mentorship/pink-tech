@@ -394,7 +394,7 @@ export default function ProfileInfoboxForm({
           <fieldset className="space-y-1">
             <legend className="text-pink-600 font-bold">Links</legend>
             {/* Profile Link */}
-            {socials.map(({ key, icon }) => (
+            {socials.map(({ key, placeholder, icon }) => (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <label htmlFor="role">
@@ -406,7 +406,7 @@ export default function ProfileInfoboxForm({
                     name={key}
                     id={key}
                     value={(editedProfile as any)[key] ?? ""}
-                    placeholder="www.socialink/username"
+                    placeholder={placeholder}
                     onChange={onInputChange}
                     className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
                   ></input>

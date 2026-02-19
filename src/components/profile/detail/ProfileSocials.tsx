@@ -6,16 +6,19 @@ export const socials = [
   {
     key: "linkedin",
     label: "Linkedin",
+    placeholder: "https://www.linkedin.com/in/username",
     icon: <LazyIcon name="Linkedin" className={socialClassName} />,
   },
   {
     key: "twitter",
     label: "Twitter",
+    placeholder: "@yourusername",
     icon: <LazyIcon name="Twitter" className={socialClassName} />,
   },
   {
     key: "website",
     label: "website",
+    placeholder: "https://yourwebsite.com",
     icon: <LazyIcon name="Globe" className={socialClassName} />,
   },
 ];
