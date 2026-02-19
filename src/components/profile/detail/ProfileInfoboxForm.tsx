@@ -8,6 +8,7 @@ import { socials } from "./ProfileSocials";
 import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, X } from "lucide-react";
+import LazyIcon from "../../ui/LazyIcon";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -394,12 +395,12 @@ export default function ProfileInfoboxForm({
           <fieldset className="space-y-1">
             <legend className="text-pink-600 font-bold">Links</legend>
             {/* Profile Link */}
-            {socials.map(({ key, placeholder, icon }) => (
+            {socials.map(({ key, placeholder, name }) => (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <label htmlFor="role">
                     <span className="hidden">{key}</span>
-                    {icon}
+                    <LazyIcon name={name} className="w-3.5 h-3.5 text-pink-600" />
                   </label>
                   <input
                     type="text"
