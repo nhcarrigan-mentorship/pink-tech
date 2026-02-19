@@ -38,7 +38,7 @@ export default function ProfileInfoboxForm({
     const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
 
     const trimmed = name.trim();
-    
+
     // Return error messages
     if (trimmed.length < NAME_MIN)
       return `Name must at least ${NAME_MIN} characters.`;
@@ -51,10 +51,10 @@ export default function ProfileInfoboxForm({
 
   function validateEmail(email: string): string | null {
     const trimmed = email.trim();
-    const emailAllowedRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+    const EMAIL_ALLOWED_REGEX = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
 
     if (trimmed.length < 1) return null;
-    if (!emailAllowedRegex.test(trimmed))
+    if (!EMAIL_ALLOWED_REGEX.test(trimmed))
       return "Please enter a valid email address.";
     return null;
   }
