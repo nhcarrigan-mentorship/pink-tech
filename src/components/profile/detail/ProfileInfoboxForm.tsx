@@ -48,6 +48,7 @@ export default function ProfileInfoboxForm({
     "expertise",
   ];
   const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
+
   // Check if an information field is visible or already has a value
   const hasInformation = INFORMATION_FIELDS.some(
     (field) =>
@@ -85,12 +86,25 @@ export default function ProfileInfoboxForm({
     setEditedProfile((prev) => ({ ...prev, [field]: null }));
   }
 
+  // Initialize when entering edit mode
   useEffect(() => {
     if (isEditing) {
+      const existingFields = new Set<string>();
+
+      // Store fields with values
+      OPTIONAL_FIELDS.forEach((field) => {
+        const visibleField = (profile as any)[field];
+        if (visibleField != null && String(visibleField).trim() !== "")
+          existingFields.add(field);
+      });
+
+      // Display fields with values
+      setVisibleOptionalFields(existingFields);
+      console.log(visibleOptionalFields);
       setEditedProfile(profile);
       setSaveError(null);
     }
-  }, []);
+  }, [isEditing, profile]);
 
   // preview effect: create object URL for immediate preview and revoke it on cleanup
   useEffect(() => {
@@ -318,127 +332,123 @@ export default function ProfileInfoboxForm({
           )}
         </div>
         <div className="pb-3 border-b border-pink-200">
-          {/* Profile Role */}
+          {/* Profile Information */}
           {hasInformation ? (
             <fieldset className="space-y-1">
               <legend className="text-pink-600 font-bold">Information</legend>
 
               {/* Profile Role */}
-              {visibleOptionalFields.has("role") ||
-                (profile.role && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      <label htmlFor="role">
-                        <span className="hidden">Role</span>
-                        <Award className="w-3.5 h-3.5 text-pink-600" />
-                      </label>
-                      <input
-                        type="text"
-                        name="role"
-                        id="role"
-                        value={editedProfile.role ?? ""}
-                        placeholder="Software Engineer"
-                        onChange={onInputChange}
-                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                      ></input>
-                      <button
-                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                        type="button"
-                        onClick={() => removeOptionalField("role")}
-                      >
-                        <span className="hidden">Remove Role</span>
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+              {visibleOptionalFields.has("role") && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="role">
+                      <span className="hidden">Role</span>
+                      <Award className="w-3.5 h-3.5 text-pink-600" />
+                    </label>
+                    <input
+                      type="text"
+                      name="role"
+                      id="role"
+                      value={editedProfile.role ?? ""}
+                      placeholder="Software Engineer"
+                      onChange={onInputChange}
+                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                    ></input>
+                    <button
+                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                      type="button"
+                      onClick={() => removeOptionalField("role")}
+                    >
+                      <span className="hidden">Remove Role</span>
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                ))}
+                </div>
+              )}
               {/* Profile Company */}
-              {visibleOptionalFields.has("company") ||
-                (profile.company && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      <label htmlFor="company">
-                        <span className="hidden">Company</span>
-                        <Building2 className="w-3.5 h-3.5 text-pink-600" />
-                      </label>
-                      <input
-                        type="text"
-                        name="company"
-                        id="company"
-                        value={editedProfile.company ?? ""}
-                        placeholder="Tech Company"
-                        onChange={onInputChange}
-                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                      ></input>
-                      <button
-                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                        type="button"
-                        onClick={() => removeOptionalField("company")}
-                      >
-                        <span className="hidden">Remove Company</span>
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+              {visibleOptionalFields.has("company") && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="company">
+                      <span className="hidden">Company</span>
+                      <Building2 className="w-3.5 h-3.5 text-pink-600" />
+                    </label>
+                    <input
+                      type="text"
+                      name="company"
+                      id="company"
+                      value={editedProfile.company ?? ""}
+                      placeholder="Tech Company"
+                      onChange={onInputChange}
+                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                    ></input>
+                    <button
+                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                      type="button"
+                      onClick={() => removeOptionalField("company")}
+                    >
+                      <span className="hidden">Remove Company</span>
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                ))}
+                </div>
+              )}
               {/* Profile Location */}
-              {visibleOptionalFields.has("location") ||
-                (profile.location && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      <label htmlFor="location">
-                        <span className="hidden">Location</span>
-                        <MapPin className="w-3.5 h-3.5 text-pink-600" />
-                      </label>
-                      <input
-                        type="text"
-                        name="location"
-                        id="location"
-                        value={editedProfile.location ?? ""}
-                        placeholder="San Francisco, CA"
-                        onChange={onInputChange}
-                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                      ></input>
-                      <button
-                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                        type="button"
-                        onClick={() => removeOptionalField("location")}
-                      >
-                        <span className="hidden">Remove Location</span>
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+              {visibleOptionalFields.has("location") && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="location">
+                      <span className="hidden">Location</span>
+                      <MapPin className="w-3.5 h-3.5 text-pink-600" />
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      id="location"
+                      value={editedProfile.location ?? ""}
+                      placeholder="San Francisco, CA"
+                      onChange={onInputChange}
+                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                    ></input>
+                    <button
+                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                      type="button"
+                      onClick={() => removeOptionalField("location")}
+                    >
+                      <span className="hidden">Remove Location</span>
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                ))}
+                </div>
+              )}
               {/* Profile Email */}
-              {visibleOptionalFields.has("email") ||
-                (profile.email && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      <label htmlFor="email">
-                        <span className="hidden">Email</span>
-                        <Mail className="w-3.5 h-3.5 text-pink-600" />
-                      </label>
-                      <input
-                        type="text"
-                        name="email"
-                        id="email"
-                        value={editedProfile.email ?? ""}
-                        placeholder="janedoe@email.com"
-                        onChange={onInputChange}
-                        className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
-                      ></input>
-                      <button
-                        className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
-                        type="button"
-                        onClick={() => removeOptionalField("email")}
-                      >
-                        <span className="hidden">Remove Email</span>
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+              {visibleOptionalFields.has("email") && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="email">
+                      <span className="hidden">Email</span>
+                      <Mail className="w-3.5 h-3.5 text-pink-600" />
+                    </label>
+                    <input
+                      type="text"
+                      name="email"
+                      id="email"
+                      value={editedProfile.email ?? ""}
+                      placeholder="janedoe@email.com"
+                      onChange={onInputChange}
+                      className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                    ></input>
+                    <button
+                      className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                      type="button"
+                      onClick={() => removeOptionalField("email")}
+                    >
+                      <span className="hidden">Remove Email</span>
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                ))}
+                </div>
+              )}
             </fieldset>
           ) : (
             <div className="text-pink-600 font-bold">Information</div>
