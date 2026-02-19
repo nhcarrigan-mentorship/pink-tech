@@ -63,14 +63,12 @@ export default function ProfileInfoboxForm({
 
   const LINK_FIELDS = ["website", "linkedin", "twitter"] as const;
 
-  const availableSocials = socials.filter(
-    ({ key }) => profile && profile[key as keyof UserProfile],
-  );
-
   // Check if a link field is visible or already has a value
-  const hasLink = LINK_FIELDS.some((field) => {
-    visibleOptionalFields.has(field) || Boolean((profile as any)[field]);
-  });
+  const hasLink = socials.some(
+    (social) =>
+      visibleOptionalFields.has(social.key) ||
+      Boolean((profile as any)[social.key]),
+  );
 
   // Check if a link field is hidden
   const hasHiddenLink = LINK_FIELDS.some(
@@ -501,6 +499,37 @@ export default function ProfileInfoboxForm({
           {hasLink ? (
             <fieldset className="space-y-1">
               <legend className="text-pink-600 font-bold">Links</legend>
+              {/* Profile Link */}
+              {socials.map(
+                ({ key, icon }) =>
+                  visibleOptionalFields.has(key) && (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <label htmlFor="role">
+                          <span className="hidden">{key}</span>
+                          {icon}
+                        </label>
+                        <input
+                          type="text"
+                          name="role"
+                          id="role"
+                          value={(editedProfile as any)[key] ?? ""}
+                          placeholder="www.socialink/username"
+                          onChange={onInputChange}
+                          className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                        ></input>
+                        <button
+                          className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
+                          type="button"
+                          onClick={() => removeOptionalField(key)}
+                        >
+                          <span className="hidden">Remove Role</span>
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ),
+              )}
             </fieldset>
           ) : (
             <div className="text-pink-600 font-bold">Links</div>
