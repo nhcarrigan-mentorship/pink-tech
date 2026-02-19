@@ -32,12 +32,13 @@ export default function ProfileInfoboxForm({
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
 
-  const NAME_MIN = 2;
-  const NAME_MAX = 50;
-  const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
-
   function validateName(name: string): string | null {
+    const NAME_MIN = 2;
+    const NAME_MAX = 50;
+    const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
+
     const trimmed = name.trim();
+    
     // Return error messages
     if (trimmed.length < NAME_MIN)
       return `Name must at least ${NAME_MIN} characters.`;
