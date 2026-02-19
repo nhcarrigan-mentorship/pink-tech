@@ -1,9 +1,9 @@
 import type { UserProfile } from "../../../types/UserProfile";
-import LazyIcon from "../../ui/LazyIcon";
 import { useState } from "react";
 import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
 import ImageWithFallback from "../../ui/ImageWithFallback";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
+import { socials } from "./ProfileSocials";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;
@@ -15,26 +15,6 @@ export default function ProfileInfobox({
   isOwner,
 }: ProfileInfoboxProps) {
   const [isEditing, setIsEditing] = useState(false);
-
-  const socialClassName = "w-5 h-5 text-pink-600";
-
-  const socials = [
-    {
-      key: "linkedin",
-      label: "Linkedin",
-      icon: <LazyIcon name="Linkedin" className={socialClassName} />,
-    },
-    {
-      key: "twitter",
-      label: "Twitter",
-      icon: <LazyIcon name="Twitter" className={socialClassName} />,
-    },
-    {
-      key: "website",
-      label: "website",
-      icon: <LazyIcon name="Globe" className={socialClassName} />,
-    },
-  ];
 
   const availableSocials = socials.filter(
     ({ key }) => profile && profile[key as keyof UserProfile],
