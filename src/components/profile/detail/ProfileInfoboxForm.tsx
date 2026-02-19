@@ -4,6 +4,7 @@ import camelcaseKeys from "camelcase-keys";
 import type { UserProfile } from "../../../types/UserProfile";
 import { useProfilesContext } from "../../../contexts/ProfilesContext";
 import ProfileImageEditor from "./ProfileImageEditor";
+import { socials } from "./ProfileSocials";
 import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
@@ -48,7 +49,6 @@ export default function ProfileInfoboxForm({
     "expertise",
   ];
   const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
-  const LINK_FIELDS = ["website", "linkedin", "twitter"] as const;
 
   // Check if an information field is visible or already has a value
   const hasInformation = INFORMATION_FIELDS.some(
@@ -56,8 +56,24 @@ export default function ProfileInfoboxForm({
       visibleOptionalFields.has(field) || Boolean((profile as any)[field]),
   );
 
-  // Check if an information field is visible or already has a value
+  // Check if an information field is hidden
   const hasHiddenInformation = INFORMATION_FIELDS.some(
+    (field) => !visibleOptionalFields.has(field),
+  );
+
+  const LINK_FIELDS = ["website", "linkedin", "twitter"] as const;
+
+  const availableSocials = socials.filter(
+    ({ key }) => profile && profile[key as keyof UserProfile],
+  );
+
+  // Check if a link field is visible or already has a value
+  const hasLink = LINK_FIELDS.some((field) => {
+    visibleOptionalFields.has(field) || Boolean((profile as any)[field]);
+  });
+
+  // Check if a link field is hidden
+  const hasHiddenLink = LINK_FIELDS.some(
     (field) => !visibleOptionalFields.has(field),
   );
 
@@ -337,8 +353,8 @@ export default function ProfileInfoboxForm({
             </button>
           )}
         </div>
+        {/* Profile Information */}
         <div className="pb-3 border-b border-pink-200">
-          {/* Profile Information */}
           {hasInformation ? (
             <fieldset className="space-y-1">
               <legend className="text-pink-600 font-bold">Information</legend>
@@ -463,6 +479,36 @@ export default function ProfileInfoboxForm({
           {hasHiddenInformation && (
             <div className="flex flex-col space-y-1 mt-2">
               {INFORMATION_FIELDS.map(
+                (field) =>
+                  !visibleOptionalFields.has(field) && (
+                    <button
+                      type="button"
+                      onClick={() => addOptionalField(field)}
+                      className="inline-flex items-center gap-1.5 text-sm
+                      text-pink-600 hover:text-pink-700 font-medium
+                      transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add {`${field.charAt(0).toUpperCase()}${field.slice(1)}`}
+                    </button>
+                  ),
+              )}
+            </div>
+          )}
+        </div>
+        <div className="pb-3 border-b border-pink-200">
+          {/* Profile Links */}
+          {hasLink ? (
+            <fieldset className="space-y-1">
+              <legend className="text-pink-600 font-bold">Links</legend>
+            </fieldset>
+          ) : (
+            <div className="text-pink-600 font-bold">Links</div>
+          )}
+          {/* Add Field Buttons */}
+          {hasHiddenLink && (
+            <div className="flex flex-col space-y-1 mt-2">
+              {LINK_FIELDS.map(
                 (field) =>
                   !visibleOptionalFields.has(field) && (
                     <button
