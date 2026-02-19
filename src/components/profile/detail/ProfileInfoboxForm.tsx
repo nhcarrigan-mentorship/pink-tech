@@ -48,6 +48,7 @@ export default function ProfileInfoboxForm({
     "expertise",
   ];
   const INFORMATION_FIELDS = ["role", "company", "location", "email"] as const;
+  const LINK_FIELDS = ["website", "linkedin", "twitter"] as const;
 
   // Check if an information field is visible or already has a value
   const hasInformation = INFORMATION_FIELDS.some(
@@ -56,8 +57,8 @@ export default function ProfileInfoboxForm({
   );
 
   // Check if an information field is visible or already has a value
-  const hasHiddenInformation = INFORMATION_FIELDS.some((field) =>
-    !visibleOptionalFields.has(field),
+  const hasHiddenInformation = INFORMATION_FIELDS.some(
+    (field) => !visibleOptionalFields.has(field),
   );
 
   function validateName(name: string): string | null {
