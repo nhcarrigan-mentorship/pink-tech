@@ -61,11 +61,44 @@ export default function ProfileInfoboxForm({
 
   function validateEmail(email: string): string | null {
     const trimmed = email.trim();
-    const EMAIL_ALLOWED_REGEX = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
 
     if (trimmed.length < 1) return null;
-    if (!EMAIL_ALLOWED_REGEX.test(trimmed))
-      return "Please enter a valid email address.";
+    if (trimmed.length > 320) return "Email must be 320 characters or fewer.";
+    if (/\s/.test(trimmed)) return "Email must not contain spaces.";
+
+    const parts = trimmed.split("@");
+    if (parts.length !== 2) return "Please enter a valid email address.";
+
+    const [local, domain] = parts;
+
+    // Local-part checks
+    if (local.length < 1 || local.length > 64)
+      return "Email local part must be 1–64 characters.";
+    if (local.startsWith(".") || local.endsWith("."))
+      return "Local part cannot start or end with a dot.";
+    if (local.includes(".."))
+      return "Local part cannot contain consecutive dots.";
+    if (!/^[A-Za-z0-9._-]+$/.test(local))
+      return "Local part contains invalid characters.";
+
+    // Domain checks
+    if (domain.length < 1 || domain.length > 255)
+      return "Please enter a valid domain.";
+    const labels = domain.split(".").filter(Boolean);
+    if (labels.length < 2)
+      return "Domain must include a top-level domain (e.g. .com).";
+    for (const label of labels) {
+      if (label.length < 1 || label.length > 63)
+        return "Each domain label must be 1–63 characters.";
+      if (!/^[A-Za-z0-9-]+$/.test(label))
+        return "Domain contains invalid characters.";
+      if (label.startsWith("-") || label.endsWith("-"))
+        return "Domain labels cannot start or end with a hyphen.";
+    }
+    const tld = labels[labels.length - 1];
+    if (!/^[A-Za-z]{2,}$/.test(tld))
+      return "Top-level domain must be at least 2 letters.";
+
     return null;
   }
 
