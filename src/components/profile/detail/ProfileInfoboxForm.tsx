@@ -24,6 +24,7 @@ export default function ProfileInfoboxForm({
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [bioError, setBioError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -47,6 +48,12 @@ export default function ProfileInfoboxForm({
     if (!NAME_ALLOWED_REGEX.test(trimmed))
       return `Name can only contain letters, spaces, apostrophes, and hyphens.`;
     return null;
+  }
+
+  function validateBio(bio: string): string | null {
+    const BIO_MAX = 160;
+    if (bio.length < 1 || bio.length <= BIO_MAX) return null;
+    return `Bio must not be more than ${BIO_MAX} characters.`;
   }
 
   function validateEmail(email: string): string | null {
@@ -119,6 +126,14 @@ export default function ProfileInfoboxForm({
         setNameError(invalidName);
       } else {
         setNameError(null);
+      }
+    }
+
+    if (name === "bio") {
+      const invalidBio = validateBio(value);
+      if (invalidBio) setBioError(invalidBio);
+      else {
+        setBioError(null);
       }
     }
 
@@ -290,6 +305,11 @@ export default function ProfileInfoboxForm({
             >
               Remove Bio
             </button>
+            {bioError && (
+              <p className="text-red-600 font-semibold" role="alert">
+                {bioError}
+              </p>
+            )}
           </div>
         </div>
         {/* Profile Information */}
@@ -458,7 +478,8 @@ export default function ProfileInfoboxForm({
               isSaving ||
               isUploadingImage ||
               nameError != null ||
-              emailError != null
+              emailError != null ||
+              bioError != null
             }
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
           >
