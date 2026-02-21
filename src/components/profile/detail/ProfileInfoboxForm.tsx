@@ -26,6 +26,9 @@ export default function ProfileInfoboxForm({
   const [nameError, setNameError] = useState<string | null>(null);
   const [bioError, setBioError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [linkedinError, setLinkedinError] = useState<string | null>(null);
+  const [githubError, setGithubError] = useState<string | null>(null);
+  const [websiteError, setWebsiteError] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -64,6 +67,72 @@ export default function ProfileInfoboxForm({
     if (!EMAIL_ALLOWED_REGEX.test(trimmed))
       return "Please enter a valid email address.";
     return null;
+  }
+
+  function normalizeUrl(url: string) {
+    if (!url) return url;
+    const trimmed = url.trim();
+    return trimmed.startsWith("http://") || trimmed.startsWith("https://")
+      ? trimmed
+      : `https://${trimmed}`;
+  }
+
+  function validateLinkedin(url: string): string | null {
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    try {
+      const parsed = new URL(
+        trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
+      );
+      const host = parsed.hostname.toLowerCase();
+      if (!host.includes("linkedin.com"))
+        return "Please enter a LinkedIn profile URL.";
+      const path = parsed.pathname || "";
+      if (!path.startsWith("/in/") && !path.startsWith("/pub/"))
+        return "LinkedIn profile URL should be a personal profile (e.g. /in/username).";
+      return null;
+    } catch (e) {
+      return "Please enter a valid LinkedIn URL.";
+    }
+  }
+
+  function validateGithub(url: string): string | null {
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    try {
+      const parsed = new URL(
+        trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
+      );
+      const host = parsed.hostname.toLowerCase();
+      if (!host.includes("github.com"))
+        return "Please enter a GitHub profile URL.";
+      const segments = parsed.pathname.split("/").filter(Boolean);
+      if (segments.length < 1)
+        return "Please enter a GitHub profile URL (e.g. github.com/username).";
+      const username = segments[0];
+      if (!/^[A-Za-z0-9-]+$/.test(username))
+        return "Please enter a valid GitHub username in the URL.";
+      return null;
+    } catch (e) {
+      return "Please enter a valid GitHub URL.";
+    }
+  }
+
+  function validateWebsite(url: string): string | null {
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    try {
+      // allow users to omit protocol by prefixing https:// when parsing
+      const parsed = new URL(
+        trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
+      );
+      const host = parsed.hostname;
+      if (!host || !host.includes("."))
+        return "Please enter a valid website domain.";
+      return null;
+    } catch (e) {
+      return "Please enter a valid website URL.";
+    }
   }
 
   function clearField(field: string) {
@@ -145,6 +214,24 @@ export default function ProfileInfoboxForm({
       }
     }
 
+    if (name === "linkedin") {
+      const invalid = validateLinkedin(value);
+      if (invalid) setLinkedinError(invalid);
+      else setLinkedinError(null);
+    }
+
+    if (name === "github") {
+      const invalid = validateGithub(value);
+      if (invalid) setGithubError(invalid);
+      else setGithubError(null);
+    }
+
+    if (name === "website") {
+      const invalid = validateWebsite(value);
+      if (invalid) setWebsiteError(invalid);
+      else setWebsiteError(null);
+    }
+
     setEditedProfile({
       ...editedProfile,
 
@@ -218,6 +305,13 @@ export default function ProfileInfoboxForm({
         setIsEditing(false);
         return;
       }
+
+      socials.forEach((social) => {
+        if ((changedFields as any)[social.key])
+          (changedFields as any)[social.key] = normalizeUrl(
+            (changedFields as any)[social.key],
+          );
+      });
 
       console.log("updating profiles with", toSnakeCaseObject(changedFields));
       const supabase = await getSupabase();
@@ -440,7 +534,7 @@ export default function ProfileInfoboxForm({
             <legend className="text-pink-600 font-bold">Links</legend>
             {/* Profile Link */}
             {socials.map(({ key, placeholder, name }) => (
-              <div className="flex flex-col gap-2">
+              <div key={key} className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <label htmlFor="role">
                     <span className="hidden">{key}</span>
@@ -467,6 +561,21 @@ export default function ProfileInfoboxForm({
                     <X className="w-4 h-4" />
                   </button>
                 </div>
+                {key === "linkedin" && linkedinError && (
+                  <p className="text-red-600 font-semibold" role="alert">
+                    {linkedinError}
+                  </p>
+                )}
+                {key === "github" && githubError && (
+                  <p className="text-red-600 font-semibold" role="alert">
+                    {githubError}
+                  </p>
+                )}
+                {key === "website" && websiteError && (
+                  <p className="text-red-600 font-semibold" role="alert">
+                    {websiteError}
+                  </p>
+                )}
               </div>
             ))}
           </fieldset>
@@ -479,7 +588,10 @@ export default function ProfileInfoboxForm({
               isUploadingImage ||
               nameError != null ||
               emailError != null ||
-              bioError != null
+              bioError != null ||
+              linkedinError != null ||
+              githubError != null ||
+              websiteError != null
             }
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
           >
