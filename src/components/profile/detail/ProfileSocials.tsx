@@ -5,9 +5,9 @@ export const socials = [
     placeholder: "https://www.linkedin.com/in/username",
   },
   {
-    key: "twitter",
-    name: "Twitter",
-    placeholder: "@yourusername",
+    key: "github",
+    name: "Github",
+    placeholder: "https://github.com/username",
   },
   {
     key: "website",

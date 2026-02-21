@@ -15,7 +15,7 @@ export const profiles: UserProfile[] = [
     location: "San Francisco, CA",
     website: "#",
     linkedin: "#",
-    twitter: "#",
+    github: "#",
     expertise: [
       "Artificial Intelligence",
       "Machine Learning",

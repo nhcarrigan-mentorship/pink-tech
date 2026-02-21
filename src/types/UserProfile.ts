@@ -12,7 +12,7 @@ export interface UserProfile {
   email?: string;
   website?: string | null;
   linkedin?: string | null;
-  twitter?: string | null;
+  github?: string | null;
   expertise?: string[] | null;
   content?: string | null; // Free-form markdown content for Wikipedia-style profile
 }

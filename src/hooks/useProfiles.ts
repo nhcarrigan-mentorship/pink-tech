@@ -31,7 +31,7 @@ export default function useProfiles() {
         const { data, error } = await supabase
           .from("profiles")
           .select(
-            `id, display_name, username, image, bio, role, company, location, website, linkedin, twitter, expertise, featured, last_updated`,
+            `id, display_name, username, image, bio, role, company, location, website, linkedin, github, expertise, featured, last_updated`,
           );
 
         if (error) {
