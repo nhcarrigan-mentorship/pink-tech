@@ -560,9 +560,9 @@ export default function ProfileInfoboxForm({
             </div>
           </fieldset>
         </div>
-        <div className="pb-3 border-b border-pink-200">
-          {/* Profile Links */}
+        {/* Profile Links */}
 
+        <div className="pb-3 border-b border-pink-200">
           <fieldset className="space-y-1">
             <legend className="text-pink-600 font-bold">Links</legend>
             {/* Profile Link */}
@@ -613,6 +613,22 @@ export default function ProfileInfoboxForm({
             ))}
           </fieldset>
         </div>
+
+        {/* Profile Expertise */}
+        <div className="mt-3 pb-3">
+          <label className="text-pink-600 font-bold">Expertise</label>
+          {/* Profile Expertise */}
+          {editedProfile.expertise && (
+            <div className="flex items-center flex-wrap gap-1 mt-3">
+              {editedProfile.expertise?.map((expertise) => (
+                <span className="px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded hover:bg-pink-100 transition-colors">
+                  {expertise}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 mt-4">
           <button
