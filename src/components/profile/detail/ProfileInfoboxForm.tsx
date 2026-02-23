@@ -630,7 +630,7 @@ export default function ProfileInfoboxForm({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 pt-4 mt-4">
+        <div className="flex gap-3 pt-3 border-t border-pink-200">
           <button
             disabled={
               isSaving ||
