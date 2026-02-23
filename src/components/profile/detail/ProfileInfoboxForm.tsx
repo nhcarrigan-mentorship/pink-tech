@@ -168,6 +168,21 @@ export default function ProfileInfoboxForm({
     }
   }
 
+  function removeExpertise(expertise: string) {
+    setEditedProfile((prev) => {
+      const prevExpertise = Array.isArray(prev.expertise)
+        ? (prev!.expertise as string[])
+        : [];
+
+      return {
+        ...prev,
+        expertise: prevExpertise.filter(
+          (currentExp) => currentExp != expertise,
+        ),
+      };
+    });
+  }
+
   function clearField(field: string) {
     // Do not hide the field; only clear its value so the UI stays visible
     setEditedProfile((prev) => ({ ...prev, [field]: null }));
@@ -561,7 +576,6 @@ export default function ProfileInfoboxForm({
           </fieldset>
         </div>
         {/* Profile Links */}
-
         <div className="pb-3 border-b border-pink-200">
           <fieldset className="space-y-1">
             <legend className="text-pink-600 font-bold">Links</legend>
@@ -613,16 +627,21 @@ export default function ProfileInfoboxForm({
             ))}
           </fieldset>
         </div>
-
         {/* Profile Expertise */}
         <div className="mt-3 pb-3">
           <label className="text-pink-600 font-bold">Expertise</label>
-          {/* Profile Expertise */}
           {editedProfile.expertise && (
             <div className="flex items-center flex-wrap gap-1 mt-3">
               {editedProfile.expertise?.map((expertise) => (
-                <span className="px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded hover:bg-pink-100 transition-colors">
+                <span className="inline-flex justify-center items-center gap-1 px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded">
                   {expertise}
+                  <button
+                    type="button"
+                    className="hover:bg-pink-100 transition-colors rounded-full p-0.5"
+                    onClick={() => removeExpertise(expertise)}
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </span>
               ))}
             </div>
