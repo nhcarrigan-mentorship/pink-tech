@@ -26,6 +26,9 @@ export default function ProfileInfoboxForm({
   const [nameError, setNameError] = useState<string | null>(null);
   const [bioError, setBioError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [roleError, setRoleError] = useState<string | null>(null);
+  const [companyError, setCompanyError] = useState<string | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [linkedinError, setLinkedinError] = useState<string | null>(null);
   const [githubError, setGithubError] = useState<string | null>(null);
   const [websiteError, setWebsiteError] = useState<string | null>(null);
@@ -129,6 +132,37 @@ export default function ProfileInfoboxForm({
     } catch (e) {
       return "Please provide a valid LinkedIn URL.";
     }
+  }
+
+  function validateRole(role: string): string | null {
+    const trimmed = role.trim();
+    if (!trimmed) return null;
+    if (trimmed.length < 2) return `Role must be at least 2 characters.`;
+    if (trimmed.length > 60) return `Role must be 60 characters or fewer.`;
+    if (!/^[\p{L}0-9 .\-,&()]+$/u.test(trimmed))
+      return `Role should only include letters, numbers, spaces and . - , & ( ).`;
+    return null;
+  }
+
+  function validateCompany(company: string): string | null {
+    const trimmed = company.trim();
+    if (!trimmed) return null;
+    if (trimmed.length < 2) return `Company must be at least 2 characters.`;
+    if (trimmed.length > 80) return `Company must be 80 characters or fewer.`;
+    if (!/^[\p{L}0-9 .\-&,()]+$/u.test(trimmed))
+      return `Company should only include letters, numbers, spaces and . - , & ( ).`;
+    return null;
+  }
+
+  function validateLocation(location: string): string | null {
+    const trimmed = location.trim();
+    if (!trimmed) return null;
+    if (trimmed.length < 2) return `Location must be at least 2 characters.`;
+    if (trimmed.length > 100)
+      return `Location must be 100 characters or fewer.`;
+    if (!/^[\p{L}0-9 .,'\-()]+$/u.test(trimmed))
+      return `Location should only include letters, numbers, commas, and punctuation.`;
+    return null;
   }
 
   function validateGithub(url: string): string | null {
@@ -326,6 +360,24 @@ export default function ProfileInfoboxForm({
       const invalid = validateWebsite(value);
       if (invalid) setWebsiteError(invalid);
       else setWebsiteError(null);
+    }
+
+    if (name === "role") {
+      const invalid = validateRole(value);
+      if (invalid) setRoleError(invalid);
+      else setRoleError(null);
+    }
+
+    if (name === "company") {
+      const invalid = validateCompany(value);
+      if (invalid) setCompanyError(invalid);
+      else setCompanyError(null);
+    }
+
+    if (name === "location") {
+      const invalid = validateLocation(value);
+      if (invalid) setLocationError(invalid);
+      else setLocationError(null);
     }
 
     setEditedProfile({
@@ -538,6 +590,11 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
+              {roleError && (
+                <p className="text-red-600 font-semibold" role="alert">
+                  {roleError}
+                </p>
+              )}
             </div>
 
             {/* Profile Company */}
@@ -566,6 +623,11 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
+              {companyError && (
+                <p className="text-red-600 font-semibold" role="alert">
+                  {companyError}
+                </p>
+              )}
             </div>
 
             {/* Profile Location */}
@@ -595,6 +657,11 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
+              {locationError && (
+                <p className="text-red-600 font-semibold" role="alert">
+                  {locationError}
+                </p>
+              )}
             </div>
 
             {/* Profile Email */}
@@ -747,7 +814,10 @@ export default function ProfileInfoboxForm({
               bioError != null ||
               linkedinError != null ||
               githubError != null ||
-              websiteError != null
+              websiteError != null ||
+              roleError != null ||
+              companyError != null ||
+              locationError != null
             }
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
