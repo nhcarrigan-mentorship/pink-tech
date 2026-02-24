@@ -448,7 +448,11 @@ export default function ProfileInfoboxForm({
         <h3 className="mb-2 text-base font-bold text-gray-900">Edit Profile</h3>
         <p>Update your profile information</p>
       </div>
-      <form onSubmit={(e) => onSave(e)} className="space-y-3">
+      <form
+        onSubmit={(e) => onSave(e)}
+        className="space-y-3"
+        aria-busy={isSaving || isUploadingImage}
+      >
         <div className="pb-3 border-b border-pink-200">
           <ProfileImageEditor
             editedProfile={editedProfile}
@@ -489,9 +493,10 @@ export default function ProfileInfoboxForm({
               className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
             ></textarea>
             <button
-              className="flex text-xs text-gray-600 font-medium self-end cursor-pointer hover:text-gray-700"
               type="button"
+              disabled={isSaving || isUploadingImage}
               onClick={() => clearField("bio")}
+              className="flex text-xs text-gray-600 font-medium self-end hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Remove Bio
             </button>
@@ -524,9 +529,10 @@ export default function ProfileInfoboxForm({
                   className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
-                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
                   type="button"
+                  disabled={isSaving || isUploadingImage}
                   onClick={() => clearField("role")}
+                  className="flex items-center text-gray-400 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="hidden">Remove Role</span>
                   <X className="w-4 h-4" />
@@ -551,9 +557,10 @@ export default function ProfileInfoboxForm({
                   className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
-                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
                   type="button"
+                  disabled={isSaving || isUploadingImage}
                   onClick={() => clearField("company")}
+                  className="flex items-center text-gray-400 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="hidden">Remove Company</span>
                   <X className="w-4 h-4" />
@@ -579,9 +586,10 @@ export default function ProfileInfoboxForm({
                   className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
-                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
                   type="button"
+                  disabled={isSaving || isUploadingImage}
                   onClick={() => clearField("location")}
+                  className="flex items-center text-gray-400 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="hidden">Remove Location</span>
                   <X className="w-4 h-4" />
@@ -607,9 +615,10 @@ export default function ProfileInfoboxForm({
                   className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
-                  className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
                   type="button"
+                  disabled={isSaving || isUploadingImage}
                   onClick={() => clearField("email")}
+                  className="flex items-center text-gray-400 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="hidden">Remove Email</span>
                   <X className="w-4 h-4" />
@@ -648,9 +657,10 @@ export default function ProfileInfoboxForm({
                     className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
                   ></input>
                   <button
-                    className="flex items-center text-gray-400 cursor-pointer hover:text-gray-700"
                     type="button"
+                    disabled={isSaving || isUploadingImage}
                     onClick={() => clearField(key)}
+                    className="flex items-center text-gray-400 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="hidden">Remove Link</span>
                     <X className="w-4 h-4" />
@@ -686,10 +696,10 @@ export default function ProfileInfoboxForm({
                   {expertise}
                   <button
                     type="button"
-                    className="hover:bg-pink-100 transition-colors rounded-full p-0.5"
-                    aria-label="Remove expertise"
-                    disabled={isSaving}
+                    disabled={isSaving || isUploadingImage}
                     onClick={() => removeExpertise(expertise)}
+                    aria-label="Remove expertise"
+                    className="hover:bg-pink-100 transition-colors rounded-full p-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -711,9 +721,9 @@ export default function ProfileInfoboxForm({
             ></input>
             <button
               type="button"
-              disabled={isSaving || expertiseError != null}
-              className="min-w-[36px] min-h-[36px] flex justify-center items-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
+              disabled={isSaving || isUploadingImage || expertiseError != null}
               onClick={() => addExpertise()}
+              className="min-w-[36px] min-h-[36px] flex justify-center items-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -728,6 +738,7 @@ export default function ProfileInfoboxForm({
         {/* Action Buttons */}
         <div className="flex gap-3 pt-3 border-t border-pink-200">
           <button
+            type="submit"
             disabled={
               isSaving ||
               isUploadingImage ||
@@ -738,14 +749,15 @@ export default function ProfileInfoboxForm({
               githubError != null ||
               websiteError != null
             }
-            className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
+            className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? "Saving..." : "Save"}
           </button>
           <button
+            type="button"
             onClick={onCancel}
-            disabled={isSaving}
-            className="flex-1 min-h-[44px] py-3 bg-white border border-gray-300 text-gray-900 font-bold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50"
+            disabled={isSaving || isUploadingImage}
+            className="flex-1 min-h-[44px] py-3 bg-white border border-gray-300 text-gray-900 font-bold rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
