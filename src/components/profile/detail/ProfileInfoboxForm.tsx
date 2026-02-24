@@ -7,7 +7,7 @@ import ProfileImageEditor from "./ProfileImageEditor";
 import { socials } from "./ProfileSocials";
 import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
-import { Award, Building2, Mail, MapPin, X } from "lucide-react";
+import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
 import LazyIcon from "../../ui/LazyIcon";
 
 interface ProfileInfoboxFormProps {
@@ -29,6 +29,8 @@ export default function ProfileInfoboxForm({
   const [linkedinError, setLinkedinError] = useState<string | null>(null);
   const [githubError, setGithubError] = useState<string | null>(null);
   const [websiteError, setWebsiteError] = useState<string | null>(null);
+  const [expertiseError, setExpertiseError] = useState<string | null>(null);
+  const [expertiseInput, setExpertiseInput] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -168,6 +170,25 @@ export default function ProfileInfoboxForm({
     }
   }
 
+  function validateExpertise(expertise: string) {
+    const EXPERTISE_MIN = 2;
+    const EXPERTISE_MAX = 40;
+    const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
+
+    const trimmed = expertise.trim();
+
+    if (!trimmed.length) return null;
+    if (trimmed.length < EXPERTISE_MIN)
+      return `Expertise must be at least ${EXPERTISE_MIN} characters.`;
+    if (trimmed.length > EXPERTISE_MAX)
+      return `Expertise must be ${EXPERTISE_MAX} characters or fewer.`;
+    if (editedProfile.expertise?.includes(trimmed))
+      return "Expertise already exists";
+    if (!EXPERTISE_REGEX.test(trimmed))
+      return "Allowed: letters, numbers, spaces and . # + - / & ( )";
+    return null;
+  }
+
   function removeExpertise(expertise: string) {
     setEditedProfile((prev) => {
       const prevExpertise = Array.isArray(prev.expertise)
@@ -181,6 +202,33 @@ export default function ProfileInfoboxForm({
         ),
       };
     });
+  }
+
+  function addExpertise() {
+    setEditedProfile((prev) => {
+      if (!expertiseInput) return prev;
+
+      const list = Array.isArray(prev?.expertise)
+        ? (prev.expertise as string[])
+        : [];
+
+      if (expertiseInput && list.includes(expertiseInput)) return prev;
+
+      setExpertiseInput("");
+      
+      return { ...prev, expertise: [...list, expertiseInput] };
+    });
+  }
+
+  function onExpertiseChange(expertise: string) {
+    setExpertiseInput(expertise);
+
+    const invalidExpertise = validateExpertise(expertise);
+    if (invalidExpertise) {
+      setExpertiseError(invalidExpertise);
+    } else {
+      setExpertiseError(null);
+    }
   }
 
   function clearField(field: string) {
@@ -628,16 +676,18 @@ export default function ProfileInfoboxForm({
           </fieldset>
         </div>
         {/* Profile Expertise */}
-        <div className="mt-3 pb-3">
+        <div className="mt-3 pb-3 space-y-2">
           <label className="text-pink-600 font-bold">Expertise</label>
           {editedProfile.expertise && (
             <div className="flex items-center flex-wrap gap-1 mt-3">
               {editedProfile.expertise?.map((expertise) => (
+                // Current expertise
                 <span className="inline-flex justify-center items-center gap-1 px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded">
                   {expertise}
                   <button
                     type="button"
                     className="hover:bg-pink-100 transition-colors rounded-full p-0.5"
+                    aria-label="Remove expertise"
                     onClick={() => removeExpertise(expertise)}
                   >
                     <X className="w-3.5 h-3.5" />
@@ -645,6 +695,32 @@ export default function ProfileInfoboxForm({
                 </span>
               ))}
             </div>
+          )}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              name="expertise"
+              id="expertise"
+              value={expertiseInput ?? ""}
+              placeholder="Add expertise (e.g., Data Science)"
+              onChange={(e) => onExpertiseChange(e.target.value)}
+              className="flex-1 w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+              aria-label="Add expertise"
+              autoFocus
+            ></input>
+            <button
+              type="button"
+              disabled={isSaving}
+              className="min-w-[36px] min-h-[36px] flex justify-center items-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
+              onClick={() => addExpertise()}
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+          {expertiseError && (
+            <p className="text-red-600 font-semibold" role="alert">
+              {expertiseError}
+            </p>
           )}
         </div>
 
