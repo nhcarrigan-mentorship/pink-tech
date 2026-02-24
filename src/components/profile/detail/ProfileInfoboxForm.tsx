@@ -711,7 +711,7 @@ export default function ProfileInfoboxForm({
             ></input>
             <button
               type="button"
-              disabled={isSaving}
+              disabled={isSaving || expertiseError != null}
               className="min-w-[36px] min-h-[36px] flex justify-center items-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50"
               onClick={() => addExpertise()}
             >
