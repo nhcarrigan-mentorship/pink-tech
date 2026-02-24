@@ -2,6 +2,7 @@ import LazyIcon from "../../ui/LazyIcon";
 import type { UserProfile } from "../../../types/UserProfile";
 import { useEffect, useState, type ReactNode } from "react";
 import { Edit } from "lucide-react";
+import ProfileContentForm from "./ProfileContentForm";
 
 // ReactMarkdown and remark-gfm are moderately large; lazy-load them when
 // profile content is actually needed to avoid adding them to the initial bundle.
@@ -21,6 +22,7 @@ export default function ProfileContent({
     null,
   );
   const [remarkGfm, setRemarkGfm] = useState<RemarkGfmType | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -47,7 +49,9 @@ export default function ProfileContent({
       })
     : undefined;
 
-  return (
+  return isEditing ? (
+    <ProfileContentForm />
+  ) : (
     <article className="prose prose-gray max-w-none">
       {/* Profile Last Updated */}
       <div className="flex items-center gap-1.5 mb-4 text-sm text-gray-600 italic font-medium">
@@ -59,7 +63,10 @@ export default function ProfileContent({
         ReactMarkdown && remarkGfm ? (
           <div className="relative">
             {isOwner && (
-              <button className="absolute right-0 inline-flex items-center justify-center min-w-[44px] min-h-[44px] bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors cursor-pointer flex-shrink-0 z-10">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="absolute right-0 inline-flex items-center justify-center min-w-[44px] min-h-[44px] bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors cursor-pointer flex-shrink-0 z-10"
+              >
                 <Edit className="w-5 h-5" />
               </button>
             )}
