@@ -45,20 +45,20 @@ export default function ProfileInfoboxForm({
 
     const trimmed = name.trim();
 
-    // Return error messages
+    // Return error messages describing expected values
     if (trimmed.length < NAME_MIN)
-      return `Name must at least ${NAME_MIN} characters.`;
+      return `Name must be at least ${NAME_MIN} characters.`;
     if (trimmed.length > NAME_MAX)
-      return `Name must not be more than ${NAME_MAX} characters.`;
+      return `Name must be ${NAME_MAX} characters or fewer.`;
     if (!NAME_ALLOWED_REGEX.test(trimmed))
-      return `Name can only contain letters, spaces, apostrophes, and hyphens.`;
+      return `Name should contain only letters, spaces, apostrophes, and hyphens.`;
     return null;
   }
 
   function validateBio(bio: string): string | null {
     const BIO_MAX = 160;
     if (bio.length < 1 || bio.length <= BIO_MAX) return null;
-    return `Bio must not be more than ${BIO_MAX} characters.`;
+    return `Bio must be ${BIO_MAX} characters or fewer.`;
   }
 
   function validateEmail(email: string): string | null {
@@ -69,37 +69,37 @@ export default function ProfileInfoboxForm({
     if (/\s/.test(trimmed)) return "Email must not contain spaces.";
 
     const parts = trimmed.split("@");
-    if (parts.length !== 2) return "Please enter a valid email address.";
+    if (parts.length !== 2) return "Please provide a valid email address.";
 
     const [local, domain] = parts;
 
     // Local-part checks
     if (local.length < 1 || local.length > 64)
-      return "Email local part must be 1–64 characters.";
+      return "Email local part should be 1–64 characters.";
     if (local.startsWith(".") || local.endsWith("."))
-      return "Local part cannot start or end with a dot.";
+      return "Email local part must not start or end with a dot.";
     if (local.includes(".."))
-      return "Local part cannot contain consecutive dots.";
+      return "Email local part must not contain consecutive dots.";
     if (!/^[A-Za-z0-9._-]+$/.test(local))
-      return "Local part contains invalid characters.";
+      return "Email local part may only include letters, numbers, dots, underscores, and hyphens.";
 
     // Domain checks
     if (domain.length < 1 || domain.length > 255)
-      return "Please enter a valid domain.";
+      return "Please provide a valid email domain.";
     const labels = domain.split(".").filter(Boolean);
     if (labels.length < 2)
-      return "Domain must include a top-level domain (e.g. .com).";
+      return "Email domain must include a top-level domain (e.g. .com).";
     for (const label of labels) {
       if (label.length < 1 || label.length > 63)
-        return "Each domain label must be 1–63 characters.";
+        return "Each domain label should be 1–63 characters.";
       if (!/^[A-Za-z0-9-]+$/.test(label))
-        return "Domain contains invalid characters.";
+        return "Email domain may only include letters, numbers, and hyphens.";
       if (label.startsWith("-") || label.endsWith("-"))
-        return "Domain labels cannot start or end with a hyphen.";
+        return "Email domain labels must not start or end with a hyphen.";
     }
     const tld = labels[labels.length - 1];
     if (!/^[A-Za-z]{2,}$/.test(tld))
-      return "Top-level domain must be at least 2 letters.";
+      return "Top-level domain should be at least 2 letters.";
 
     return null;
   }
@@ -121,13 +121,13 @@ export default function ProfileInfoboxForm({
       );
       const host = parsed.hostname.toLowerCase();
       if (!host.includes("linkedin.com"))
-        return "Please enter a LinkedIn profile URL.";
+        return "Please provide a LinkedIn profile URL.";
       const path = parsed.pathname || "";
       if (!path.startsWith("/in/") && !path.startsWith("/pub/"))
         return "LinkedIn profile URL should be a personal profile (e.g. /in/username).";
       return null;
     } catch (e) {
-      return "Please enter a valid LinkedIn URL.";
+      return "Please provide a valid LinkedIn URL.";
     }
   }
 
@@ -140,16 +140,16 @@ export default function ProfileInfoboxForm({
       );
       const host = parsed.hostname.toLowerCase();
       if (!host.includes("github.com"))
-        return "Please enter a GitHub profile URL.";
+        return "Please provide a GitHub profile URL.";
       const segments = parsed.pathname.split("/").filter(Boolean);
       if (segments.length < 1)
-        return "Please enter a GitHub profile URL (e.g. github.com/username).";
+        return "Please provide a GitHub profile URL (e.g. github.com/username).";
       const username = segments[0];
       if (!/^[A-Za-z0-9-]+$/.test(username))
-        return "Please enter a valid GitHub username in the URL.";
+        return "GitHub username in the URL should only include letters, numbers, and hyphens.";
       return null;
     } catch (e) {
-      return "Please enter a valid GitHub URL.";
+      return "Please provide a valid GitHub URL.";
     }
   }
 
@@ -163,10 +163,10 @@ export default function ProfileInfoboxForm({
       );
       const host = parsed.hostname;
       if (!host || !host.includes("."))
-        return "Please enter a valid website domain.";
+        return "Please provide a valid website URL or domain.";
       return null;
     } catch (e) {
-      return "Please enter a valid website URL.";
+      return "Please provide a valid website URL.";
     }
   }
 
@@ -183,9 +183,9 @@ export default function ProfileInfoboxForm({
     if (trimmed.length > EXPERTISE_MAX)
       return `Expertise must be ${EXPERTISE_MAX} characters or fewer.`;
     if (editedProfile.expertise?.includes(trimmed))
-      return "Expertise already exists";
+      return "This expertise is already added.";
     if (!EXPERTISE_REGEX.test(trimmed))
-      return "Allowed: letters, numbers, spaces and . # + - / & ( )";
+      return "Allowed characters: letters, numbers, spaces, and . # + - / & ( )";
     return null;
   }
 
