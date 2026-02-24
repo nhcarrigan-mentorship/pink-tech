@@ -215,7 +215,7 @@ export default function ProfileInfoboxForm({
       if (expertiseInput && list.includes(expertiseInput)) return prev;
 
       setExpertiseInput("");
-      
+
       return { ...prev, expertise: [...list, expertiseInput] };
     });
   }
@@ -688,6 +688,7 @@ export default function ProfileInfoboxForm({
                     type="button"
                     className="hover:bg-pink-100 transition-colors rounded-full p-0.5"
                     aria-label="Remove expertise"
+                    disabled={isSaving}
                     onClick={() => removeExpertise(expertise)}
                   >
                     <X className="w-3.5 h-3.5" />
