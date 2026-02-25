@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.91.1",
     "@tailwindcss/vite": "^4.1.18",
     "camelcase-keys": "^10.0.2",
+    "dompurify": "^3.3.1",
     "framer-motion": "^12.34.0",
     "fs": "0.0.1-security",
     "lucide-react": "^0.562.0",
