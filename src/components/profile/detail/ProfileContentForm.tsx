@@ -8,7 +8,7 @@ interface ProfileContentForm {
 export default function ProfileContentForm({ profile }: ProfileContentForm) {
   const [isSaving, setIsSaving] = useState(false);
 
-  const content = `# Name
+  const defaultContent = `# Name
 ## Expertise
 - Created...  
 - Developed...   
@@ -44,7 +44,7 @@ export default function ProfileContentForm({ profile }: ProfileContentForm) {
       <textarea
         id="content"
         name="content"
-        defaultValue={content}
+        defaultValue={defaultContent}
         className="h-full px-4 py-3 border border-pink-300 font-mono rounded-lg outline-pink-500"
       ></textarea>
       {/* Action Buttons */}
