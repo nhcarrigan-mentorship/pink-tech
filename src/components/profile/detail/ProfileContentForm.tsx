@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { UserProfile } from "../../../types/UserProfile";
 
 interface ProfileContentForm {
@@ -9,12 +9,6 @@ export default function ProfileContentForm({ profile }: ProfileContentForm) {
   const [isSaving, setIsSaving] = useState(false);
 
   const defaultContent = `# Name
-## Expertise
-- Created...  
-- Developed...   
-- Built...  
-- Explored...  
-- Integrated...
 
 ## Early Life & Education
 - Explored...  
@@ -36,6 +30,23 @@ export default function ProfileContentForm({ profile }: ProfileContentForm) {
 - Learns...  
 - Passionate about...`;
 
+  const [content, setContent] = useState<string | null>(
+    profile.content ?? defaultContent,
+  );
+
+  function onContentChange(content: string) {
+    setContent(content);
+  }
+
+  // Set profile content
+  useEffect(() => {
+    if (profile.content === null) {
+      setContent(defaultContent);
+    } else if (profile.content) {
+      setContent(profile.content);
+    }
+  }, [profile.content]);
+
   return (
     <form className="flex-1 flex flex-col">
       <label htmlFor="content" className="hidden">
@@ -44,7 +55,8 @@ export default function ProfileContentForm({ profile }: ProfileContentForm) {
       <textarea
         id="content"
         name="content"
-        defaultValue={defaultContent}
+        value={content ?? ""}
+        onChange={(e) => setContent(e.target.value)}
         className="h-full px-4 py-3 border border-pink-300 font-mono rounded-lg outline-pink-500"
       ></textarea>
       {/* Action Buttons */}
