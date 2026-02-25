@@ -11,7 +11,7 @@ type RemarkGfmType = any;
 
 interface ProfileContentProps {
   isOwner: boolean;
-  profile?: UserProfile;
+  profile: UserProfile;
 }
 
 export default function ProfileContent({
@@ -50,7 +50,7 @@ export default function ProfileContent({
     : undefined;
 
   return isEditing ? (
-    <ProfileContentForm />
+    <ProfileContentForm profile={profile} />
   ) : (
     <article className="prose prose-gray max-w-none">
       {/* Profile Last Updated */}
