@@ -87,17 +87,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!user) throw new Error("No user returned from Supabase");
 
-    const content = `# ${display_name}
-
-This profile summarizes the individual's professional focus, areas of expertise, and contributions to technology and community initiatives.`;
-
     // Debug: log the data being inserted
     const profileData = {
       id: user.id,
       display_name,
       username,
       last_updated: new Date().toISOString(),
-      content: content,
     };
 
     const { error: profileError } = await supabase
