@@ -3,6 +3,7 @@ import type { UserProfile } from "../../../types/UserProfile";
 import { useEffect, useState, type ReactNode } from "react";
 import { Edit } from "lucide-react";
 import ProfileContentForm from "./ProfileContentForm";
+import LoadingState from "../../ui/LoadingState";
 
 // ReactMarkdown and remark-gfm are moderately large; lazy-load them when
 // profile content is actually needed to avoid adding them to the initial bundle.
@@ -52,24 +53,24 @@ export default function ProfileContent({
   return isEditing ? (
     <ProfileContentForm profile={profile} />
   ) : (
-    <article className="prose prose-gray max-w-none">
+    <article className="prose prose-gray w-full">
       {/* Profile Last Updated */}
       <div className="flex items-center gap-1.5 mb-4 text-sm text-gray-600 italic font-medium">
         <LazyIcon name="Clock" className="w-3.5 h-3.5" />
         <span>Last updated: {formattedDate}</span>
       </div>
       {/* Profile Content */}
-      {profile?.content ? (
-        ReactMarkdown && remarkGfm ? (
-          <div className="relative">
-            {isOwner && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="absolute right-0 inline-flex items-center justify-center min-w-[44px] min-h-[44px] bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors cursor-pointer flex-shrink-0 z-10"
-              >
-                <Edit className="w-5 h-5" />
-              </button>
-            )}
+      <div className="relative">
+        {isOwner && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="absolute right-0 inline-flex items-center justify-center min-w-[44px] min-h-[44px] bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors cursor-pointer flex-shrink-0 z-10"
+          >
+            <Edit className="w-5 h-5" />
+          </button>
+        )}
+        {profile?.content ? (
+          ReactMarkdown && remarkGfm ? (
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
@@ -123,11 +124,20 @@ export default function ProfileContent({
             >
               {profile?.content}
             </ReactMarkdown>
-          </div>
+          ) : (
+            <LoadingState message="Loading profile content..." />
+          )
         ) : (
-          <p className="text-gray-900">Profile content coming soon...</p>
-        )
-      ) : null}
+          <>
+            <h1 className="pb-2 border-b-2 border-pink-200 mb-6 text-4xl text-gray-900 font-bold">
+              {profile.displayName}
+            </h1>
+            <p className="text-gray-900">
+              User has not filled out their profile yet.
+            </p>
+          </>
+        )}
+      </div>
     </article>
   );
 }
