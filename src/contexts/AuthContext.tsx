@@ -22,6 +22,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
 
+  // Helper to timebox long-running promises (avoid UI hanging forever)
+  function withTimeout<T>(p: Promise<T>, ms = 10000): Promise<T> {
+    return Promise.race([
+      p,
+      new Promise<T>((_, rej) =>
+        setTimeout(() => rej(new Error(`Request timed out after ${ms}ms`)), ms),
+      ),
+    ]) as Promise<T>;
+  }
+
   // Load user from localStorage on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("pinkTechUser");
@@ -47,10 +57,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     // Mock authentication - in real app, this would call an API
     const supabase = await getSupabase();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = (await withTimeout(
+      // @ts-ignore
+      supabase.auth.signInWithPassword({ email, password }),
+      10000,
+    )) as unknown as { data: { user: any }; error: any };
 
     if (error) throw error;
 
@@ -58,11 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) throw new Error("No user returned from Supabase");
 
     // Fetch profile from profiles table using user.id
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+    const { data: profile, error: profileError } = (await withTimeout(
+      supabase.from("profiles").select("*").eq("id", user.id).single(),
+      10000,
+    )) as { data: any; error: any };
 
     if (profileError) throw profileError;
 
@@ -156,16 +166,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
   ) => {
     const supabase = await getSupabase();
-    const { data, error } = await supabase.auth.signUp(
-      {
-        email,
-        password,
-      },
-      {
-        // After the user clicks the verification link, redirect back to the app root
-        emailRedirectTo: window.location.origin,
-      },
-    );
+    const { data, error } = (await withTimeout(
+      // @ts-ignore
+      supabase.auth.signUp(
+        { email, password },
+        { emailRedirectTo: window.location.origin },
+      ),
+      10000,
+    )) as unknown as { data: { user: any }; error: any };
 
     if (error) throw error;
 
@@ -181,14 +189,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     try {
-      localStorage.setItem("pendingProfile", JSON.stringify(profileData));
-      // Persist the email too so the verify page can show it even if
-      // navigation state is lost (page refresh / redirect).
-      try {
-        localStorage.setItem("pendingEmail", email);
-      } catch (e) {
-        console.warn("Could not persist pending email:", e);
-      }
+      await withTimeout(
+        (async () => {
+          localStorage.setItem("pendingProfile", JSON.stringify(profileData));
+          // Persist the email too so the verify page can show it even if
+          // navigation state is lost (page refresh / redirect).
+          try {
+            localStorage.setItem("pendingEmail", email);
+          } catch (e) {
+            console.warn("Could not persist pending email:", e);
+          }
+        })(),
+        2000,
+      );
     } catch (e) {
       console.warn("Could not persist pending profile:", e);
     }
