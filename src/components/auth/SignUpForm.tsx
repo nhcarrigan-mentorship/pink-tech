@@ -24,7 +24,7 @@ export default function SignUpForm() {
     try {
       await signup(email, name, username, password);
       setEmailSent(true);
-      navigate("/verify");
+      navigate("/verify", { state: { email } });
     } catch (err) {
       setError(
         err instanceof Error
