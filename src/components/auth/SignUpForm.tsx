@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import LazyIcon from "../ui/LazyIcon";
@@ -12,8 +12,8 @@ export default function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
   const { signup } = useAuth();
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export default function SignUpForm() {
 
     try {
       await signup(email, name, username, password);
-      navigate("/");
+      setEmailSent(true);
     } catch (err) {
       setError(
         err instanceof Error
@@ -31,6 +31,9 @@ export default function SignUpForm() {
       );
     } finally {
       setIsLoading(false);
+      if (emailSent) {
+        <Navigate to="/verify" />;
+      }
     }
   };
 
@@ -55,6 +58,11 @@ export default function SignUpForm() {
 
       {/* Sign Up Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
+        {emailSent && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            We've sent a verification link to <strong>{email}</strong>.
+          </div>
+        )}
         {/* Email Field */}
         <div>
           <label htmlFor="email" className="block mb-2 text-sm font-medium">
@@ -175,6 +183,7 @@ export default function SignUpForm() {
         <button
           type="submit"
           className="w-full py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold cursor-pointer hover:from-pink-600 to-rose-600 hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          disabled={isLoading || emailSent}
         >
           {isLoading ? "Signing Up" : "Sign Up"}
         </button>
