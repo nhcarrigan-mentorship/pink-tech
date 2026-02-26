@@ -153,6 +153,11 @@ export default function ProfileContentForm({
           {isSaving ? "Saving..." : "Save"}
         </button>
       </div>
+      {saveError && (
+        <p className="text-red-600 font-semibold mt-2">
+          Error saving your changes. Please try again later.
+        </p>
+      )}
     </form>
   );
 }
