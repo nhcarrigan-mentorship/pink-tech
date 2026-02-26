@@ -9,7 +9,7 @@ export default function SignUpForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState("");
 
   const { signup } = useAuth();
@@ -18,7 +18,7 @@ export default function SignUpForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
+    setIsSigningUp(true);
 
     try {
       await signup(email, name, username, password);
@@ -30,7 +30,7 @@ export default function SignUpForm() {
           : "An error occurred while signing up",
       );
     } finally {
-      setIsLoading(false);
+      setIsSigningUp(false);
       if (emailSent) {
         <Navigate to="/verify" />;
       }
@@ -83,7 +83,7 @@ export default function SignUpForm() {
               required
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              disabled={isLoading}
+              disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
@@ -110,7 +110,7 @@ export default function SignUpForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Jane Smith"
-              disabled={isLoading}
+              disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
@@ -137,7 +137,7 @@ export default function SignUpForm() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="janesmith"
-              disabled={isLoading}
+              disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
@@ -163,7 +163,7 @@ export default function SignUpForm() {
               required
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              disabled={isLoading}
+              disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
 
@@ -183,9 +183,9 @@ export default function SignUpForm() {
         <button
           type="submit"
           className="w-full py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold cursor-pointer hover:from-pink-600 to-rose-600 hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          disabled={isLoading || emailSent}
+          disabled={isSigningUp || emailSent}
         >
-          {isLoading ? "Signing Up" : "Sign Up"}
+          {isSigningUp ? "Signing Up" : "Sign Up"}
         </button>
       </form>
       {/* Divider */}
