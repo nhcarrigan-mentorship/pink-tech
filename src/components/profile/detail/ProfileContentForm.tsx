@@ -18,7 +18,7 @@ export default function ProfileContentForm({
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
 
-  const defaultContent = `# Name
+  const defaultContent = `# ${profile.displayName}
 
 ## Early Life & Education
 - Explored...  
