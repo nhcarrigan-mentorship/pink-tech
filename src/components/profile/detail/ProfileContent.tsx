@@ -46,6 +46,7 @@ export default function ProfileContent({
   const formattedDate = isoString
     ? new Date(isoString).toLocaleString("en-US", {
         month: "long",
+        day: "numeric",
         year: "numeric",
       })
     : undefined;
