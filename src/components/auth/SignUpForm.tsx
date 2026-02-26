@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import LazyIcon from "../ui/LazyIcon";
@@ -12,6 +12,7 @@ export default function SignUpForm() {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
   const { signup } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
 
@@ -23,6 +24,7 @@ export default function SignUpForm() {
     try {
       await signup(email, name, username, password);
       setEmailSent(true);
+      navigate("/verify");
     } catch (err) {
       setError(
         err instanceof Error
@@ -31,9 +33,6 @@ export default function SignUpForm() {
       );
     } finally {
       setIsSigningUp(false);
-      if (emailSent) {
-        <Navigate to="/verify" />;
-      }
     }
   };
 

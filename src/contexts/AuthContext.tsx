@@ -69,6 +69,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(profile);
   };
 
+  // Listen for auth state changes so we can create the user's profile after
+  // they verify their email and sign in via the verification link.
+  useEffect(() => {
+    let subscription: any;
+
+    (async () => {
+      const supabase = await getSupabase();
+
+      // If the URL contains an auth session from the redirect, try to consume it.
+      try {
+        // Some SDK versions expose `getSessionFromUrl` to consume the session
+        // returned in the redirect link. If available, use it.
+        // @ts-ignore
+        if (supabase.auth.getSessionFromUrl) {
+          // @ts-ignore
+          await supabase.auth.getSessionFromUrl({ storeSession: true });
+        }
+      } catch (err) {
+        // ignore — nothing to do if session isn't present in URL
+      }
+
+      subscription = supabase.auth.onAuthStateChange(
+        async (_event: string, session: any) => {
+          const signedInUser = session?.user;
+          if (!signedInUser) {
+            setUser(null);
+            return;
+          }
+
+          try {
+            const pending = localStorage.getItem("pendingProfile");
+            if (pending) {
+              const parsed = JSON.parse(pending);
+              await supabase.from("profiles").upsert([
+                {
+                  id: signedInUser.id,
+                  display_name: parsed.display_name,
+                  username: parsed.username,
+                  last_updated: new Date().toISOString(),
+                },
+              ]);
+              localStorage.removeItem("pendingProfile");
+            }
+
+            const { data: profileData, error: profileError } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("id", signedInUser.id)
+              .single();
+
+            if (profileError) {
+              console.error(
+                "Failed to fetch profile after sign-in:",
+                profileError,
+              );
+              setUser(null);
+              return;
+            }
+
+            setUser(profileData);
+          } catch (err) {
+            console.error("Error handling auth state change:", err);
+          }
+        },
+      );
+    })();
+
+    return () => {
+      if (subscription && subscription.data?.subscription) {
+        subscription.data.subscription.unsubscribe();
+      } else if (
+        subscription &&
+        typeof subscription.unsubscribe === "function"
+      ) {
+        subscription.unsubscribe();
+      }
+    };
+  }, []);
+
   const signup = async (
     email: string,
     display_name: string,
@@ -76,45 +155,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
   ) => {
     const supabase = await getSupabase();
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signUp(
+      {
+        email,
+        password,
+      },
+      {
+        // After the user clicks the verification link, redirect back to the app root
+        emailRedirectTo: window.location.origin,
+      },
+    );
 
     if (error) throw error;
 
     const user = data.user;
-
     if (!user) throw new Error("No user returned from Supabase");
 
-    // Debug: log the data being inserted
+    // Save the profile data temporarily — we'll create the profile after the
+    // user verifies their email and signs in (see auth state listener).
     const profileData = {
-      id: user.id,
       display_name,
       username,
       last_updated: new Date().toISOString(),
     };
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .insert([profileData]);
-
-    if (profileError) {
-      // Log the error message for easier debugging
-      console.error(
-        "Profile insert error:",
-        profileError.message,
-        profileError.details,
-      );
-      throw profileError;
+    try {
+      localStorage.setItem("pendingProfile", JSON.stringify(profileData));
+    } catch (e) {
+      console.warn("Could not persist pending profile:", e);
     }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user?.id)
-      .single();
-    setUser(profile);
   };
 
   const logout = () => {
