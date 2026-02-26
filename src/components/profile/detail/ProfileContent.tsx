@@ -51,7 +51,7 @@ export default function ProfileContent({
     : undefined;
 
   return isEditing ? (
-    <ProfileContentForm profile={profile} />
+    <ProfileContentForm profile={profile} setIsEditing={setIsEditing} />
   ) : (
     <article className="prose prose-gray w-full">
       {/* Profile Last Updated */}

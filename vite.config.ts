@@ -22,6 +22,8 @@ export default defineConfig({
       "@supabase/auth-js",
       "@supabase/realtime-js",
       "@supabase/storage-js",
+      "react-markdown",
+      "remark-gfm",
       "framer-motion",
     ],
   },

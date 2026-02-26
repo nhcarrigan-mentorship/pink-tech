@@ -7,10 +7,15 @@ import DOMPurify from "dompurify";
 
 interface ProfileContentForm {
   profile: UserProfile;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ProfileContentForm({ profile }: ProfileContentForm) {
+export default function ProfileContentForm({
+  profile,
+  setIsEditing,
+}: ProfileContentForm) {
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
 
   const defaultContent = `# Name
@@ -61,6 +66,59 @@ export default function ProfileContentForm({ profile }: ProfileContentForm) {
     return true;
   }
 
+  async function onSave(e: React.FormEvent) {
+    // Skip saving when profile content remains the same
+    if (content === profile.content) return;
+
+    e.preventDefault();
+
+    let success;
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const raw = content ?? "";
+
+      // Strip any raw HTML tags from the markdown input
+      const stripped = DOMPurify.sanitize(raw, { ALLOWED_TAGS: [] });
+
+      // Basic link protocol validation
+      if (!validateLinks(stripped)) {
+        throw new Error("One or more links use a disallowed protocol.");
+      }
+
+      // Save to Supabase
+      const supabase = await getSupabase();
+      const updatedAt = new Date().toISOString();
+      const { error, data } = await supabase
+        .from("profiles")
+        .update({
+          content: stripped != "" ? stripped : null,
+          last_updated: updatedAt,
+        })
+        .eq("id", profile.id)
+        .single();
+
+      if (error) setSaveError(error);
+
+      if (data) {
+        const updated = camelcaseKeys(data, { deep: true });
+        updateProfileInContext(updated);
+      }
+
+      success = true;
+    } catch (err) {
+      const normalized = err instanceof Error ? err : Error(String(err));
+      setSaveError(normalized);
+    } finally {
+      setIsSaving(false);
+      if (success) {
+        setIsEditing(false);
+      }
+    }
+  }
+
   // Set profile content
   useEffect(() => {
     if (profile.content === null) {
@@ -71,7 +129,7 @@ export default function ProfileContentForm({ profile }: ProfileContentForm) {
   }, [profile.content]);
 
   return (
-    <form className="flex-1 flex flex-col">
+    <form className="flex-1 flex flex-col" onSubmit={onSave}>
       <label htmlFor="content" className="hidden">
         Profile Content
       </label>
