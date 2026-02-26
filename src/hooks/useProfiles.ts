@@ -10,9 +10,13 @@ const fullProfilePromiseCache: Map<
 > = new Map();
 // Module-level promise to deduplicate the initial profiles list fetch
 let profilesListPromise: Promise<void> | null = null;
+// Module-level cache so remounted hook instances (e.g. React StrictMode
+// double-mount) immediately receive already-fetched profiles instead of
+// seeing an empty list or having to refetch.
+let profilesCache: UserProfile[] | null = null;
 
 export default function useProfiles() {
-  const [profiles, setProfiles] = useState<UserProfile[]>([]);
+  const [profiles, setProfiles] = useState<UserProfile[]>(profilesCache ?? []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -34,7 +38,27 @@ export default function useProfiles() {
   }
 
   const fetchProfiles = async () => {
-    if (profilesListPromise) return profilesListPromise;
+    // If profiles are already cached (e.g. from a previous mount), skip the
+    // network round-trip and just make sure local state is in sync.
+    if (profilesCache) {
+      setProfiles(profilesCache);
+      return;
+    }
+
+    if (profilesListPromise) {
+      // A fetch is already in-flight (e.g. React StrictMode double-mount).
+      // Mirror the loading state on this instance and wait for it to finish.
+      setLoading(true);
+      try {
+        await profilesListPromise;
+        // Seed this instance's state from the module-level cache that the
+        // original fetch will have populated.
+        if (profilesCache) setProfiles(profilesCache);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
     setLoading(true);
 
@@ -43,17 +67,33 @@ export default function useProfiles() {
         // Only fetch the fields needed for lists and cards to avoid
         // pulling large `content` blobs on initial app load.
         const supabase = await getSupabase();
-        const { data, error } = await supabase
+
+        // Race the query against a 15-second timeout so the loading state
+        // never hangs indefinitely when the network or Supabase is slow.
+        const queryPromise = supabase
           .from("profiles")
           .select(
             `id, display_name, username, image, bio, role, company, location, website, linkedin, github, expertise, featured, last_updated`,
           );
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Profiles fetch timed out after 15s")),
+            15000,
+          ),
+        );
+
+        const { data, error } = (await Promise.race([
+          queryPromise,
+          timeoutPromise,
+        ])) as Awaited<typeof queryPromise>;
 
         if (error) {
           setError(error);
           console.error(error);
         } else if (data) {
-          setProfiles(camelcaseKeys(data, { deep: true }));
+          const parsed = camelcaseKeys(data, { deep: true }) as UserProfile[];
+          profilesCache = parsed;
+          setProfiles(parsed);
         }
       } catch (err) {
         setError(err as Error);
@@ -92,29 +132,37 @@ export default function useProfiles() {
             // DELETE: remove from list; otherwise upsert into list
             const isDelete = !payload.new && payload.old;
             if (isDelete) {
-              setProfiles((prev) =>
-                prev.filter((p) => String(p.id) !== String(updated.id)),
-              );
+              setProfiles((prev) => {
+                const next = prev.filter(
+                  (p) => String(p.id) !== String(updated.id),
+                );
+                profilesCache = next;
+                return next;
+              });
             } else {
               setProfiles((prev) => {
                 const exists = prev.some(
                   (p) => String(p.id) === String(updated.id),
                 );
+                let next: UserProfile[];
                 if (exists) {
-                  return prev.map((p) =>
+                  next = prev.map((p) =>
                     String(p.id) === String(updated.id)
                       ? mergeProfile(p, updated)
                       : p,
                   );
+                } else {
+                  // Insert new items at the front to keep list visible
+                  next = [
+                    {
+                      ...(updated as any),
+                      id: String((updated as any).id),
+                    } as UserProfile,
+                    ...prev,
+                  ];
                 }
-                // Insert new items at the front to keep list visible
-                return [
-                  {
-                    ...(updated as any),
-                    id: String((updated as any).id),
-                  } as UserProfile,
-                  ...prev,
-                ];
+                profilesCache = next;
+                return next;
               });
             }
           } catch (err) {
@@ -159,13 +207,15 @@ export default function useProfiles() {
   const refetch = useCallback(fetchProfiles, []);
 
   const updateProfileInContext = (updated: UserProfile) => {
-    setProfiles((prev) =>
-      prev.map((p) =>
+    setProfiles((prev) => {
+      const next = prev.map((p) =>
         String(p.id) === String((updated as any).id)
           ? mergeProfile(p, updated)
           : p,
-      ),
-    );
+      );
+      profilesCache = next;
+      return next;
+    });
   };
 
   const fetchFullProfile = useCallback(
