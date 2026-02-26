@@ -111,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 },
               ]);
               localStorage.removeItem("pendingProfile");
+              localStorage.removeItem("pendingEmail");
             }
 
             const { data: profileData, error: profileError } = await supabase
@@ -181,6 +182,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       localStorage.setItem("pendingProfile", JSON.stringify(profileData));
+      // Persist the email too so the verify page can show it even if
+      // navigation state is lost (page refresh / redirect).
+      try {
+        localStorage.setItem("pendingEmail", email);
+      } catch (e) {
+        console.warn("Could not persist pending email:", e);
+      }
     } catch (e) {
       console.warn("Could not persist pending profile:", e);
     }
