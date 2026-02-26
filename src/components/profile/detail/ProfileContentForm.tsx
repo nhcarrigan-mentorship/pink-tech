@@ -67,10 +67,12 @@ export default function ProfileContentForm({
   }
 
   async function onSave(e: React.FormEvent) {
-    // Skip saving when profile content remains the same
-    if (content === profile.content) return;
-
     e.preventDefault();
+
+    // Skip saving when profile content remains the same
+    if (content === profile.content) {
+      return;
+    }
 
     let success;
 
@@ -98,6 +100,7 @@ export default function ProfileContentForm({
           last_updated: updatedAt,
         })
         .eq("id", profile.id)
+        .select()
         .single();
 
       if (error) setSaveError(error);
