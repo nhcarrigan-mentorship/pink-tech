@@ -122,6 +122,10 @@ export default function ProfileContentForm({
     }
   }
 
+  function onCancel() {
+    setIsEditing(false);
+  }
+
   // Set profile content
   useEffect(() => {
     if (profile.content === null) {
@@ -151,6 +155,14 @@ export default function ProfileContentForm({
           className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSaving ? "Saving..." : "Save"}
+        </button>
+        <button
+          type="button"
+          disabled={isSaving}
+          onClick={() => onCancel()}
+          className="flex-1 min-h-[44px] py-3 bg-white border border-gray-300 text-gray-900 font-bold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Cancel
         </button>
       </div>
       {saveError && (
