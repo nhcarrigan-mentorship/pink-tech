@@ -39,3 +39,12 @@ export function getPublicSupabase() {
 }
 
 export default getSupabase;
+
+// Eagerly kick off client initialization the moment this module is imported.
+// The Supabase client constructor immediately acquires GoTrue's internal lock
+// to restore any existing session. If initialization is lazy (deferred until
+// the first explicit call), that lock can still be held when the user clicks
+// "Sign In" — causing signInWithPassword to queue behind it indefinitely.
+// Starting the initialization now gives the lock time to clear in the
+// background while the user is still looking at the login form.
+getSupabase();

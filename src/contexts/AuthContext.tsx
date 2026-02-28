@@ -22,16 +22,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
 
-  // Helper to timebox long-running promises (avoid UI hanging forever)
-  function withTimeout<T>(p: Promise<T>, ms = 10000): Promise<T> {
-    return Promise.race([
-      p,
-      new Promise<T>((_, rej) =>
-        setTimeout(() => rej(new Error(`Request timed out after ${ms}ms`)), ms),
-      ),
-    ]) as Promise<T>;
-  }
-
   // Load user from localStorage on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("pinkTechUser");
@@ -56,11 +46,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const supabase = await getSupabase();
-    const { data, error } = (await withTimeout(
-      // @ts-ignore
-      supabase.auth.signInWithPassword({ email, password }),
-      10000,
-    )) as unknown as { data: { user: any }; error: any };
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) throw error;
     if (!data.user) throw new Error("No user returned from Supabase");
@@ -172,14 +161,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
   ) => {
     const supabase = await getSupabase();
-    const { data, error } = (await withTimeout(
-      // @ts-ignore
-      supabase.auth.signUp(
-        { email, password },
-        { emailRedirectTo: window.location.origin },
-      ),
-      10000,
-    )) as unknown as { data: { user: any }; error: any };
+    // Same reasoning as login — do not wrap in withTimeout.
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: window.location.origin },
+    });
 
     if (error) throw error;
 
@@ -194,22 +181,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       last_updated: new Date().toISOString(),
     };
 
+    // localStorage writes are synchronous — no timeout needed.
+    localStorage.setItem("pendingProfile", JSON.stringify(profileData));
     try {
-      await withTimeout(
-        (async () => {
-          localStorage.setItem("pendingProfile", JSON.stringify(profileData));
-          // Persist the email too so the verify page can show it even if
-          // navigation state is lost (page refresh / redirect).
-          try {
-            localStorage.setItem("pendingEmail", email);
-          } catch (e) {
-            console.warn("Could not persist pending email:", e);
-          }
-        })(),
-        2000,
-      );
+      localStorage.setItem("pendingEmail", email);
     } catch (e) {
-      console.warn("Could not persist pending profile:", e);
+      console.warn("Could not persist pending email:", e);
     }
   };
 
