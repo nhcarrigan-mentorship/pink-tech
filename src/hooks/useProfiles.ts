@@ -94,8 +94,15 @@ export default function useProfiles() {
         ])) as Awaited<typeof queryPromise>;
 
         if (error) {
-          setError(error);
-          console.error(error);
+          // AbortError is returned (not thrown) by Supabase when signOut()
+          // cancels in-flight requests. It's an expected cancellation, not a
+          // real failure — swallow it silently.
+          if (error.message?.includes("AbortError")) {
+            console.debug("Profiles fetch aborted (session change):", error);
+          } else {
+            setError(error);
+            console.error(error);
+          }
         } else if (data) {
           const parsed = camelcaseKeys(data, { deep: true }) as UserProfile[];
           profilesCache = parsed;
