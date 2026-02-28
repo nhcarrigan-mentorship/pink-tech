@@ -1,6 +1,6 @@
 import camelcaseKeys from "camelcase-keys";
 import { useState, useEffect, useCallback } from "react";
-import { getSupabase } from "../config/supabaseClient";
+import { getPublicSupabase, getSupabase } from "../config/supabaseClient";
 import type { UserProfile } from "../types/UserProfile";
 
 // Module-level promise cache to deduplicate fetches across hook instances
@@ -69,29 +69,27 @@ export default function useProfiles() {
     setLoading(true);
 
     profilesListPromise = (async () => {
+      // Use an AbortController so the timeout actually cancels the underlying
+      // fetch request. Promise.race alone only ignores the result — the fetch
+      // keeps running, holds Supabase's internal resources, and each successive
+      // attempt adds another ghost request that piles up and causes lock
+      // contention. Aborting via signal tears down the network request entirely.
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       try {
         // Only fetch the fields needed for lists and cards to avoid
         // pulling large `content` blobs on initial app load.
-        const supabase = await getSupabase();
+        // Use the public (anon-only) client so this query is never blocked by
+        // the GoTrue token-refresh lock that the standard client acquires.
+        const supabase = await getPublicSupabase();
 
-        // Race the query against a 15-second timeout so the loading state
-        // never hangs indefinitely when the network or Supabase is slow.
-        const queryPromise = supabase
+        const { data, error } = await supabase
           .from("profiles")
           .select(
             `id, display_name, username, image, bio, role, company, location, website, linkedin, github, expertise, featured, last_updated`,
-          );
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(
-            () => reject(new Error("Profiles fetch timed out after 15s")),
-            15000,
-          ),
-        );
-
-        const { data, error } = (await Promise.race([
-          queryPromise,
-          timeoutPromise,
-        ])) as Awaited<typeof queryPromise>;
+          )
+          .abortSignal(controller.signal);
 
         if (error) {
           // AbortError is returned (not thrown) by Supabase when signOut()
@@ -120,6 +118,7 @@ export default function useProfiles() {
           console.error(err);
         }
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
         profilesListPromise = null;
       }
