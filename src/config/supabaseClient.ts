@@ -1,12 +1,32 @@
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_ANON_KEY;
 
+// Browsers have no default timeout on fetch(). Supabase's internal token
+// refresh acquires a navigator lock for its entire duration — if the refresh
+// endpoint is slow or unreachable, the lock is held indefinitely and every
+// subsequent auth call (signInWithPassword, signOut, etc.) queues behind it
+// forever. Wrapping fetch with an AbortController timeout ensures the refresh
+// is abandoned after 10s, GoTrue catches the abort, releases the lock, and
+// normal auth operations can proceed.
+function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  return fetch(input, { ...init, signal: controller.signal }).finally(() =>
+    clearTimeout(timeoutId),
+  );
+}
+
 let supabaseClientPromise: Promise<any> | null = null;
 
 export function getSupabase() {
   if (!supabaseClientPromise) {
     supabaseClientPromise = import("@supabase/supabase-js").then((mod) =>
-      mod.createClient(supabaseUrl, supabaseKey),
+      mod.createClient(supabaseUrl, supabaseKey, {
+        global: { fetch: fetchWithTimeout },
+      }),
     );
   }
   return supabaseClientPromise;
