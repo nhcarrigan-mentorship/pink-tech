@@ -226,7 +226,7 @@ export default function useProfiles() {
 
   const refetch = useCallback(fetchProfiles, []);
 
-  const updateProfileInContext = (updated: UserProfile) => {
+  const updateProfileInContext = useCallback((updated: UserProfile) => {
     setProfiles((prev) => {
       const next = prev.map((p) =>
         String(p.id) === String((updated as any).id)
@@ -236,7 +236,7 @@ export default function useProfiles() {
       profilesCache = next;
       return next;
     });
-  };
+  }, []);
 
   const fetchFullProfile = useCallback(
     async (username: string) => {
@@ -256,7 +256,7 @@ export default function useProfiles() {
 
       const promise = (async () => {
         try {
-          const supabase = await getSupabase();
+          const supabase = await getPublicSupabase();
           const { data, error } = await supabase
             .from("profiles")
             .select("*")
