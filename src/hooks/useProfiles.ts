@@ -54,6 +54,12 @@ export default function useProfiles() {
         // Seed this instance's state from the module-level cache that the
         // original fetch will have populated.
         if (profilesCache) setProfiles(profilesCache);
+      } catch (err) {
+        // Swallow AbortErrors (session change cancelled the in-flight request).
+        if ((err as any)?.name !== "AbortError") {
+          setError(err as Error);
+          console.error(err);
+        }
       } finally {
         setLoading(false);
       }
@@ -96,8 +102,16 @@ export default function useProfiles() {
           setProfiles(parsed);
         }
       } catch (err) {
-        setError(err as Error);
-        console.error(err);
+        // AbortError is thrown by Supabase when it cancels in-flight requests
+        // (e.g. during supabase.auth.signOut()). That's an expected cancellation,
+        // not a real failure — swallow it silently instead of surfacing it as a
+        // user-visible error.
+        if ((err as any)?.name === "AbortError") {
+          console.debug("Profiles fetch aborted (session change):", err);
+        } else {
+          setError(err as Error);
+          console.error(err);
+        }
       } finally {
         setLoading(false);
         profilesListPromise = null;
