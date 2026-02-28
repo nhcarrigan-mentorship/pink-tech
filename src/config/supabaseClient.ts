@@ -28,6 +28,9 @@ export function getPublicSupabase() {
         auth: {
           autoRefreshToken: false,
           persistSession: false,
+          // Use a distinct storage key so GoTrue doesn't detect two instances
+          // sharing the same localStorage key and emit a warning.
+          storageKey: "sb-public-anon",
         },
       }),
     );
