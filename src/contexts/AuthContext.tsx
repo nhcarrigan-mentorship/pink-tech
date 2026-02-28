@@ -55,7 +55,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const login = async (email: string, password: string) => {
-    // Mock authentication - in real app, this would call an API
     const supabase = await getSupabase();
     const { data, error } = (await withTimeout(
       // @ts-ignore
@@ -64,33 +63,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )) as unknown as { data: { user: any }; error: any };
 
     if (error) throw error;
-
-    const user = data.user;
-    if (!user) throw new Error("No user returned from Supabase");
-
-    // Fetch profile from profiles table using user.id
-    const { data: profile, error: profileError } = (await withTimeout(
-      supabase.from("profiles").select("*").eq("id", user.id).single(),
-      10000,
-    )) as { data: any; error: any };
-
-    if (profileError) throw profileError;
-
-    setUser(profile);
+    if (!data.user) throw new Error("No user returned from Supabase");
+    // Profile will be set by the onAuthStateChange listener (SIGNED_IN event).
   };
 
   // Listen for auth state changes so we can create the user's profile after
   // they verify their email and sign in via the verification link.
   useEffect(() => {
-    let subscription: any;
+    // `cancelled` lets the async setup abort if the effect is torn down
+    // (e.g. React StrictMode double-mount) before getSupabase() resolves.
+    // `unsubscribe` is set once the listener is registered so the cleanup
+    // function can reach it synchronously on subsequent unmounts.
+    let cancelled = false;
+    let unsubscribe: (() => void) | null = null;
 
     (async () => {
       const supabase = await getSupabase();
 
+      // If the effect was cleaned up while we were awaiting, bail out and
+      // don't register a listener at all.
+      if (cancelled) return;
+
       // If the URL contains an auth session from the redirect, try to consume it.
       try {
-        // Some SDK versions expose `getSessionFromUrl` to consume the session
-        // returned in the redirect link. If available, use it.
         // @ts-ignore
         if (supabase.auth.getSessionFromUrl) {
           // @ts-ignore
@@ -100,8 +95,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // ignore — nothing to do if session isn't present in URL
       }
 
-      subscription = supabase.auth.onAuthStateChange(
-        async (_event: string, session: any) => {
+      const { data } = supabase.auth.onAuthStateChange(
+        async (event: string, session: any) => {
+          // Ignore INITIAL_SESSION and any other events we don't need —
+          // handling them would cause a redundant DB fetch on every page load.
+          if (event === "SIGNED_OUT") {
+            setUser(null);
+            return;
+          }
+          if (event !== "SIGNED_IN") return;
+
           const signedInUser = session?.user;
           if (!signedInUser) {
             setUser(null);
@@ -145,17 +148,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         },
       );
+
+      // If the cleanup already ran while we were awaiting above, unsubscribe
+      // immediately rather than leaving a dangling listener.
+      if (cancelled) {
+        data.subscription.unsubscribe();
+        return;
+      }
+
+      unsubscribe = () => data.subscription.unsubscribe();
     })();
 
     return () => {
-      if (subscription && subscription.data?.subscription) {
-        subscription.data.subscription.unsubscribe();
-      } else if (
-        subscription &&
-        typeof subscription.unsubscribe === "function"
-      ) {
-        subscription.unsubscribe();
-      }
+      cancelled = true;
+      unsubscribe?.();
     };
   }, []);
 
