@@ -13,7 +13,7 @@ interface AuthContextType {
     username: string,
     password: string,
   ) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => void;
 }
 
@@ -213,8 +213,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // Immediately clear local state for a snappy UI response.
     setUser(null);
+    // Also sign out from Supabase so the session is removed from browser
+    // storage. Without this, the stale session token stays alive and Supabase
+    // will try to refresh it in the background, holding its internal lock and
+    // blocking any concurrent DB queries (profiles list, etc.) until they time
+    // out.
+    try {
+      const supabase = await getSupabase();
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Error signing out from Supabase:", err);
+    }
   };
 
   const updateProfile = (updates: Partial<UserProfile>) => {
