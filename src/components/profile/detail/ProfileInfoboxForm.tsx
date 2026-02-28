@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import toSnakeCaseObject from "../../../utils/snakeCase";
 import camelcaseKeys from "camelcase-keys";
 import type { UserProfile } from "../../../types/UserProfile";
-import { useProfilesContext } from "../../../contexts/ProfilesContext";
+import { useProfilesContext } from "../../../hooks/useProfilesContext";
 import ProfileImageEditor from "./ProfileImageEditor";
 import { socials } from "./ProfileSocials";
 import { getSupabase } from "../../../config/supabaseClient";

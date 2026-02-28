@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, type PanInfo } from "framer-motion";
 import LazyIcon from "../../ui/LazyIcon";
 import { useNavigate } from "react-router-dom";
-import { useProfilesContext } from "../../../contexts/ProfilesContext";
+import { useProfilesContext } from "../../../hooks/useProfilesContext";
 import FeaturedProfileCard from "./FeaturedProfileCard";
 import Pagination from "../../ui/Pagination";
 import LoadingState from "../../ui/LoadingState";

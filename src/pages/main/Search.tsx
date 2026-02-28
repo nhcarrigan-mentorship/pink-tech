@@ -4,7 +4,7 @@ import SearchHeader from "../../features/search/components/SearchHeader";
 import FilteredProfiles from "../../features/search/results/FilteredProfiles";
 import ProfileSearchBar from "../../features/search/components/ProfileSearchBar";
 import MobileFilterModal from "../../features/search/responsive/MobileFilterModal";
-import { useProfilesContext } from "../../contexts/ProfilesContext";
+import { useProfilesContext } from "../../hooks/useProfilesContext";
 import LoadingState from "../../components/ui/LoadingState";
 import ErrorState from "../../components/ui/ErrorState";
 

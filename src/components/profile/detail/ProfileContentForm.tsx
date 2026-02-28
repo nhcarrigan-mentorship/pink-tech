@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { UserProfile } from "../../../types/UserProfile";
 import { getSupabase } from "../../../config/supabaseClient";
-import { useProfilesContext } from "../../../contexts/ProfilesContext";
+import { useProfilesContext } from "../../../hooks/useProfilesContext";
 import camelcaseKeys from "camelcase-keys";
 import DOMPurify from "dompurify";
 

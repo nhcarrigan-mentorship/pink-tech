@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
 import type { UserProfile } from "../types/UserProfile";
 import useProfiles from "../hooks/useProfiles";
 
@@ -15,30 +15,32 @@ type Props = {
   children: React.ReactNode;
 };
 
-const ProfilesContext = createContext<ProfilesContextType | undefined>(
+export const ProfilesContext = createContext<ProfilesContextType | undefined>(
   undefined,
 );
 
 export function ProfilesProvider({ children }: Props) {
-  const { profiles, loading, error, refetch, updateProfileInContext, fetchFullProfile } =
-    useProfiles();
+  const {
+    profiles,
+    loading,
+    error,
+    refetch,
+    updateProfileInContext,
+    fetchFullProfile,
+  } = useProfiles();
 
   return (
     <ProfilesContext.Provider
-      value={{ profiles, loading, error, refetch, updateProfileInContext, fetchFullProfile }}
+      value={{
+        profiles,
+        loading,
+        error,
+        refetch,
+        updateProfileInContext,
+        fetchFullProfile,
+      }}
     >
       {children}
     </ProfilesContext.Provider>
   );
-}
-
-export function useProfilesContext() {
-  const context = useContext(ProfilesContext);
-  if (!context) {
-    throw new Error(
-      "useProfilesContext must be used within a ProfilesProvider",
-    );
-  } else {
-    return context;
-  }
 }
