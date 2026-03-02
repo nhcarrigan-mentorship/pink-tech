@@ -12,6 +12,7 @@ export default function SignUpForm() {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState("");
   const [usernameError, setUsernameError] = useState<Error | null>(null);
+  const [emailError, setEmailError] = useState<Error | null>(null);
 
   const navigate = useNavigate();
   const { signup } = useAuth();
@@ -27,6 +28,49 @@ export default function SignUpForm() {
     if (/[_-]{2}/.test(value))
       return "Username cannot contain consecutive underscores or hyphens.";
     if (/^[0-9]/.test(value)) return "Username must start with a letter.";
+    return null;
+  }
+
+  function validateEmail(value: string): string | null {
+    const trimmed = value.trim();
+
+    if (trimmed.length < 1) return null;
+    if (trimmed.length > 320) return "Email must be 320 characters or fewer.";
+    if (/\s/.test(trimmed)) return "Email must not contain spaces.";
+
+    const parts = trimmed.split("@");
+    if (parts.length !== 2) return "Please provide a valid email address.";
+
+    const [local, domain] = parts;
+
+    // Local-part checks
+    if (local.length < 1 || local.length > 64)
+      return "Email local part should be 1–64 characters.";
+    if (local.startsWith(".") || local.endsWith("."))
+      return "Email local part must not start or end with a dot.";
+    if (local.includes(".."))
+      return "Email local part must not contain consecutive dots.";
+    if (!/^[A-Za-z0-9._-]+$/.test(local))
+      return "Email local part may only include letters, numbers, dots, underscores, and hyphens.";
+
+    // Domain checks
+    if (domain.length < 1 || domain.length > 255)
+      return "Please provide a valid email domain.";
+    const labels = domain.split(".").filter(Boolean);
+    if (labels.length < 2)
+      return "Email domain must include a top-level domain (e.g. .com).";
+    for (const label of labels) {
+      if (label.length < 1 || label.length > 63)
+        return "Each domain label should be 1–63 characters.";
+      if (!/^[A-Za-z0-9-]+$/.test(label))
+        return "Email domain may only include letters, numbers, and hyphens.";
+      if (label.startsWith("-") || label.endsWith("-"))
+        return "Email domain labels must not start or end with a hyphen.";
+    }
+    const tld = labels[labels.length - 1];
+    if (!/^[A-Za-z]{2,}$/.test(tld))
+      return "Top-level domain should be at least 2 letters.";
+
     return null;
   }
 
@@ -97,12 +141,22 @@ export default function SignUpForm() {
               value={email}
               autoComplete="email"
               required
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(
+                  validateEmail(e.target.value)
+                    ? new Error(validateEmail(e.target.value)!)
+                    : null,
+                );
+              }}
               placeholder="you@example.com"
               disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
+          {emailError && (
+            <p className="mt-1.5 text-xs text-red-600">{emailError.message}</p>
+          )}
         </div>
 
         {/* Name Field */}
