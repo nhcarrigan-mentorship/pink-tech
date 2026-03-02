@@ -11,66 +11,7 @@ export default function EmailVerificationNotice({
 }: EmailVerificationNoticeProps) {
   const navigate = useNavigate();
   async function handleLogin() {
-    const supabase = await getSupabase();
-
-    console.log("verify: url=", window.location.href);
-    console.log("verify: pendingEmail=", localStorage.getItem("pendingEmail"));
-
-    try {
-      // consume session from redirect if present (safe-guarded)
-      // timebox the call to avoid hanging if the SDK/network stalls
-      // @ts-ignore
-      if (supabase.auth.getSessionFromUrl) {
-        // @ts-ignore
-        const getSessionPromise = supabase.auth.getSessionFromUrl({
-          storeSession: true,
-        });
-        const consumed = await Promise.race([
-          getSessionPromise,
-          new Promise((resolve) => setTimeout(() => resolve(null), 2000)),
-        ]);
-        if (consumed === null) {
-          console.warn("getSessionFromUrl timed out after 2s");
-        } else {
-          console.log("verify: getSessionFromUrl returned:", consumed);
-        }
-      }
-    } catch (e) {
-      console.warn("getSessionFromUrl failed:", e);
-    }
-
-    // Try to read current user (works across SDK versions)
-    try {
-      // 1) new SDK: getUser()
-      // @ts-ignore
-      const userResult = await supabase.auth.getUser?.();
-      let user = userResult?.data?.user ?? userResult?.user ?? null;
-
-      // 2) fallback: getSession()
-      if (!user) {
-        // @ts-ignore
-        const sessionResult = await supabase.auth.getSession?.();
-        const session =
-          sessionResult?.data?.session ?? sessionResult?.session ?? null;
-        console.log("getSession result:", sessionResult ?? session);
-        if (session?.user) user = session.user;
-      }
-
-      console.log("resolved user:", user);
-
-      if (user) {
-        localStorage.removeItem("pendingEmail");
-        navigate("/");
-        // ensure navigation even if router is blocked
-        window.location.href = "/";
-      } else {
-        navigate("/login", { state: { email } });
-      }
-    } catch (err) {
-      console.warn("session check failed:", err);
-      navigate("/login", { state: { email } });
-      window.location.href = "/login";
-    }
+    navigate("/login", { state: { email } });
   }
   return (
     <div className="bg-white p-8 border border-pink-100 rounded-2xl shadow-xl">
