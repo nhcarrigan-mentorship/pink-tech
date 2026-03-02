@@ -16,6 +16,7 @@ export default function ProfileDetail() {
   const profile = profiles.find((p) => p.username === username);
   const [showBottomNotice, setShowBottomNotice] = useState(false);
   const [noticeDismissed, setNoticeDismissed] = useState(false);
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false);
 
   const { isAuthenticated, user } = useAuth();
   const isOwner = isAuthenticated && user?.id === profile?.id;
@@ -33,7 +34,8 @@ export default function ProfileDetail() {
   useEffect(() => {
     if (!username) return;
     if (!profile || !profile.content) {
-      fetchFullProfile(username);
+      setIsFetchingProfile(true);
+      fetchFullProfile(username).finally(() => setIsFetchingProfile(false));
     }
   }, [username, profile, fetchFullProfile]);
 
@@ -98,7 +100,7 @@ export default function ProfileDetail() {
         onRetry={refetch}
       />
     );
-  } else if (loading) {
+  } else if (loading || isFetchingProfile) {
     content = <LoadingState message="Loading profile..." />;
   } else if (!profile) {
     content = (
