@@ -4,6 +4,11 @@ import { useState } from "react";
 import LazyIcon from "../ui/LazyIcon";
 
 export default function SignUpForm() {
+  const NAME_MIN = 3;
+  const NAME_MAX = 141;
+  const USERNAME_MIN = 3;
+  const USERNAME_MAX = 20;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -19,13 +24,10 @@ export default function SignUpForm() {
   const { signup } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
 
-  const NAME_MIN = 3;
-  const NAME_MAX = 141;
-
   function validateUsername(value: string): string | null {
     if (value.length < 1) return null;
-    if (value.length < 3 || value.length > 20)
-      return "Username must be between 3 and 20 characters.";
+    if (value.length < USERNAME_MIN || value.length > USERNAME_MAX)
+      return `Username must be between ${USERNAME_MIN} and ${USERNAME_MAX} characters.`;
     if (!/^[a-zA-Z0-9_-]+$/.test(value))
       return "Username can only contain letters, numbers, underscores, and hyphens.";
     if (/^[_-]|[_-]$/.test(value))
@@ -238,8 +240,8 @@ export default function SignUpForm() {
               id="username"
               autoComplete="username"
               required
-              minLength={3}
-              maxLength={20}
+              minLength={USERNAME_MIN}
+              maxLength={USERNAME_MAX}
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value);
