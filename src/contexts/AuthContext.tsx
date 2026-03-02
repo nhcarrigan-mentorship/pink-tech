@@ -53,6 +53,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) throw error;
     if (!data.user) throw new Error("No user returned from Supabase");
+    if (!data.user.email_confirmed_at) {
+      await supabase.auth.signOut();
+      throw new Error("Please verify your email before logging in.");
+    }
     // Profile will be set by the onAuthStateChange listener (SIGNED_IN event).
   };
 
@@ -85,9 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const { data } = supabase.auth.onAuthStateChange(
-        async (event: string, session: any) => {
-          // Ignore INITIAL_SESSION and any other events we don't need —
-          // handling them would cause a redundant DB fetch on every page load.
+        (event: string, session: any) => {
           if (event === "SIGNED_OUT") {
             setUser(null);
             return;
@@ -100,44 +102,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return;
           }
 
-          // Don't log the user in until their email is verified.
           if (!signedInUser.email_confirmed_at) return;
 
-          try {
-            const pending = localStorage.getItem("pendingProfile");
-            if (pending) {
-              const parsed = JSON.parse(pending);
-              await supabase.from("profiles").upsert([
-                {
-                  id: signedInUser.id,
-                  display_name: parsed.display_name,
-                  username: parsed.username,
-                  last_updated: new Date().toISOString(),
-                },
-              ]);
-              localStorage.removeItem("pendingProfile");
-              localStorage.removeItem("pendingEmail");
+          // Defer async DB work so the auth lock is released first.
+          // Making the callback itself async and awaiting inside it
+          // deadlocks signInWithPassword in Supabase JS.
+          setTimeout(async () => {
+            try {
+              const pending = localStorage.getItem("pendingProfile");
+              if (pending) {
+                const parsed = JSON.parse(pending);
+                await supabase.from("profiles").upsert([
+                  {
+                    id: signedInUser.id,
+                    display_name: parsed.display_name,
+                    username: parsed.username,
+                    last_updated: new Date().toISOString(),
+                  },
+                ]);
+                localStorage.removeItem("pendingProfile");
+                localStorage.removeItem("pendingEmail");
+              }
+
+              const { data: profileData, error: profileError } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", signedInUser.id)
+                .single();
+
+              if (profileError) {
+                console.error(
+                  "Failed to fetch profile after sign-in:",
+                  profileError,
+                );
+                setUser(null);
+                return;
+              }
+
+              setUser(profileData);
+            } catch (err) {
+              console.error("Error handling auth state change:", err);
             }
-
-            const { data: profileData, error: profileError } = await supabase
-              .from("profiles")
-              .select("*")
-              .eq("id", signedInUser.id)
-              .single();
-
-            if (profileError) {
-              console.error(
-                "Failed to fetch profile after sign-in:",
-                profileError,
-              );
-              setUser(null);
-              return;
-            }
-
-            setUser(profileData);
-          } catch (err) {
-            console.error("Error handling auth state change:", err);
-          }
+          }, 0);
         },
       );
 
