@@ -228,11 +228,22 @@ export default function useProfiles() {
 
   const updateProfileInContext = useCallback((updated: UserProfile) => {
     setProfiles((prev) => {
-      const next = prev.map((p) =>
-        String(p.id) === String((updated as any).id)
-          ? mergeProfile(p, updated)
-          : p,
+      const exists = prev.some(
+        (p) => String(p.id) === String((updated as any).id),
       );
+      const next = exists
+        ? prev.map((p) =>
+            String(p.id) === String((updated as any).id)
+              ? mergeProfile(p, updated)
+              : p,
+          )
+        : [
+            ...prev,
+            {
+              ...(updated as any),
+              id: String((updated as any).id),
+            } as UserProfile,
+          ];
       profilesCache = next;
       return next;
     });
