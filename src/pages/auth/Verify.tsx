@@ -1,14 +1,22 @@
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, Navigate } from "react-router-dom";
 import EmailVerificationNotice from "../../components/auth/EmailVerificationNotice";
 
 export default function Verify() {
   const location = useLocation();
-    const state = location.state as any;
-    const email = state
-      ? typeof state === "string"
-        ? state
-        : state.email ?? localStorage.getItem("pendingEmail") ?? ""
-      : localStorage.getItem("pendingEmail") ?? "";
+  const state = location.state as { email?: string };
+  const email =
+    state?.email ?? sessionStorage.getItem("pendingVerification") ?? "";
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("pendingVerification"); // cleared on navigate away
+    };
+  }, []);
+
+  if (!email) {
+    return <Navigate to="/signup" replace />; // blocks direct URL access
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-pink-100 to-rose-50">

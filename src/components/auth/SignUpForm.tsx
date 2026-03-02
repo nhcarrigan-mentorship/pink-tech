@@ -24,6 +24,7 @@ export default function SignUpForm() {
     try {
       await signup(email, name, username, password);
       setEmailSent(true);
+      sessionStorage.setItem("pendingVerification", email);
       navigate("/verify", { state: { email } });
     } catch (err) {
       setError(
