@@ -11,10 +11,24 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState("");
+  const [usernameError, setUsernameError] = useState<Error | null>(null);
 
   const navigate = useNavigate();
   const { signup } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
+
+  function validateUsername(value: string): string | null {
+    if (value.length < 3 || value.length > 20)
+      return "Username must be between 3 and 20 characters.";
+    if (!/^[a-zA-Z0-9_-]+$/.test(value))
+      return "Username can only contain letters, numbers, underscores, and hyphens.";
+    if (/^[_-]|[_-]$/.test(value))
+      return "Username cannot start or end with an underscore or hyphen.";
+    if (/[_-]{2}/.test(value))
+      return "Username cannot contain consecutive underscores or hyphens.";
+    if (/^[0-9]/.test(value)) return "Username must start with a letter.";
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +36,8 @@ export default function SignUpForm() {
     setIsSigningUp(true);
 
     try {
+      const usernameValidationError = validateUsername(username);
+      if (usernameValidationError) throw new Error(usernameValidationError);
       await signup(email, name, username, password);
       setEmailSent(true);
       sessionStorage.setItem("pendingVerification", email);
@@ -134,13 +150,33 @@ export default function SignUpForm() {
               id="username"
               autoComplete="username"
               required
+              minLength={3}
+              maxLength={20}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setUsernameError(
+                  validateUsername(e.target.value)
+                    ? new Error(validateUsername(e.target.value)!)
+                    : null,
+                );
+              }}
+              onBlur={(e) => {
+                const msg = validateUsername(e.target.value);
+                setUsernameError(msg ? new Error(msg) : null);
+              }}
               placeholder="janesmith"
               disabled={isSigningUp}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full pl-11 pr-4 py-3 border rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                usernameError ? "border-red-400" : "border-gray-300"
+              }`}
             ></input>
           </div>
+          {usernameError && (
+            <p className="mt-1.5 text-xs text-red-600">
+              {usernameError.message}
+            </p>
+          )}
         </div>
 
         {/* Password Field */}
