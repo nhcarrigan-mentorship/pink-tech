@@ -100,6 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return;
           }
 
+          // Don't log the user in until their email is verified.
+          if (!signedInUser.email_confirmed_at) return;
+
           try {
             const pending = localStorage.getItem("pendingProfile");
             if (pending) {
