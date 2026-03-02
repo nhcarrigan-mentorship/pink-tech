@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import getSupabase from "../../config/supabaseClient";
 import LazyIcon from "../ui/LazyIcon";
 
 interface EmailVerificationNoticeProps {
