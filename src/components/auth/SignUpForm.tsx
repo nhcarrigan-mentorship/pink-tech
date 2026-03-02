@@ -19,6 +19,7 @@ export default function SignUpForm() {
   const [emailSent, setEmailSent] = useState(false);
 
   function validateUsername(value: string): string | null {
+    if (value.length < 1) return null;
     if (value.length < 3 || value.length > 20)
       return "Username must be between 3 and 20 characters.";
     if (!/^[a-zA-Z0-9_-]+$/.test(value))
