@@ -94,7 +94,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(null);
             return;
           }
-          if (event !== "SIGNED_IN") return;
+          // USER_UPDATED fires when the verification link is clicked and the
+          // email is confirmed. SIGNED_IN fires on manual login. Handle both.
+          if (event !== "SIGNED_IN" && event !== "USER_UPDATED") return;
 
           const signedInUser = session?.user;
           if (!signedInUser) {
