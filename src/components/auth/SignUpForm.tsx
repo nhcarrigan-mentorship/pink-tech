@@ -13,10 +13,14 @@ export default function SignUpForm() {
   const [error, setError] = useState("");
   const [usernameError, setUsernameError] = useState<Error | null>(null);
   const [emailError, setEmailError] = useState<Error | null>(null);
+  const [nameError, setNameError] = useState<Error | null>(null);
 
   const navigate = useNavigate();
   const { signup } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
+
+  const NAME_MIN = 3;
+  const NAME_MAX = 141;
 
   function validateUsername(value: string): string | null {
     if (value.length < 1) return null;
@@ -29,6 +33,23 @@ export default function SignUpForm() {
     if (/[_-]{2}/.test(value))
       return "Username cannot contain consecutive underscores or hyphens.";
     if (/^[0-9]/.test(value)) return "Username must start with a letter.";
+    return null;
+  }
+
+  function validateName(value: string): string | null {
+    const trimmed = value.trim();
+
+    if (trimmed.length < 1) return null;
+    if (trimmed.length < NAME_MIN || trimmed.length > NAME_MAX)
+      return "Name must be between 2 and 141 characters.";
+    if (!/^[\p{L}\p{M}'\-. ]+$/u.test(trimmed))
+      return "Name can only contain letters, spaces, hyphens, apostrophes, and periods.";
+    if (/\s{2,}/.test(trimmed))
+      return "Name cannot contain consecutive spaces.";
+    if (/[-'.]{2,}/.test(trimmed))
+      return "Name cannot contain consecutive hyphens, apostrophes, or periods.";
+    if (/^[-'.]|[-'.]$/.test(trimmed))
+      return "Name cannot start or end with a hyphen, apostrophe, or period.";
     return null;
   }
 
@@ -139,6 +160,8 @@ export default function SignUpForm() {
               type="email"
               name="email"
               id="email"
+              minLength={NAME_MIN}
+              maxLength={NAME_MAX}
               value={email}
               autoComplete="email"
               required
@@ -179,12 +202,22 @@ export default function SignUpForm() {
               autoComplete="name"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setNameError(
+                  validateName(e.target.value)
+                    ? new Error(validateName(e.target.value)!)
+                    : null,
+                );
+              }}
               placeholder="Jane Smith"
               disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
+          {nameError && (
+            <p className="mt-1.5 text-xs text-red-600">{nameError.message}</p>
+          )}
         </div>
 
         {/* Username Field */}
