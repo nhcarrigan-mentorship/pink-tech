@@ -176,7 +176,7 @@ export default function FeaturedProfiles() {
               <LazyIcon name="ChevronsRight" className="w-3 h-3" />
             </MotionDiv>
           )}
-          {currentIndex < profiles.length - 1 && (
+          {currentIndex < featuredProfiles.length - 1 && (
             <MotionDiv
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 0.6, x: 0 }}
