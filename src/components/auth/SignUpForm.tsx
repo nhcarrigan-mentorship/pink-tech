@@ -10,6 +10,9 @@ export default function SignUpForm() {
   const USERNAME_MAX = 20;
   const EMAIL_MAX = 320;
 
+  const PASSWORD_MIN = 8;
+  const PASSWORD_MAX = 128;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -20,6 +23,7 @@ export default function SignUpForm() {
   const [usernameError, setUsernameError] = useState<Error | null>(null);
   const [emailError, setEmailError] = useState<Error | null>(null);
   const [nameError, setNameError] = useState<Error | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { signup } = useAuth();
@@ -100,6 +104,52 @@ export default function SignUpForm() {
     return null;
   }
 
+  const PASSWORD_RULES = [
+    {
+      label: "At least 8 characters",
+      test: (v: string) => v.length >= PASSWORD_MIN,
+    },
+    {
+      label: "At most 128 characters",
+      test: (v: string) => v.length <= PASSWORD_MAX,
+    },
+    {
+      label: "One uppercase letter (A–Z)",
+      test: (v: string) => /[A-Z]/.test(v),
+    },
+    {
+      label: "One lowercase letter (a–z)",
+      test: (v: string) => /[a-z]/.test(v),
+    },
+    { label: "One number (0–9)", test: (v: string) => /[0-9]/.test(v) },
+    {
+      label: "One special character (!@#$%^&*…)",
+      test: (v: string) => /[^A-Za-z0-9]/.test(v),
+    },
+  ];
+
+  function getPasswordStrength(value: string): number {
+    if (value.length === 0) return 0;
+    return PASSWORD_RULES.filter((r) => r.test(value)).length;
+  }
+
+  function validatePassword(value: string): string | null {
+    if (value.length < 1) return null;
+    if (value.length > PASSWORD_MAX)
+      return `Password must be at most ${PASSWORD_MAX} characters.`;
+    if (value.length < PASSWORD_MIN)
+      return `Password must be at least ${PASSWORD_MIN} characters.`;
+    if (!/[A-Z]/.test(value))
+      return "Password must contain at least one uppercase letter.";
+    if (!/[a-z]/.test(value))
+      return "Password must contain at least one lowercase letter.";
+    if (!/[0-9]/.test(value))
+      return "Password must contain at least one number.";
+    if (!/[^A-Za-z0-9]/.test(value))
+      return "Password must contain at least one special character.";
+    return null;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -108,6 +158,8 @@ export default function SignUpForm() {
     try {
       const usernameValidationError = validateUsername(username);
       if (usernameValidationError) throw new Error(usernameValidationError);
+      const passwordValidationError = validatePassword(password);
+      if (passwordValidationError) throw new Error(passwordValidationError);
       await signup(email, name, username, password);
       setEmailSent(true);
       sessionStorage.setItem("pendingVerification", email);
@@ -289,13 +341,19 @@ export default function SignUpForm() {
               value={password}
               autoComplete="new-password"
               required
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(validatePassword(e.target.value));
+              }}
               placeholder="••••••••"
               disabled={isSigningUp}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full pl-11 pr-11 py-3 border rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                passwordError ? "border-red-400" : "border-gray-300"
+              }`}
             ></input>
 
             <button
+              type="button"
               className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 cursor-pointer"
               onClick={() => setShowPassword((prev) => !prev)}
             >
@@ -306,6 +364,85 @@ export default function SignUpForm() {
               )}
             </button>
           </div>
+
+          {/* Strength bar */}
+          {password.length > 0 &&
+            (() => {
+              const strength = getPasswordStrength(password);
+              const levels = [
+                { min: 0, label: "", bars: 0 },
+                { min: 1, label: "Very weak", bars: 1 },
+                { min: 2, label: "Weak", bars: 2 },
+                { min: 3, label: "Fair", bars: 3 },
+                { min: 5, label: "Strong", bars: 4 },
+                { min: 6, label: "Very strong", bars: 5 },
+              ];
+              const level = [...levels]
+                .reverse()
+                .find((l) => strength >= l.min)!;
+              const colors = [
+                "",
+                "bg-red-500",
+                "bg-orange-400",
+                "bg-yellow-400",
+                "bg-lime-500",
+                "bg-green-500",
+              ];
+              const textColors = [
+                "",
+                "text-red-500",
+                "text-orange-400",
+                "text-yellow-500",
+                "text-lime-600",
+                "text-green-600",
+              ];
+              return (
+                <div className="mt-2">
+                  <div className="flex gap-1 mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-1.5 flex-1 rounded-full transition-colors ${
+                          i < level.bars ? colors[level.bars] : "bg-gray-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {level.label && (
+                    <p
+                      className={`text-xs font-medium ${textColors[level.bars]}`}
+                    >
+                      {level.label}
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
+
+          {/* Requirements checklist */}
+          {password.length > 0 && (
+            <ul className="mt-2 space-y-1">
+              {PASSWORD_RULES.filter(
+                (r) => r.label !== "At most 128 characters",
+              ).map((rule) => {
+                const met = rule.test(password);
+                return (
+                  <li
+                    key={rule.label}
+                    className={`flex items-center gap-1.5 text-xs ${
+                      met ? "text-green-600" : "text-gray-400"
+                    }`}
+                  >
+                    <LazyIcon
+                      name={met ? "CircleCheck" : "Circle"}
+                      className="w-3.5 h-3.5 shrink-0"
+                    />
+                    {rule.label}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
         <button
