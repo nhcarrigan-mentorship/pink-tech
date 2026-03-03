@@ -44,17 +44,20 @@ export default function ProfileInfoboxForm({
   function validateName(name: string): string | null {
     const NAME_MIN = 2;
     const NAME_MAX = 50;
-    const NAME_ALLOWED_REGEX = /^[A-Za-z\s'\-]+$/;
 
     const trimmed = name.trim();
 
-    // Return error messages describing expected values
-    if (trimmed.length < NAME_MIN)
-      return `Name must be at least ${NAME_MIN} characters.`;
-    if (trimmed.length > NAME_MAX)
-      return `Name must be ${NAME_MAX} characters or fewer.`;
-    if (!NAME_ALLOWED_REGEX.test(trimmed))
-      return `Name should contain only letters, spaces, apostrophes, and hyphens.`;
+    if (trimmed.length < 1) return null;
+    if (trimmed.length < NAME_MIN || trimmed.length > NAME_MAX)
+      return "Name must be between 2 and 141 characters.";
+    if (!/^[\p{L}\p{M}'\-. ]+$/u.test(trimmed))
+      return "Name can only contain letters, spaces, hyphens, apostrophes, and periods.";
+    if (/\s{2,}/.test(trimmed))
+      return "Name cannot contain consecutive spaces.";
+    if (/[-'.]{2,}/.test(trimmed))
+      return "Name cannot contain consecutive hyphens, apostrophes, or periods.";
+    if (/^[-'.]|[-'.]$/.test(trimmed))
+      return "Name cannot start or end with a hyphen, apostrophe, or period.";
     return null;
   }
 
