@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { type ReactNode } from "react";
 import type { UserProfile } from "../types/UserProfile";
 import { getSupabase } from "../config/supabaseClient";
+import camelcaseKeys from "camelcase-keys";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -141,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return;
               }
 
-              setUser(profileData);
+              setUser(camelcaseKeys(profileData, { deep: true }));
             } catch (err) {
               console.error("Error handling auth state change:", err);
             }
