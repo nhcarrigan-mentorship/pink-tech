@@ -173,6 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ) => {
     const supabase = await getSupabase();
 
+    // Validate username is is not taken
     const { data: existingUsername, error: usernameCheckError } = await supabase
       .from("profiles")
       .select("username")
@@ -193,6 +194,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (error) throw error;
+
+    // Supabase silently succeeds for duplicate emails but returns an empty
+    // identities array instead of throwing. Detect and surface it here.
+    if (!data.user?.identities?.length)
+      throw new Error(
+        "An account with this email already exists. Please sign in instead.",
+      );
 
     const user = data.user;
     if (!user) throw new Error("No user returned from Supabase");
