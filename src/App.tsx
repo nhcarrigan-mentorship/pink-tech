@@ -8,6 +8,7 @@ import Search from "./pages/main/Search";
 import SignUp from "./pages/auth/SignUp";
 import { ProfilesProvider } from "./contexts/ProfilesContext";
 import Verify from "./pages/auth/Verify";
+import Settings from "./pages/main/Settings";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/verify" element={<Verify />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>

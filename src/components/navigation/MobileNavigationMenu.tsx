@@ -57,6 +57,20 @@ export default function MobileNavigationMenu() {
               />
               <span className="text-xs font-medium">Profile</span>
             </Link>
+            <Link
+              to={`/settings`}
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-colors min-w-[70px] ${
+                isActive(`/settings`) ? "text-pink-600" : "text-gray-600"
+              }`}
+            >
+              <LazyIcon
+                name="User"
+                className={`w-6 h-6 ${
+                  isActive(`/settings`) ? "stroke-[2.5]" : ""
+                }`}
+              />
+              <span className="text-xs font-medium">Settings</span>
+            </Link>
             <button
               onClick={logout}
               className="flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-colors text-gray-600 cursor-pointer min-w-[70px]"

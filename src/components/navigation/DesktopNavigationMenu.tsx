@@ -46,6 +46,17 @@ export default function DesktopNavigationMenu() {
             <LazyIcon name="User" className="w-4 h-4" />
             <span>My Profile</span>
           </Link>
+          <Link
+            to="/settings"
+            className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+              isActive("/settings")
+                ? "bg-pink-50 text-pink-700"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            <LazyIcon name="Settings" className="w-4 h-4" />
+            <span>Settings</span>
+          </Link>
           <button
             onClick={logout}
             className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-gray-600 hover:bg-gray-50 cursor-pointer"
