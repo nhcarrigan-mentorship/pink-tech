@@ -8,6 +8,7 @@ export default function SignUpForm() {
   const NAME_MAX = 141;
   const USERNAME_MIN = 3;
   const USERNAME_MAX = 20;
+  const EMAIL_MAX = 320;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,7 +60,8 @@ export default function SignUpForm() {
     const trimmed = value.trim();
 
     if (trimmed.length < 1) return null;
-    if (trimmed.length > 320) return "Email must be 320 characters or fewer.";
+    if (trimmed.length > EMAIL_MAX)
+      return "Email must be 320 characters or fewer.";
     if (/\s/.test(trimmed)) return "Email must not contain spaces.";
 
     const parts = trimmed.split("@");
