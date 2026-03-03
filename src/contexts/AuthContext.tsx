@@ -172,6 +172,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
   ) => {
     const supabase = await getSupabase();
+
+    const { data: existingUsername, error: usernameCheckError } = await supabase
+      .from("profiles")
+      .select("username")
+      .ilike("username", username)
+      .maybeSingle();
+
+    if (usernameCheckError) throw usernameCheckError;
+    if (existingUsername)
+      throw new Error(
+        `The username is already taken. Please choose a different one.`,
+      );
+
     // Same reasoning as login — do not wrap in withTimeout.
     const { data, error } = await supabase.auth.signUp({
       email,
