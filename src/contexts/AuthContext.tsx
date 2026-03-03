@@ -142,7 +142,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return;
               }
 
-              setUser(camelcaseKeys(profileData, { deep: true }));
+              setUser({
+                ...camelcaseKeys(profileData, { deep: true }),
+                authEmail: signedInUser.email ?? null,
+              });
             } catch (err) {
               console.error("Error handling auth state change:", err);
             }

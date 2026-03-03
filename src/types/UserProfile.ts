@@ -4,6 +4,7 @@ export interface UserProfile {
   username: string;
   lastUpdated: string;
   featured: boolean;
+  authEmail?: string | null; // Login email from Supabase Auth (not public)
   image?: string | null;
   bio?: string | null; // Short summary for cards/previews (1-2 sentences)
   role?: string | null;
