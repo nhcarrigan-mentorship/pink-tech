@@ -56,6 +56,14 @@ export default function Settings() {
                   </p>
                   <p>{user?.authEmail}</p>
                 </div>
+
+                {/* Password — read-only */}
+                <div className="px-5 py-4">
+                  <p className="text-pink-700 font-bold text-xs uppercase tracking-wide mb-0.5">
+                    Password
+                  </p>
+                  <p>••••••••</p>
+                </div>
               </div>
             </div>
           </div>
