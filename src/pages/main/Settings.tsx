@@ -135,7 +135,7 @@ export default function Settings() {
                       </div>
                       <button
                         type="submit"
-                        disabled={savingUsername}
+                        disabled={savingUsername || usernameError != null}
                         className="p-1.5 rounded text-green-600 hover:bg-green-50 disabled:opacity-50 transition-colors cursor-pointer"
                         aria-label="Save username"
                       >
