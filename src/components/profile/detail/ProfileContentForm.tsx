@@ -71,7 +71,7 @@ export default function ProfileContentForm({
 
     // Skip saving when profile content remains the same
     if (content === profile.content) {
-      return;
+      setIsEditing(false);
     }
 
     let success;
