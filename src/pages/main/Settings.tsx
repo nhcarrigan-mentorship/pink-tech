@@ -1,12 +1,55 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LazyIcon from "../../components/ui/LazyIcon";
 import { useAuth } from "../../contexts/AuthContext";
 import { Check, X } from "lucide-react";
+import { getSupabase } from "../../config/supabaseClient";
 
 export default function Settings() {
-  const { user } = useAuth();
-  const [username, setUsername] = useState(user?.username);
+  const { user, updateProfile } = useAuth();
+  const [username, setUsername] = useState<string | null>(null);
   const [editingUsername, setEditingUsername] = useState(false);
+  const [savingUsername, setSavingUsername] = useState(false);
+  const [usernameError, setUsernameError] = useState<Error | null>(null);
+
+  // Populate username
+  useEffect(() => {
+    if (user?.username) setUsername(user.username);
+  }, [user?.username]);
+
+  async function saveUsername(e: React.FormEvent) {
+    // Exit form when username is the same
+    if (username === user?.username) setEditingUsername(false);
+
+    setSavingUsername(true);
+    e.preventDefault();
+
+    let success;
+
+    try {
+      const supabase = await getSupabase();
+
+      // Update username
+      const { error } = await supabase
+        .from("profiles")
+        .update({ username })
+        .eq("id", user?.id)
+        .select()
+        .single();
+      if (error) setUsernameError(error);
+      if (username) updateProfile({ username });
+      success = true;
+    } catch (err) {
+      const normalized = err instanceof Error ? err : Error(String(err));
+      setUsernameError(normalized);
+    } finally {
+      setSavingUsername(false);
+      if (success) setEditingUsername(false);
+    }
+  }
+
+  function onUsernameChange(username: string) {
+    setUsername(username);
+  }
 
   return (
     <>
@@ -41,7 +84,7 @@ export default function Settings() {
 
                 {/* Username - inline editable */}
                 {editingUsername ? (
-                  <form className="px-5 py-4">
+                  <form className="px-5 py-4" onSubmit={(e) => saveUsername(e)}>
                     <label className="text-pink-700 font-bold text-xs uppercase tracking-wide">
                       Username
                     </label>
@@ -51,12 +94,39 @@ export default function Settings() {
                           @
                         </span>
                         <input
-                          value={username}
+                          value={username ?? ""}
+                          onChange={(e) => onUsernameChange(e.target.value)}
                           className="w-full pl-8 py-1.5 border border-pink-200 rounded focus:outline-pink-600"
                         ></input>
                       </div>
-                      <button className="p-1.5 rounded text-green-600 hover:bg-green-50 disabled:opacity-50 transition-colors cursor-pointer">
-                        <Check className="w-4 h-4" />
+                      <button
+                        type="submit"
+                        disabled={savingUsername}
+                        className="p-1.5 rounded text-green-600 hover:bg-green-50 disabled:opacity-50 transition-colors cursor-pointer"
+                      >
+                        {savingUsername ? (
+                          <svg
+                            className="animate-spin w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v8H4z"
+                            />
+                          </svg>
+                        ) : (
+                          <Check className="w-4 h-4" />
+                        )}
                       </button>
                       <button className="p-1.5 rounded text-gray-400 hover:bg-gray-50 disabled:opacity-50 transition-colors cursor-pointer">
                         <X className="w-4 h-4" />
@@ -73,7 +143,7 @@ export default function Settings() {
                       Username
                     </p>
                     <div className="flex justify-between">
-                      <p>{user?.username}</p>
+                      <p>@{user?.username}</p>
                       <button
                         className="inline-flex items-center gap-1 text-sm text-pink-600 font-bold cursor-pointer hover:text-pink-700 transition-colors"
                         onClick={() => setEditingUsername(true)}
