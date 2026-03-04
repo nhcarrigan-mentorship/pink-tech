@@ -38,8 +38,11 @@ export default function Settings() {
         .eq("id", user?.id)
         .select()
         .single();
-      if (error) setUsernameError(error);
+
+      if (error) throw new Error(error);
+
       if (username) updateProfile({ username });
+
       success = true;
     } catch (err) {
       const normalized = err instanceof Error ? err : Error(String(err));
