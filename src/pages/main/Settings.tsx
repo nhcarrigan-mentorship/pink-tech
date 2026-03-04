@@ -164,7 +164,8 @@ export default function Settings() {
                       </button>
                       <button
                         onClick={onCancel}
-                        className="p-1.5 rounded text-gray-400 hover:bg-gray-50 disabled:opacity-50 transition-colors cursor-pointer"
+                        className="p-1.5 rounded text-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                        disabled={savingUsername}
                         aria-label="Cancel"
                       >
                         <X className="w-4 h-4" />
@@ -184,7 +185,7 @@ export default function Settings() {
                     <div className="flex justify-between">
                       <p>@{user?.username}</p>
                       <button
-                        className="inline-flex items-center gap-1 text-sm text-pink-600 font-bold cursor-pointer hover:text-pink-700 transition-colors"
+                        className="inline-flex items-center gap-1 text-sm text-pink-600 font-bold cursor-pointer hover:text-pink-700 transition-colors disabled:cursor-not-allowed"
                         onClick={startEditing}
                       >
                         <LazyIcon name="Edit" className="w-4 h-4" />
