@@ -525,7 +525,7 @@ export default function ProfileInfoboxForm({
             id="displayName"
             value={editedProfile.displayName}
             onChange={onInputChange}
-            className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+            className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
           ></input>
           {nameError && (
             <p className="text-red-600 font-semibold mt-2" role="alert">
@@ -545,7 +545,7 @@ export default function ProfileInfoboxForm({
               value={editedProfile.bio ?? ""}
               placeholder="e.g., Software engineer passionate about AI and mentoring. Building tools that empower communities."
               onChange={onInputChange}
-              className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+              className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
             ></textarea>
             <button
               type="button"
@@ -581,7 +581,7 @@ export default function ProfileInfoboxForm({
                   value={editedProfile.role ?? ""}
                   placeholder="Software Engineer"
                   onChange={onInputChange}
-                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                  className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
                   type="button"
@@ -614,7 +614,7 @@ export default function ProfileInfoboxForm({
                   value={editedProfile.company ?? ""}
                   placeholder="Tech Company"
                   onChange={onInputChange}
-                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                  className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
                   type="button"
@@ -648,7 +648,7 @@ export default function ProfileInfoboxForm({
                   value={editedProfile.location ?? ""}
                   placeholder="San Francisco, CA"
                   onChange={onInputChange}
-                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                  className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
                   type="button"
@@ -682,7 +682,7 @@ export default function ProfileInfoboxForm({
                   value={editedProfile.email ?? ""}
                   placeholder="janedoe@email.com"
                   onChange={onInputChange}
-                  className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                  className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
                 <button
                   type="button"
@@ -724,7 +724,7 @@ export default function ProfileInfoboxForm({
                     value={(editedProfile as any)[key] ?? ""}
                     placeholder={placeholder}
                     onChange={onInputChange}
-                    className="w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+                    className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
                   ></input>
                   <button
                     type="button"
@@ -785,7 +785,7 @@ export default function ProfileInfoboxForm({
               value={expertiseInput ?? ""}
               placeholder="Add expertise (e.g., Data Science)"
               onChange={(e) => onExpertiseChange(e.target.value)}
-              className="flex-1 w-full mt-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-pink-500 transition-colors"
+              className="flex-1 w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
               aria-label="Add expertise"
               autoFocus
             ></input>
@@ -830,7 +830,7 @@ export default function ProfileInfoboxForm({
             type="button"
             onClick={onCancel}
             disabled={isSaving || isUploadingImage}
-            className="flex-1 min-h-[44px] py-3 bg-white border border-gray-300 text-gray-900 font-bold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 min-h-[44px] py-3 bg-white border border-pink-200 text-gray-900 font-bold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
