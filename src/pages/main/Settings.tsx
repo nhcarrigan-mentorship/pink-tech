@@ -47,6 +47,11 @@ export default function Settings() {
     }
   }
 
+  function startEditing() {
+    setUsername(user?.username ?? null);
+    setEditingUsername(true);
+  }
+
   function onUsernameChange(username: string) {
     setUsername(username);
   }
@@ -155,7 +160,7 @@ export default function Settings() {
                       <p>@{user?.username}</p>
                       <button
                         className="inline-flex items-center gap-1 text-sm text-pink-600 font-bold cursor-pointer hover:text-pink-700 transition-colors"
-                        onClick={() => setEditingUsername(true)}
+                        onClick={startEditing}
                       >
                         <LazyIcon name="Edit" className="w-4 h-4" />
                         Edit
