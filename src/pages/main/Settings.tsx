@@ -5,6 +5,9 @@ import { Check, X } from "lucide-react";
 import { getSupabase } from "../../config/supabaseClient";
 
 export default function Settings() {
+  const USERNAME_MIN = 3;
+  const USERNAME_MAX = 20;
+
   const { user, updateProfile } = useAuth();
   const [username, setUsername] = useState<string | null>(null);
   const [editingUsername, setEditingUsername] = useState(false);
@@ -52,7 +55,26 @@ export default function Settings() {
     setEditingUsername(true);
   }
 
+  function validateUsername(value: string): string | null {
+    if (value.length < 1) return null;
+    if (value.length < USERNAME_MIN || value.length > USERNAME_MAX)
+      return `Username must be between ${USERNAME_MIN} and ${USERNAME_MAX} characters.`;
+    if (!/^[a-zA-Z0-9_-]+$/.test(value))
+      return "Username can only contain letters, numbers, underscores, and hyphens.";
+    if (/^[_-]|[_-]$/.test(value))
+      return "Username cannot start or end with an underscore or hyphen.";
+    if (/[_-]{2}/.test(value))
+      return "Username cannot contain consecutive underscores or hyphens.";
+    if (/^[0-9]/.test(value)) return "Username must start with a letter.";
+    return null;
+  }
+
   function onUsernameChange(username: string) {
+    const usernameValidationError = validateUsername(username);
+
+    setUsernameError(
+      usernameValidationError ? Error(usernameValidationError) : null,
+    );
     setUsername(username);
   }
 
@@ -146,10 +168,11 @@ export default function Settings() {
                         <X className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className="mt-2 text-xs text-gray-500">
-                      Lowercase letters, numbers, underscores, dots, and
-                      hyphens. Min 3 characters.
-                    </p>
+                    {usernameError && (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {usernameError.message}
+                      </p>
+                    )}
                   </form>
                 ) : (
                   <div className="px-5 py-4">
