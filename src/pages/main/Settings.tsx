@@ -107,6 +107,7 @@ export default function Settings() {
                         type="submit"
                         disabled={savingUsername}
                         className="p-1.5 rounded text-green-600 hover:bg-green-50 disabled:opacity-50 transition-colors cursor-pointer"
+                        aria-label="Save username"
                       >
                         {savingUsername ? (
                           <svg
@@ -135,6 +136,7 @@ export default function Settings() {
                       <button
                         onClick={onCancel}
                         className="p-1.5 rounded text-gray-400 hover:bg-gray-50 disabled:opacity-50 transition-colors cursor-pointer"
+                        aria-label="Cancel"
                       >
                         <X className="w-4 h-4" />
                       </button>
