@@ -51,6 +51,10 @@ export default function Settings() {
     setUsername(username);
   }
 
+  function onCancel() {
+    setEditingUsername(false);
+  }
+
   return (
     <>
       <div className="py-8 md:py-16">
@@ -128,7 +132,10 @@ export default function Settings() {
                           <Check className="w-4 h-4" />
                         )}
                       </button>
-                      <button className="p-1.5 rounded text-gray-400 hover:bg-gray-50 disabled:opacity-50 transition-colors cursor-pointer">
+                      <button
+                        onClick={onCancel}
+                        className="p-1.5 rounded text-gray-400 hover:bg-gray-50 disabled:opacity-50 transition-colors cursor-pointer"
+                      >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
