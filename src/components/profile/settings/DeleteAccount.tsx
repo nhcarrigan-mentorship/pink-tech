@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LazyIcon from "../../ui/LazyIcon";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function DeleteAccount() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -8,6 +9,7 @@ export default function DeleteAccount() {
   const [deleteError, setDeleteError] = useState<Error | null>(null);
 
   const { user, deleteProfile } = useAuth();
+  const navigate = useNavigate();
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -20,6 +22,7 @@ export default function DeleteAccount() {
       setDeleteError(normalized);
     } finally {
       setIsDeleting(false);
+      navigate("/");
     }
   }
 

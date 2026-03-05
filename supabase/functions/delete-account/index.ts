@@ -35,6 +35,17 @@ Deno.serve(async (req: Request) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
+  // Delete profile row first, then the auth user
+  const { error: profileError } = await adminClient
+    .from("profiles")
+    .delete()
+    .eq("id", user.id);
+  if (profileError)
+    return new Response(profileError.message, {
+      status: 500,
+      headers: corsHeaders,
+    });
+
   const { error } = await adminClient.auth.admin.deleteUser(user.id);
   if (error)
     return new Response(error.message, { status: 500, headers: corsHeaders });
