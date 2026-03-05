@@ -24,5 +24,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "functions"]
+  "include": ["src", "functions", "supabase/functions/delete-account"]
 }

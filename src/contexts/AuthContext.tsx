@@ -251,10 +251,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const deleteProfile = async () => {
     const supabase = await getSupabase();
-    const { error } = await supabase.functions.invoke("delete-account");
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) throw new Error("No active session");
+    const { error } = await supabase.functions.invoke("delete-account", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
     if (error) throw error;
     setUser(null);
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Session is already invalidated server-side when the account is deleted.
+    }
   };
 
   return (
