@@ -4,8 +4,24 @@ import { useAuth } from "../../../contexts/AuthContext";
 
 export default function DeleteAccount() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<Error | null>(null);
 
-  const { user } = useAuth();
+  const { user, deleteProfile } = useAuth();
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    setDeleteError(null);
+
+    try {
+      await deleteProfile();
+    } catch (err) {
+      const normalized = err instanceof Error ? err : new Error(String(err));
+      setDeleteError(normalized);
+    } finally {
+      setIsDeleting(false);
+    }
+  }
 
   function cancelDelete() {
     setShowDeleteModal(false);
@@ -73,11 +89,19 @@ export default function DeleteAccount() {
               >
                 Cancel
               </button>
-              <button className="flex-1 flex gap-2 justify-center items-center py-2 text-sm font-bold bg-red-600 text-white rounded cursor-pointer hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+              <button
+                onClick={handleDelete}
+                className="flex-1 flex gap-2 justify-center items-center py-2 text-sm font-bold bg-red-600 text-white rounded cursor-pointer hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
                 <LazyIcon name="Trash2" className="w-4 h-4" />
-                Yes, Delete
+                {isDeleting ? "Deleting..." : "Yes, Delete"}
               </button>
             </div>
+            {deleteError && (
+              <p className="mt-1.5 text-xs text-red-600">
+                {deleteError.message}
+              </p>
+            )}
           </div>
         </div>
       )}
