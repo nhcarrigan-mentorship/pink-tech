@@ -65,7 +65,7 @@ export default function DeleteAccount() {
               <button className="flex-1 py-2 text-sm text-gray-700 font-bold border border-gray-300 rounded cursor-pointer hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
                 Cancel
               </button>
-              <button className="flex-1 flex gap-2 justify-center items-center py-2 text-sm font-bold bg-red-600 text-white` rounded cursor-pointer hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+              <button className="flex-1 flex gap-2 justify-center items-center py-2 text-sm font-bold bg-red-600 text-white rounded cursor-pointer hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
                 <LazyIcon name="Trash2" className="w-4 h-4" />
                 Yes, Delete
               </button>
