@@ -16,6 +16,7 @@ interface AuthContextType {
   ) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => void;
+  deleteProfile: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -248,6 +249,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const deleteProfile = async () => {
+    const supabase = await getSupabase();
+    const { error } = await supabase.functions.invoke("delete-account");
+    if (error) throw error;
+    setUser(null);
+    await supabase.auth.signOut();
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -257,6 +266,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         updateProfile,
+        deleteProfile,
       }}
     >
       {children}
