@@ -99,7 +99,7 @@ export default function DeleteAccount() {
             </div>
             {deleteError && (
               <p className="mt-1.5 text-xs text-red-600">
-                {deleteError.message}
+                Failed to delete profile. Please try again later.
               </p>
             )}
           </div>
