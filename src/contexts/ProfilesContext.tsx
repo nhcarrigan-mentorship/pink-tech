@@ -8,6 +8,7 @@ type ProfilesContextType = {
   error: Error | null;
   refetch: () => {};
   updateProfileInContext: (updated: UserProfile) => void;
+  removeProfileFromContext: (id: string) => void;
   fetchFullProfile: (username: string) => Promise<void>;
 };
 
@@ -26,6 +27,7 @@ export function ProfilesProvider({ children }: Props) {
     error,
     refetch,
     updateProfileInContext,
+    removeProfileFromContext,
     fetchFullProfile,
   } = useProfiles();
 
@@ -37,6 +39,7 @@ export function ProfilesProvider({ children }: Props) {
         error,
         refetch,
         updateProfileInContext,
+        removeProfileFromContext,
         fetchFullProfile,
       }}
     >

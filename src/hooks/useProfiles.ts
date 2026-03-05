@@ -249,6 +249,14 @@ export default function useProfiles() {
     });
   }, []);
 
+  const removeProfileFromContext = useCallback((id: string) => {
+    setProfiles((prev) => {
+      const next = prev.filter((p) => String(p.id) !== String(id));
+      profilesCache = next;
+      return next;
+    });
+  }, []);
+
   const fetchFullProfile = useCallback(
     async (username: string) => {
       if (!username) return;
@@ -305,6 +313,7 @@ export default function useProfiles() {
     error,
     refetch,
     updateProfileInContext,
+    removeProfileFromContext,
     fetchFullProfile,
   };
 }

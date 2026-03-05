@@ -2,6 +2,7 @@ import { useState } from "react";
 import LazyIcon from "../../ui/LazyIcon";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useProfilesContext } from "../../../hooks/useProfilesContext";
 
 export default function DeleteAccount() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -9,6 +10,7 @@ export default function DeleteAccount() {
   const [deleteError, setDeleteError] = useState<Error | null>(null);
 
   const { user, deleteProfile } = useAuth();
+  const { removeProfileFromContext } = useProfilesContext();
   const navigate = useNavigate();
 
   async function handleDelete() {
@@ -17,12 +19,13 @@ export default function DeleteAccount() {
 
     try {
       await deleteProfile();
+      if (user?.id) removeProfileFromContext(user.id);
+      navigate("/");
     } catch (err) {
       const normalized = err instanceof Error ? err : new Error(String(err));
       setDeleteError(normalized);
     } finally {
       setIsDeleting(false);
-      navigate("/");
     }
   }
 
