@@ -70,7 +70,7 @@ export default function MobileNavigationMenu() {
               }`}
             >
               <LazyIcon
-                name="User"
+                name="Settings"
                 className={`w-6 h-6 ${
                   isActive(`/settings`) ? "stroke-[2.5]" : ""
                 }`}
