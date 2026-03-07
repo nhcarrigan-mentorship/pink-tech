@@ -14,14 +14,14 @@ export default function Hero() {
         <div className="text-center">
           <>
             <h1 className="text-4xl md:text-5xl lg:text-6xl mb-6 font-bold">
-              PinkTech
+              Discover Women Shaping the Future of Technology
             </h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-8 mx-auto">
               {isAuthenticated
                 ? "Discover inspiring women in tech and manage your profile"
-                : "Create your public profile, control how you're represented, and discover other inspiring women in tech."}
+                : "The definitive directory of inspiring leaders, innovators, and experts across the tech industry"}
             </p>
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <div className="flex justify-center gap-3 md:gap-4 flex-wrap">
                 <Link
                   to={`/${user?.username}`}
@@ -44,17 +44,6 @@ export default function Hero() {
                   Search Profiles
                 </Link>
               </div>
-            ) : (
-              <Link
-                to="/signup"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-pink-500 font-bold text-lg rounded-lg shadow-lg group cursor-pointer hover:bg-pink-500 hover:text-white transition-all hover:scale-105"
-              >
-                Create Profile
-                <LazyIcon
-                  name="UserPlus"
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                />
-              </Link>
             )}
           </>
         </div>
