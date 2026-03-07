@@ -10,6 +10,7 @@ import { ProfilesProvider } from "./contexts/ProfilesContext";
 import Verify from "./pages/auth/Verify";
 import Settings from "./pages/main/Settings";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import GuestRoute from "./components/auth/GuestRoute";
 
 function App() {
   return (
@@ -21,10 +22,31 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/:username" element={<ProfileDetail />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route
+              path="/login"
+              element={
+                <GuestRoute>
+                  <Login />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <GuestRoute>
+                  <SignUp />
+                </GuestRoute>
+              }
+            />
             <Route path="/verify" element={<Verify />} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>
