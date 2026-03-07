@@ -1,11 +1,17 @@
 import LazyIcon from "../ui/LazyIcon";
 import { useAuth } from "../../contexts/AuthContext";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function MobileNavigationMenu() {
   // Add a class to allow hiding when modal is open
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useAuth();
+
+  const handleLogout = async () => {
+    navigate("/");
+    await logout();
+  };
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -72,7 +78,7 @@ export default function MobileNavigationMenu() {
               <span className="text-xs font-medium">Settings</span>
             </Link>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-colors text-gray-600 cursor-pointer min-w-[70px]"
             >
               <LazyIcon name="LogOut" className="w-6 h-6" />

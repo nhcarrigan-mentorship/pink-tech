@@ -1,14 +1,21 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import LazyIcon from "../../components/ui/LazyIcon";
 
 export default function DesktopNavigationMenu() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useAuth();
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  async function handleLogout() {
+    navigate("/");
+    await logout();
+  }
+
   return (
     <div className="hidden md:flex gap-6">
       <Link
@@ -58,7 +65,7 @@ export default function DesktopNavigationMenu() {
             <span>Settings</span>
           </Link>
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-gray-600 hover:bg-gray-50 cursor-pointer"
           >
             <LazyIcon name="LogOut" className="w-4 h-4" />

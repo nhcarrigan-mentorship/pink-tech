@@ -228,18 +228,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    // Immediately clear local state for a snappy UI response.
-    setUser(null);
-    // Also sign out from Supabase so the session is removed from browser
-    // storage. Without this, the stale session token stays alive and Supabase
-    // will try to refresh it in the background, holding its internal lock and
-    // blocking any concurrent DB queries (profiles list, etc.) until they time
-    // out.
+    // Sign out from Supabase — the SIGNED_OUT event fired by onAuthStateChange
+    // will call setUser(null). We intentionally do NOT call setUser(null) here
+    // synchronously, because doing so triggers an immediate re-render of
+    // ProtectedRoute which redirects to /login before navigate("/") can complete.
     try {
       const supabase = await getSupabase();
       await supabase.auth.signOut();
     } catch (err) {
       console.error("Error signing out from Supabase:", err);
+      // Fall back to clearing state manually if signOut fails.
+      setUser(null);
     }
   };
 
