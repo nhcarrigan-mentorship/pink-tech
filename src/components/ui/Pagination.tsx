@@ -15,7 +15,7 @@ export default function Pagination({
 
   return (
     <div
-      className={`flex items-center justify-center gap-1 md:gap-2 ${className}`}
+      className={`flex items-center justify-center gap-1 md:gap-2 mt-4 ${className}`}
     >
       {Array.from({ length: totalPages }, (_, index) => (
         <button
