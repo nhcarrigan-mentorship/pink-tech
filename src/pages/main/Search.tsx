@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef } from "react";
 import CallToAction from "../../components/layout/CallToAction";
 import SearchHeader from "../../features/search/components/SearchHeader";
 import FilteredProfiles from "../../features/search/results/FilteredProfiles";
@@ -7,19 +7,38 @@ import MobileFilterModal from "../../features/search/responsive/MobileFilterModa
 import { useProfilesContext } from "../../hooks/useProfilesContext";
 import LoadingState from "../../components/ui/LoadingState";
 import ErrorState from "../../components/ui/ErrorState";
+import { useSearchParams } from "react-router-dom";
 
 export default function Search() {
   const [search, setSearch] = useState("");
   const [selectedExpertise, setSelectedExpertise] = useState<string[]>([]);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const [, setSearchParams] = useSearchParams();
 
   const { profiles, loading, error, refetch } = useProfilesContext();
 
-  useEffect(() => {
-    setSearch("");
-    setSelectedExpertise([]);
-  }, []);
+  function resetPage() {
+    setSearchParams(
+      (prev) => {
+        prev.delete("page");
+        return prev;
+      },
+      { replace: true },
+    );
+  }
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    resetPage();
+  }
+
+  function handleSetSelectedExpertise(
+    value: string[] | ((prev: string[]) => string[]),
+  ) {
+    setSelectedExpertise(value);
+    resetPage();
+  }
 
   // Get all unique expertise areas
   const allExpertise = useMemo(() => {
@@ -59,7 +78,7 @@ export default function Search() {
 
   // Toggle expertise filter
   const toggleExpertise = (expertise: string) => {
-    setSelectedExpertise((prev) =>
+    handleSetSelectedExpertise((prev) =>
       prev.includes(expertise)
         ? prev.filter((e) => e !== expertise)
         : [...prev, expertise],
@@ -70,6 +89,7 @@ export default function Search() {
   const clearAllFilters = () => {
     setSearch("");
     setSelectedExpertise([]);
+    resetPage();
   };
 
   let content;
@@ -100,10 +120,10 @@ export default function Search() {
 
       <ProfileSearchBar
         search={search}
-        onSearch={setSearch}
+        onSearch={handleSearch}
         allExpertise={allExpertise}
         selectedExpertise={selectedExpertise}
-        setSelectedExpertise={setSelectedExpertise}
+        setSelectedExpertise={handleSetSelectedExpertise}
         filteredProfiles={filteredProfiles}
         onOpenMobileFilter={() => setShowMobileFilter(true)}
       />
@@ -120,7 +140,7 @@ export default function Search() {
         isOpen={showMobileFilter}
         onClose={() => setShowMobileFilter(false)}
         searchQuery={search}
-        setSearchQuery={setSearch}
+        setSearchQuery={handleSearch}
         allExpertise={allExpertise}
         selectedExpertise={selectedExpertise}
         toggleExpertise={toggleExpertise}

@@ -1,7 +1,8 @@
 import EmptyProfiles from "./EmptyProfiles";
 import ProfileList from "../components/ProfileList";
 import type { UserProfile } from "../../../types/UserProfile";
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import Pagination from "../../../components/ui/Pagination";
 
 interface FilteredProfilesProps {
@@ -19,11 +20,8 @@ export default function FilteredProfiles({
   profilesPerPage = DEFAULT_PROFILES_PER_PAGE,
   isFiltered,
 }: FilteredProfilesProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filteredProfiles]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Math.max(1, Number(searchParams.get("page") ?? 1));
 
   const totalPages = Math.ceil(filteredProfiles.length / profilesPerPage);
   const startIndex = (currentPage - 1) * profilesPerPage;
@@ -36,6 +34,20 @@ export default function FilteredProfiles({
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
+
+  function handlePageChange(page: number) {
+    setSearchParams(
+      (prev) => {
+        if (page === 1) {
+          prev.delete("page");
+        } else {
+          prev.set("page", String(page));
+        }
+        return prev;
+      },
+      { replace: false },
+    );
+  }
 
   return (
     <div className="py-4">
@@ -53,7 +65,7 @@ export default function FilteredProfiles({
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );
