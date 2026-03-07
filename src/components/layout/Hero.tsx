@@ -22,7 +22,7 @@ export default function Hero() {
                 : "Create your public profile, control how you're represented, and discover other inspiring women in tech."}
             </p>
             {isAuthenticated ? (
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-3 md:gap-4 flex-wrap">
                 <Link
                   to={`/${user?.username}`}
                   className="inline-flex items-center gap-2 px-8 py-4 bg-white text-pink-500 font-bold text-lg rounded-lg shadow-lg group cursor-pointer hover:bg-pink-500 hover:text-white transition-all hover:scale-105"
