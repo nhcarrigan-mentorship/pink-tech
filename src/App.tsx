@@ -9,6 +9,7 @@ import SignUp from "./pages/auth/SignUp";
 import { ProfilesProvider } from "./contexts/ProfilesContext";
 import Verify from "./pages/auth/Verify";
 import Settings from "./pages/main/Settings";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/verify" element={<Verify />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Route>
         </Routes>
       </BrowserRouter>
