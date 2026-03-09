@@ -3,14 +3,10 @@ import LazyIcon from "../../../components/ui/LazyIcon";
 interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
-  placeholder?: string;
 }
 
-export default function SearchInput({
-  value,
-  onChange,
-  placeholder = "Search leaders...",
-}: SearchInputProps) {
+export default function SearchInput({ value, onChange }: SearchInputProps) {
+  const placeholder = "Search by name, role, or location...";
   return (
     <div className="w-full relative">
       <div className="relative">
@@ -36,8 +32,8 @@ export default function SearchInput({
         )}
       </div>
       {/* Mobile helper text */}
-      <p className="text-xs text-gray-600 mt-2 md:hidden">
-        Search by name, role, or company
+      <p className="text-xs text-gray-600 mt-2">
+        Try "India", "Software Engineer", or "Machine Learning"
       </p>
     </div>
   );
