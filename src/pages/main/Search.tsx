@@ -15,7 +15,6 @@ export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("q") ?? "";
   const selectedExpertise = searchParams.getAll("expertise");
-
   const { profiles, loading, error, refetch } = useProfilesContext();
 
   function handleSearch(value: string) {
@@ -71,10 +70,15 @@ export default function Search() {
               profile?.bio.toLowerCase().includes(search.toLowerCase()))
           : true;
 
+      // Check expertise that match selected expertise
       const matchesExpertise =
         selectedExpertise.length === 0 ||
-        (profile?.expertise &&
-          profile?.expertise.some((exp) => selectedExpertise.includes(exp)));
+        (selectedExpertise &&
+          profile?.expertise?.some((exp) =>
+            selectedExpertise.some(
+              (sel) => sel.toLowerCase() === exp.toLowerCase(),
+            ),
+          ));
 
       return matchesSearch && matchesExpertise;
     });
