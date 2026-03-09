@@ -71,9 +71,7 @@ export default function Search() {
             (profile?.expertise &&
               profile?.expertise.some((exp) =>
                 exp.toLowerCase().includes(search.toLowerCase()),
-              )) ||
-            (profile?.bio &&
-              profile?.bio.toLowerCase().includes(search.toLowerCase()))
+              ))
           : true;
 
       // Check expertise that match selected expertise
