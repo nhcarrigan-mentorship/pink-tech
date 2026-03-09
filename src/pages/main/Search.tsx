@@ -66,6 +66,12 @@ export default function Search() {
               profile?.role.toLowerCase().includes(search.toLowerCase())) ||
             (profile?.company &&
               profile?.company.toLowerCase().includes(search.toLowerCase())) ||
+            (profile?.location &&
+              profile?.location.toLowerCase().includes(search.toLowerCase())) ||
+            (profile?.expertise &&
+              profile?.expertise.some((exp) =>
+                exp.toLowerCase().includes(search.toLowerCase()),
+              )) ||
             (profile?.bio &&
               profile?.bio.toLowerCase().includes(search.toLowerCase()))
           : true;
