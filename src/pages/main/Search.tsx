@@ -10,23 +10,13 @@ import ErrorState from "../../components/ui/ErrorState";
 import { useSearchParams } from "react-router-dom";
 
 export default function Search() {
-  const [selectedExpertise, setSelectedExpertise] = useState<string[]>([]);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("q") ?? "";
+  const selectedExpertise = searchParams.getAll("expertise");
 
   const { profiles, loading, error, refetch } = useProfilesContext();
-
-  function resetPage() {
-    setSearchParams(
-      (prev) => {
-        prev.delete("page");
-        return prev;
-      },
-      { replace: true },
-    );
-  }
 
   function handleSearch(value: string) {
     setSearchParams(
@@ -37,14 +27,21 @@ export default function Search() {
       },
       { replace: true },
     );
-    resetPage();
   }
 
-  function handleSetSelectedExpertise(
-    value: string[] | ((prev: string[]) => string[]),
-  ) {
-    setSelectedExpertise(value);
-    resetPage();
+  // Update the URL's search params when user picks or removes expertise filters
+  function handleSetSelectedExpertise(expertise: string[]) {
+    setSearchParams(
+      (prev) => {
+        prev.delete("expertise");
+        expertise.forEach((exp) => {
+          prev.append("expertise", exp);
+        });
+        prev.delete("page");
+        return prev;
+      },
+      { replace: true },
+    );
   }
 
   // Get all unique expertise areas
@@ -83,20 +80,22 @@ export default function Search() {
     });
   }, [search, selectedExpertise, profiles]);
 
-  // Toggle expertise filter
+  // Add/removes expertise filter
   const toggleExpertise = (expertise: string) => {
-    handleSetSelectedExpertise((prev) =>
-      prev.includes(expertise)
-        ? prev.filter((e) => e !== expertise)
-        : [...prev, expertise],
-    );
+    const next = selectedExpertise.includes(expertise)
+      ? selectedExpertise.filter((e) => e !== expertise)
+      : [...selectedExpertise, expertise];
+    handleSetSelectedExpertise(next);
   };
 
   // Clear all filters
   const clearAllFilters = () => {
-    setSearchParams("");
-    setSelectedExpertise([]);
-    resetPage();
+    setSearchParams((prev) => {
+      prev.delete("page");
+      prev.delete("q");
+      prev.delete("expertise");
+      return prev;
+    });
   };
 
   let content;
