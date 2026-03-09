@@ -31,7 +31,6 @@ export default function SearchInput({ value, onChange }: SearchInputProps) {
           </button>
         )}
       </div>
-      {/* Mobile helper text */}
       <p className="text-xs text-gray-600 mt-2">
         Try "India", "Software Engineer", or "Machine Learning"
       </p>
