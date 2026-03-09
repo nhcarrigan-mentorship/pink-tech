@@ -10,11 +10,11 @@ import ErrorState from "../../components/ui/ErrorState";
 import { useSearchParams } from "react-router-dom";
 
 export default function Search() {
-  const [search, setSearch] = useState("");
   const [selectedExpertise, setSelectedExpertise] = useState<string[]>([]);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("q") ?? "";
 
   const { profiles, loading, error, refetch } = useProfilesContext();
 
@@ -29,7 +29,14 @@ export default function Search() {
   }
 
   function handleSearch(value: string) {
-    setSearch(value);
+    setSearchParams(
+      (prev) => {
+        if (value) prev.set("q", value);
+        else prev.delete("q");
+        return prev;
+      },
+      { replace: true },
+    );
     resetPage();
   }
 
@@ -57,7 +64,7 @@ export default function Search() {
   const filteredProfiles = useMemo(() => {
     return profiles.filter((profile) => {
       const matchesSearch =
-        search != ""
+        search != null
           ? profile?.displayName.toLowerCase().includes(search.toLowerCase()) ||
             (profile?.role &&
               profile?.role.toLowerCase().includes(search.toLowerCase())) ||
@@ -87,7 +94,7 @@ export default function Search() {
 
   // Clear all filters
   const clearAllFilters = () => {
-    setSearch("");
+    setSearchParams("");
     setSelectedExpertise([]);
     resetPage();
   };
@@ -119,7 +126,7 @@ export default function Search() {
       <SearchHeader />
 
       <ProfileSearchBar
-        search={search}
+        search={search ?? ""}
         onSearch={handleSearch}
         allExpertise={allExpertise}
         selectedExpertise={selectedExpertise}
@@ -139,7 +146,7 @@ export default function Search() {
       <MobileFilterModal
         isOpen={showMobileFilter}
         onClose={() => setShowMobileFilter(false)}
-        searchQuery={search}
+        searchQuery={search ?? ""}
         setSearchQuery={handleSearch}
         allExpertise={allExpertise}
         selectedExpertise={selectedExpertise}
