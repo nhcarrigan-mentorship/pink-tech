@@ -48,7 +48,7 @@ export function HomeSearch() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by name, expertise, company, or role..."
+              placeholder="Search by name, role, or location..."
               className="w-full pl-12 pr-4 py-4 text-base md:text-lg border-2 border-pink-200 rounded-lg focus:outline-none focus:border-pink-500 transition-colors"
             />
           </div>
