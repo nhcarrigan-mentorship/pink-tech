@@ -24,7 +24,7 @@ export default function SearchInput({ value, onChange }: SearchInputProps) {
         {value && (
           <button
             onClick={() => onChange("")}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-pink-500 transition-colors p-1 rounded-full hover:bg-pink-50"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-pink-500 transition-colors p-1 rounded-full hover:bg-pink-50 cursor-pointer"
             aria-label="Clear search"
           >
             <LazyIcon name="X" className="w-5 h-5" />
