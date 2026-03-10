@@ -14,7 +14,7 @@ export default function Hero() {
         <div className="text-center">
           <>
             <h1 className="text-4xl md:text-5xl lg:text-6xl mb-6 font-bold">
-              Discover Women Shaping the Future of Technology
+              Discover Women Shaping Today's Technology
             </h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-4 md:mb-8 mx-auto">
               {isAuthenticated
