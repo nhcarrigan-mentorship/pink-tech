@@ -6,7 +6,7 @@ interface SearchInputProps {
 }
 
 export default function SearchInput({ value, onChange }: SearchInputProps) {
-  const placeholder = "Search by name, role, or location...";
+  const placeholder = "Search by name, expertise, company...";
   return (
     <div className="w-full relative">
       <div className="relative">

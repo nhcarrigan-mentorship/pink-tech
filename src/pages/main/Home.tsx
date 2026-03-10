@@ -2,7 +2,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import Hero from "../../components/layout/Hero";
 import FeaturedProfiles from "../../components/profile/home/FeaturedProfiles";
 import CallToAction from "../../components/layout/CallToAction";
-import { HomeSearch } from "../../components/profile/home/HomeSearch";
+import { HomeSearch } from "../../features/search/components/HomeSearch";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
