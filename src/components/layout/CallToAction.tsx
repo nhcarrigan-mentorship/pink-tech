@@ -6,7 +6,7 @@ export default function CallToAction() {
     <div className="py-16 md:py-20 mb-20 bg-gray-50 text-gray-900 border border-pink-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6 items-center">
         {/* Heading */}
-        <h2 className="text-3xl md:text-4xl font-bold">
+        <h2 className="text-3xl md:text-4xl font-bold text-center">
           Are You a Woman in Tech?
         </h2>
 
