@@ -103,8 +103,18 @@ export default function useProfiles() {
           }
         } else if (data) {
           const parsed = camelcaseKeys(data, { deep: true }) as UserProfile[];
-          profilesCache = parsed;
-          setProfiles(parsed);
+          // Preserve `content` from any profiles already fully fetched
+          // (e.g. fetchFullProfile completed before this list fetch).
+          setProfiles((prev) => {
+            const merged = parsed.map((p) => {
+              const existing = prev.find((e) => String(e.id) === String(p.id));
+              return existing?.content
+                ? { ...p, content: existing.content }
+                : p;
+            });
+            profilesCache = merged;
+            return merged;
+          });
         }
       } catch (err) {
         // AbortError is thrown by Supabase when it cancels in-flight requests
