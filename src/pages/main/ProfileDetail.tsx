@@ -13,7 +13,9 @@ export default function ProfileDetail() {
   const { username } = useParams();
   const { profiles, loading, error, refetch, fetchFullProfile } =
     useProfilesContext();
-  const profile = profiles.find((p) => p.username === username);
+  const profile = profiles.find(
+    (p) => p.username.toLowerCase() === username?.toLowerCase(),
+  );
   const [showBottomNotice, setShowBottomNotice] = useState(false);
   const [noticeDismissed, setNoticeDismissed] = useState(false);
   const [isFetchingProfile, setIsFetchingProfile] = useState(false);

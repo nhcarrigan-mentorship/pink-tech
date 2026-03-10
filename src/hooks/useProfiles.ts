@@ -260,16 +260,19 @@ export default function useProfiles() {
   const fetchFullProfile = useCallback(
     async (username: string) => {
       if (!username) return;
+      const normalizedUsername = username.toLowerCase();
 
       // If a profile already exists with full content, skip.
-      const existing = profiles.find((p) => p.username === username);
+      const existing = profiles.find(
+        (p) => p.username.toLowerCase() === normalizedUsername,
+      );
       if (existing && existing.content) return;
 
       // Deduplicate across hook instances and renders by using a module-level
       // promise cache. This avoids duplicate requests caused by StrictMode
       // double-mounts or multiple components requesting the same profile.
-      if (fullProfilePromiseCache.has(username)) {
-        await fullProfilePromiseCache.get(username);
+      if (fullProfilePromiseCache.has(normalizedUsername)) {
+        await fullProfilePromiseCache.get(normalizedUsername);
         return;
       }
 
@@ -279,7 +282,7 @@ export default function useProfiles() {
           const { data, error } = await supabase
             .from("profiles")
             .select("*")
-            .eq("username", username)
+            .eq("username", normalizedUsername)
             .single();
 
           if (error) {
@@ -301,7 +304,7 @@ export default function useProfiles() {
         }
       })();
 
-      fullProfilePromiseCache.set(username, promise);
+      fullProfilePromiseCache.set(normalizedUsername, promise);
       await promise;
     },
     [profiles, updateProfileInContext],
