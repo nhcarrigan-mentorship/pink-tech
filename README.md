@@ -1,21 +1,32 @@
 # **PinkTech**
 
-A platform where women in tech can create and manage their public profiles, control how they’re represented, and discover other inspiring members in the industry.
+> Discover Women Shaping Today's Technology.
 
-## **Unauthenticated / Authenticated Pages View**
+The definitive directory of inspiring leaders, innovators, and experts across the tech industry.
 
-**Unauthenticated View**
+## Home
 
-- **Home** – Mission highlights, member benefits checklist, headline slider showcasing achievements
-- **Discover** – Browse and search profiles with filtering and clickable cards
-- **Join / Log In** – Sign-up and login with social authentication
+Search leaders and view featured leaders.
 
-**Authenticated View**
+![PinkTech home with search bar and featured leaders](docs/images/home.png)
 
-- **Home** – Personalized welcome and streamlined experience without join/signup CTAs
-- **Discover** – Same browse and search functionality as unauthenticated view
-- **My Profile** – View and edit personal details, expertise tags, key achievements, and social links
-- **Log Out** – Return to the public view
+## Search
+
+Search users by name, expertise, company, and others.
+
+![PinkTech search with list of profiles](docs/images/search.png)
+
+## Profile
+
+View user's information and biography.
+
+![PinkTech profile with user's information and biography](docs/images/profile.png)
+
+## My Profile
+
+Edit your information and biography.
+
+![PinkTech current user's profile with edit forms](docs/images/my-profile.png)
 
 ## Tech Stack
 
