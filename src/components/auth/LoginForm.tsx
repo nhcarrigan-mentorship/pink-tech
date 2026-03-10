@@ -61,7 +61,9 @@ export default function LoginForm() {
         </div>
         {/* Header */}
         <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
-        <p className="text-gray-600">Sign in to continue your story</p>
+        <p className="text-gray-600">
+          Sign in to manage your profile
+        </p>
       </div>
 
       {/* Error Message  */}

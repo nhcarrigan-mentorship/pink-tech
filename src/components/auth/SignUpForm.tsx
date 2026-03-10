@@ -184,7 +184,7 @@ export default function SignUpForm() {
         </div>
         <h1 className="mb-2 text-3xl font-bold">Join PinkTech</h1>
         <p className="text-gray-600">
-          Create your profile and share your story
+          Add your profile to the directory and control how you're represented
         </p>
       </div>
 
