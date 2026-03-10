@@ -8,6 +8,7 @@ import { useProfilesContext } from "../../hooks/useProfilesContext";
 import LoadingState from "../../components/ui/LoadingState";
 import ErrorState from "../../components/ui/ErrorState";
 import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Search() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -16,6 +17,7 @@ export default function Search() {
   const search = searchParams.get("q") ?? "";
   const selectedExpertise = searchParams.getAll("expertise");
   const { profiles, loading, error, refetch } = useProfilesContext();
+  const { isAuthenticated } = useAuth();
 
   function handleSearch(value: string) {
     setSearchParams(
@@ -146,9 +148,11 @@ export default function Search() {
         {content}
       </div>
 
-      <div ref={ctaRef}>
-        <CallToAction />
-      </div>
+      {!isAuthenticated && (
+        <div ref={ctaRef}>
+          <CallToAction />
+        </div>
+      )}
 
       <MobileFilterModal
         isOpen={showMobileFilter}
