@@ -61,9 +61,7 @@ export default function LoginForm() {
         </div>
         {/* Header */}
         <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
-        <p className="text-gray-600">
-          Sign in to manage your profile
-        </p>
+        <p className="text-gray-600">Sign in to manage your profile</p>
       </div>
 
       {/* Error Message  */}
@@ -98,7 +96,7 @@ export default function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full pl-11 pr-4 py-3 border border-pink-200 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="you@example.com"
             ></input>
           </div>
@@ -127,7 +125,7 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               placeholder="••••••••"
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full pl-11 pr-4 py-3 border border-pink-200 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
             <button
               type="button"
@@ -179,16 +177,6 @@ export default function LoginForm() {
           {isLoading ? "Signing In..." : "Sign In"}
         </button>
       </form>
-
-      {/* Divider */}
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-white text-gray-500">Or continue with</span>
-        </div>
-      </div>
 
       <p className="mt-6 text-center text-gray-600 text-sm font-medium">
         Don't have an account?{" "}

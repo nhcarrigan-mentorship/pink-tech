@@ -231,7 +231,7 @@ export default function SignUpForm() {
               }}
               placeholder="you@example.com"
               disabled={isSigningUp}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full pl-11 pr-4 py-3 border border-pink-200 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
           {emailError && (
@@ -268,7 +268,7 @@ export default function SignUpForm() {
               }}
               placeholder="Jane Smith"
               disabled={isSigningUp}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full pl-11 pr-4 py-3 border border-pink-200 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
           {nameError && (
@@ -312,7 +312,7 @@ export default function SignUpForm() {
               placeholder="janesmith"
               disabled={isSigningUp}
               className={`w-full pl-11 pr-4 py-3 border rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                usernameError ? "border-red-400" : "border-gray-300"
+                usernameError ? "border-red-400" : "border-pink-200"
               }`}
             ></input>
           </div>
@@ -348,7 +348,7 @@ export default function SignUpForm() {
               placeholder="••••••••"
               disabled={isSigningUp}
               className={`w-full pl-11 pr-11 py-3 border rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                passwordError ? "border-red-400" : "border-gray-300"
+                passwordError ? "border-red-400" : "border-pink-200"
               }`}
             ></input>
 
@@ -453,15 +453,6 @@ export default function SignUpForm() {
           {isSigningUp ? "Signing Up" : "Sign Up"}
         </button>
       </form>
-      {/* Divider */}
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-white text-gray-500">Or continue with</span>
-        </div>
-      </div>
 
       <p className="mt-6 text-center text-gray-600 text-sm font-medium">
         Already have an account?{" "}
