@@ -16,7 +16,7 @@ export default function Hero() {
                 ? `Welcome Back, ${user?.displayName}`
                 : "Discover Women Shaping Today's Technology"}
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-4 md:mb-8 mx-auto">
+            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
               {isAuthenticated
                 ? "Discover inspiring women in tech and manage your profile"
                 : "The definitive directory of inspiring leaders, innovators, and experts across the tech industry"}
