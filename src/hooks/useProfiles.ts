@@ -14,6 +14,10 @@ let profilesListPromise: Promise<void> | null = null;
 // double-mount) immediately receive already-fetched profiles instead of
 // seeing an empty list or having to refetch.
 let profilesCache: UserProfile[] | null = null;
+// Tracks whether profilesCache was populated by a full list fetch (as opposed
+// to a single-profile update from updateProfileInContext/fetchFullProfile).
+// fetchProfiles must only short-circuit on a full-list cache, not a partial one.
+let profilesListFetched = false;
 
 export default function useProfiles() {
   const [profiles, setProfiles] = useState<UserProfile[]>(profilesCache ?? []);
@@ -38,9 +42,11 @@ export default function useProfiles() {
   }
 
   const fetchProfiles = async () => {
-    // If profiles are already cached (e.g. from a previous mount), skip the
-    // network round-trip and just make sure local state is in sync.
-    if (profilesCache) {
+    // If the full profiles list was already fetched (e.g. from a previous mount),
+    // skip the network round-trip and just make sure local state is in sync.
+    // Note: profilesCache may be set by updateProfileInContext with only a single
+    // profile — we must not short-circuit on that partial cache.
+    if (profilesCache && profilesListFetched) {
       setProfiles(profilesCache);
       return;
     }
@@ -105,16 +111,20 @@ export default function useProfiles() {
           const parsed = camelcaseKeys(data, { deep: true }) as UserProfile[];
           // Preserve `content` from any profiles already fully fetched
           // (e.g. fetchFullProfile completed before this list fetch).
-          setProfiles((prev) => {
-            const merged = parsed.map((p) => {
-              const existing = prev.find((e) => String(e.id) === String(p.id));
-              return existing?.content
-                ? { ...p, content: existing.content }
-                : p;
-            });
-            profilesCache = merged;
-            return merged;
+          // IMPORTANT: set profilesCache synchronously here (not inside the
+          // setProfiles callback) so that the profilesListPromise branch in
+          // any concurrent fetchProfiles call reads the correct full-list cache
+          // immediately after awaiting, rather than a stale single-profile cache.
+          const currentCache = profilesCache ?? [];
+          const merged = parsed.map((p) => {
+            const existing = currentCache.find(
+              (e) => String(e.id) === String(p.id),
+            );
+            return existing?.content ? { ...p, content: existing.content } : p;
           });
+          profilesCache = merged;
+          profilesListFetched = true;
+          setProfiles(merged);
         }
       } catch (err) {
         // AbortError is thrown by Supabase when it cancels in-flight requests
