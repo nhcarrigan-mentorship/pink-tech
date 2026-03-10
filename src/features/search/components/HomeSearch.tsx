@@ -38,7 +38,7 @@ export function HomeSearch() {
   };
 
   return (
-    <div className="py-6 md:py-12 bg-gradient-to-b from-white to-gray-50">
+    <div className="py-6 md:py-12 bg-gradient-to-b from-white to-gray-50 border border-pink-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Search Form */}
         <form onSubmit={handleSubmit} className="relative">
