@@ -292,7 +292,7 @@ export default function useProfiles() {
           const { data, error } = await supabase
             .from("profiles")
             .select("*")
-            .eq("username", normalizedUsername)
+            .ilike("username", normalizedUsername)
             .single();
 
           if (error) {
