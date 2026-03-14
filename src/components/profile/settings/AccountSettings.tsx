@@ -40,7 +40,7 @@ export default function AccountSettings() {
         .select()
         .single();
 
-      if (error) throw new Error(error);
+      if (error) throw error;
 
       if (username) updateProfile({ username });
 
