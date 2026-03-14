@@ -3,11 +3,9 @@ import LazyIcon from "../../ui/LazyIcon";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Check, X } from "lucide-react";
 import getSupabase from "../../../config/supabaseClient";
+import { validateUsername } from "../../../utils/validators";
 
 export default function AccountSettings() {
-  const USERNAME_MIN = 3;
-  const USERNAME_MAX = 20;
-
   const { user, updateProfile } = useAuth();
   const [username, setUsername] = useState<string | null>(null);
   const [editingUsername, setEditingUsername] = useState(false);
@@ -56,19 +54,6 @@ export default function AccountSettings() {
   function startEditing() {
     setUsername(user?.username ?? null);
     setEditingUsername(true);
-  }
-
-  function validateUsername(value: string): string | null {
-    if (value.length < USERNAME_MIN || value.length > USERNAME_MAX)
-      return `Username must be between ${USERNAME_MIN} and ${USERNAME_MAX} characters.`;
-    if (!/^[a-zA-Z0-9_-]+$/.test(value))
-      return "Username can only contain letters, numbers, underscores, and hyphens.";
-    if (/^[_-]|[_-]$/.test(value))
-      return "Username cannot start or end with an underscore or hyphen.";
-    if (/[_-]{2}/.test(value))
-      return "Username cannot contain consecutive underscores or hyphens.";
-    if (/^[0-9]/.test(value)) return "Username must start with a letter.";
-    return null;
   }
 
   function onUsernameChange(username: string) {
