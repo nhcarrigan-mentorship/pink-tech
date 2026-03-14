@@ -19,7 +19,10 @@ export default function AccountSettings() {
 
   async function saveUsername(e: React.FormEvent) {
     // Exit form when username is the same
-    if (username === user?.username) setEditingUsername(false);
+    if (username === user?.username) {
+      setEditingUsername(false);
+      return;
+    }
 
     setSavingUsername(true);
     e.preventDefault();
