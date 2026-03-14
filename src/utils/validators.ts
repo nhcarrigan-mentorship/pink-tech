@@ -163,6 +163,24 @@ export function validateLinkedin(url: string): string | null {
   }
 }
 
+export function validateLinks(markdown: string) {
+  const LINK_REGEX = /\[[^\]]*\]\(([^)]+)\)/g;
+  let m: RegExpExecArray | null;
+  const allowed = ["http:", "https:", "mailto:", "tel:"];
+  while ((m = LINK_REGEX.exec(markdown))) {
+    try {
+      const url = m[1].trim();
+      // allow relative links
+      if (url.startsWith("/") || url.startsWith("#")) continue;
+      const parsed = new URL(url, "https://example.com");
+      if (!allowed.includes(parsed.protocol)) return false;
+    } catch {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function validateLocation(location: string): string | null {
   const trimmed = location.trim();
   if (!trimmed) return null;

@@ -4,6 +4,7 @@ import { getSupabase } from "../../../config/supabaseClient";
 import { useProfilesContext } from "../../../hooks/useProfilesContext";
 import camelcaseKeys from "camelcase-keys";
 import DOMPurify from "dompurify";
+import { validateLinks } from "../../../utils/validators";
 
 interface ProfileContentForm {
   profile: UserProfile;
@@ -46,24 +47,6 @@ export default function ProfileContentForm({
 
   function onContentChange(content: string) {
     setContent(content);
-  }
-
-  function validateLinks(markdown: string) {
-    const LINK_REGEX = /\[[^\]]*\]\(([^)]+)\)/g;
-    let m: RegExpExecArray | null;
-    const allowed = ["http:", "https:", "mailto:", "tel:"];
-    while ((m = LINK_REGEX.exec(markdown))) {
-      try {
-        const url = m[1].trim();
-        // allow relative links
-        if (url.startsWith("/") || url.startsWith("#")) continue;
-        const parsed = new URL(url, "https://example.com");
-        if (!allowed.includes(parsed.protocol)) return false;
-      } catch {
-        return false;
-      }
-    }
-    return true;
   }
 
   async function onSave(e: React.FormEvent) {
