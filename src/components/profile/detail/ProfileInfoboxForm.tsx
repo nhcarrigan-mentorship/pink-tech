@@ -785,6 +785,12 @@ export default function ProfileInfoboxForm({
               value={expertiseInput ?? ""}
               placeholder="Add expertise (e.g., Data Science)"
               onChange={(e) => onExpertiseChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (!expertiseError) addExpertise();
+                }
+              }}
               className="flex-1 w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
               aria-label="Add expertise"
               autoFocus
