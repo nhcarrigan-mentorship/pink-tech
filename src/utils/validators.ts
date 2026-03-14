@@ -1,16 +1,16 @@
-const BIO_MAX = 160;
-const BIO_MIN = 1;
+export const BIO_MAX = 160;
+export const BIO_MIN = 1;
+
+export const EMAIL_MAX = 320;
 
 export const NAME_MIN = 2;
 export const NAME_MAX = 141;
 
-export const USERNAME_MIN = 3;
-export const USERNAME_MAX = 20;
-
-export const EMAIL_MAX = 320;
-
 export const PASSWORD_MIN = 8;
 export const PASSWORD_MAX = 128;
+
+export const USERNAME_MIN = 3;
+export const USERNAME_MAX = 20;
 
 export const PASSWORD_RULES = [
   {
