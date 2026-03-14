@@ -1,3 +1,6 @@
+const BIO_MAX = 160;
+const BIO_MIN = 1;
+
 export const NAME_MIN = 2;
 export const NAME_MAX = 141;
 
@@ -36,6 +39,21 @@ export const PASSWORD_RULES = [
 export function getPasswordStrength(value: string): number {
   if (value.length === 0) return 0;
   return PASSWORD_RULES.filter((r) => r.test(value)).length;
+}
+
+export function validateBio(bio: string): string | null {
+  if (bio.length < BIO_MIN || bio.length <= BIO_MAX) return null;
+  return `Bio must be ${BIO_MAX} characters or fewer.`;
+}
+
+export function validateCompany(company: string): string | null {
+  const trimmed = company.trim();
+  if (!trimmed) return null;
+  if (trimmed.length < 2) return `Company must be at least 2 characters.`;
+  if (trimmed.length > 80) return `Company must be 80 characters or fewer.`;
+  if (!/^[\p{L}0-9 .\-&,()]+$/u.test(trimmed))
+    return `Company should only include letters, numbers, spaces and . - , & ( ).`;
+  return null;
 }
 
 export function validateEmail(value: string): string | null {
@@ -82,6 +100,79 @@ export function validateEmail(value: string): string | null {
   return null;
 }
 
+export function validateExpertise(
+  expertise: string,
+  profileExpertise: string[] | null | undefined,
+) {
+  const EXPERTISE_MIN = 2;
+  const EXPERTISE_MAX = 40;
+  const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
+
+  const trimmed = expertise.trim();
+
+  if (!trimmed.length) return null;
+  if (trimmed.length < EXPERTISE_MIN)
+    return `Expertise must be at least ${EXPERTISE_MIN} characters.`;
+  if (trimmed.length > EXPERTISE_MAX)
+    return `Expertise must be ${EXPERTISE_MAX} characters or fewer.`;
+  if (profileExpertise?.includes(trimmed))
+    return "This expertise is already added.";
+  if (!EXPERTISE_REGEX.test(trimmed))
+    return "Allowed characters: letters, numbers, spaces, and . # + - / & ( )";
+  return null;
+}
+
+export function validateGithub(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  try {
+    const parsed = new URL(
+      trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
+    );
+    const host = parsed.hostname.toLowerCase();
+    if (!host.includes("github.com"))
+      return "Please provide a GitHub profile URL.";
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    if (segments.length < 1)
+      return "Please provide a GitHub profile URL (e.g. github.com/username).";
+    const username = segments[0];
+    if (!/^[A-Za-z0-9-]+$/.test(username))
+      return "GitHub username in the URL should only include letters, numbers, and hyphens.";
+    return null;
+  } catch (e) {
+    return "Please provide a valid GitHub URL.";
+  }
+}
+
+export function validateLinkedin(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  try {
+    const parsed = new URL(
+      trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
+    );
+    const host = parsed.hostname.toLowerCase();
+    if (!host.includes("linkedin.com"))
+      return "Please provide a LinkedIn profile URL.";
+    const path = parsed.pathname || "";
+    if (!path.startsWith("/in/") && !path.startsWith("/pub/"))
+      return "LinkedIn profile URL should be a personal profile (e.g. /in/username).";
+    return null;
+  } catch (e) {
+    return "Please provide a valid LinkedIn URL.";
+  }
+}
+
+export function validateLocation(location: string): string | null {
+  const trimmed = location.trim();
+  if (!trimmed) return null;
+  if (trimmed.length < 2) return `Location must be at least 2 characters.`;
+  if (trimmed.length > 100) return `Location must be 100 characters or fewer.`;
+  if (!/^[\p{L}0-9 .,'\-()]+$/u.test(trimmed))
+    return `Location should only include letters, numbers, commas, and punctuation.`;
+  return null;
+}
+
 export function validateName(value: string): string | null {
   const trimmed = value.trim();
 
@@ -114,6 +205,16 @@ export function validatePassword(value: string): string | null {
   return null;
 }
 
+export function validateRole(role: string): string | null {
+  const trimmed = role.trim();
+  if (!trimmed) return null;
+  if (trimmed.length < 2) return `Role must be at least 2 characters.`;
+  if (trimmed.length > 60) return `Role must be 60 characters or fewer.`;
+  if (!/^[\p{L}0-9 .\-,&()]+$/u.test(trimmed))
+    return `Role should only include letters, numbers, spaces and . - , & ( ).`;
+  return null;
+}
+
 export function validateUsername(value: string): string | null {
   if (value.length < 1) return null;
   if (value.length < USERNAME_MIN || value.length > USERNAME_MAX)
@@ -126,4 +227,21 @@ export function validateUsername(value: string): string | null {
     return "Username cannot contain consecutive underscores or hyphens.";
   if (/^[0-9]/.test(value)) return "Username must start with a letter.";
   return null;
+}
+
+export function validateWebsite(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  try {
+    // allow users to omit protocol by prefixing https:// when parsing
+    const parsed = new URL(
+      trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
+    );
+    const host = parsed.hostname;
+    if (!host || !host.includes("."))
+      return "Please provide a valid website URL or domain.";
+    return null;
+  } catch (e) {
+    return "Please provide a valid website URL.";
+  }
 }

@@ -9,6 +9,18 @@ import { getSupabase } from "../../../config/supabaseClient";
 import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
 import LazyIcon from "../../ui/LazyIcon";
+import {
+  validateBio,
+  validateCompany,
+  validateEmail,
+  validateExpertise,
+  validateGithub,
+  validateLinkedin,
+  validateLocation,
+  validateName,
+  validateRole,
+  validateWebsite,
+} from "../../../utils/validators";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
@@ -41,189 +53,12 @@ export default function ProfileInfoboxForm({
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
 
-  function validateName(name: string): string | null {
-    const NAME_MIN = 2;
-    const NAME_MAX = 50;
-
-    const trimmed = name.trim();
-
-    if (trimmed.length < 1) return null;
-    if (trimmed.length < NAME_MIN || trimmed.length > NAME_MAX)
-      return "Name must be between 2 and 141 characters.";
-    if (!/^[\p{L}\p{M}'\-. ]+$/u.test(trimmed))
-      return "Name can only contain letters, spaces, hyphens, apostrophes, and periods.";
-    if (/\s{2,}/.test(trimmed))
-      return "Name cannot contain consecutive spaces.";
-    if (/[-'.]{2,}/.test(trimmed))
-      return "Name cannot contain consecutive hyphens, apostrophes, or periods.";
-    if (/^[-'.]|[-'.]$/.test(trimmed))
-      return "Name cannot start or end with a hyphen, apostrophe, or period.";
-    return null;
-  }
-
-  function validateBio(bio: string): string | null {
-    const BIO_MAX = 160;
-    if (bio.length < 1 || bio.length <= BIO_MAX) return null;
-    return `Bio must be ${BIO_MAX} characters or fewer.`;
-  }
-
-  function validateEmail(email: string): string | null {
-    const trimmed = email.trim();
-
-    if (trimmed.length < 1) return null;
-    if (trimmed.length > 320) return "Email must be 320 characters or fewer.";
-    if (/\s/.test(trimmed)) return "Email must not contain spaces.";
-
-    const parts = trimmed.split("@");
-    if (parts.length !== 2) return "Please provide a valid email address.";
-
-    const [local, domain] = parts;
-
-    // Local-part checks
-    if (local.length < 1 || local.length > 64)
-      return "Email local part should be 1–64 characters.";
-    if (local.startsWith(".") || local.endsWith("."))
-      return "Email local part must not start or end with a dot.";
-    if (local.includes(".."))
-      return "Email local part must not contain consecutive dots.";
-    if (!/^[A-Za-z0-9._-]+$/.test(local))
-      return "Email local part may only include letters, numbers, dots, underscores, and hyphens.";
-
-    // Domain checks
-    if (domain.length < 1 || domain.length > 255)
-      return "Please provide a valid email domain.";
-    const labels = domain.split(".").filter(Boolean);
-    if (labels.length < 2)
-      return "Email domain must include a top-level domain (e.g. .com).";
-    for (const label of labels) {
-      if (label.length < 1 || label.length > 63)
-        return "Each domain label should be 1–63 characters.";
-      if (!/^[A-Za-z0-9-]+$/.test(label))
-        return "Email domain may only include letters, numbers, and hyphens.";
-      if (label.startsWith("-") || label.endsWith("-"))
-        return "Email domain labels must not start or end with a hyphen.";
-    }
-    const tld = labels[labels.length - 1];
-    if (!/^[A-Za-z]{2,}$/.test(tld))
-      return "Top-level domain should be at least 2 letters.";
-
-    return null;
-  }
-
   function normalizeUrl(url: string) {
     if (!url) return url;
     const trimmed = url.trim();
     return trimmed.startsWith("http://") || trimmed.startsWith("https://")
       ? trimmed
       : `https://${trimmed}`;
-  }
-
-  function validateLinkedin(url: string): string | null {
-    const trimmed = url.trim();
-    if (!trimmed) return null;
-    try {
-      const parsed = new URL(
-        trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
-      );
-      const host = parsed.hostname.toLowerCase();
-      if (!host.includes("linkedin.com"))
-        return "Please provide a LinkedIn profile URL.";
-      const path = parsed.pathname || "";
-      if (!path.startsWith("/in/") && !path.startsWith("/pub/"))
-        return "LinkedIn profile URL should be a personal profile (e.g. /in/username).";
-      return null;
-    } catch (e) {
-      return "Please provide a valid LinkedIn URL.";
-    }
-  }
-
-  function validateRole(role: string): string | null {
-    const trimmed = role.trim();
-    if (!trimmed) return null;
-    if (trimmed.length < 2) return `Role must be at least 2 characters.`;
-    if (trimmed.length > 60) return `Role must be 60 characters or fewer.`;
-    if (!/^[\p{L}0-9 .\-,&()]+$/u.test(trimmed))
-      return `Role should only include letters, numbers, spaces and . - , & ( ).`;
-    return null;
-  }
-
-  function validateCompany(company: string): string | null {
-    const trimmed = company.trim();
-    if (!trimmed) return null;
-    if (trimmed.length < 2) return `Company must be at least 2 characters.`;
-    if (trimmed.length > 80) return `Company must be 80 characters or fewer.`;
-    if (!/^[\p{L}0-9 .\-&,()]+$/u.test(trimmed))
-      return `Company should only include letters, numbers, spaces and . - , & ( ).`;
-    return null;
-  }
-
-  function validateLocation(location: string): string | null {
-    const trimmed = location.trim();
-    if (!trimmed) return null;
-    if (trimmed.length < 2) return `Location must be at least 2 characters.`;
-    if (trimmed.length > 100)
-      return `Location must be 100 characters or fewer.`;
-    if (!/^[\p{L}0-9 .,'\-()]+$/u.test(trimmed))
-      return `Location should only include letters, numbers, commas, and punctuation.`;
-    return null;
-  }
-
-  function validateGithub(url: string): string | null {
-    const trimmed = url.trim();
-    if (!trimmed) return null;
-    try {
-      const parsed = new URL(
-        trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
-      );
-      const host = parsed.hostname.toLowerCase();
-      if (!host.includes("github.com"))
-        return "Please provide a GitHub profile URL.";
-      const segments = parsed.pathname.split("/").filter(Boolean);
-      if (segments.length < 1)
-        return "Please provide a GitHub profile URL (e.g. github.com/username).";
-      const username = segments[0];
-      if (!/^[A-Za-z0-9-]+$/.test(username))
-        return "GitHub username in the URL should only include letters, numbers, and hyphens.";
-      return null;
-    } catch (e) {
-      return "Please provide a valid GitHub URL.";
-    }
-  }
-
-  function validateWebsite(url: string): string | null {
-    const trimmed = url.trim();
-    if (!trimmed) return null;
-    try {
-      // allow users to omit protocol by prefixing https:// when parsing
-      const parsed = new URL(
-        trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
-      );
-      const host = parsed.hostname;
-      if (!host || !host.includes("."))
-        return "Please provide a valid website URL or domain.";
-      return null;
-    } catch (e) {
-      return "Please provide a valid website URL.";
-    }
-  }
-
-  function validateExpertise(expertise: string) {
-    const EXPERTISE_MIN = 2;
-    const EXPERTISE_MAX = 40;
-    const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
-
-    const trimmed = expertise.trim();
-
-    if (!trimmed.length) return null;
-    if (trimmed.length < EXPERTISE_MIN)
-      return `Expertise must be at least ${EXPERTISE_MIN} characters.`;
-    if (trimmed.length > EXPERTISE_MAX)
-      return `Expertise must be ${EXPERTISE_MAX} characters or fewer.`;
-    if (editedProfile.expertise?.includes(trimmed))
-      return "This expertise is already added.";
-    if (!EXPERTISE_REGEX.test(trimmed))
-      return "Allowed characters: letters, numbers, spaces, and . # + - / & ( )";
-    return null;
   }
 
   function removeExpertise(expertise: string) {
@@ -260,7 +95,7 @@ export default function ProfileInfoboxForm({
   function onExpertiseChange(expertise: string) {
     setExpertiseInput(expertise);
 
-    const invalidExpertise = validateExpertise(expertise);
+    const invalidExpertise = validateExpertise(expertise, profile.expertise);
     if (invalidExpertise) {
       setExpertiseError(invalidExpertise);
     } else {
