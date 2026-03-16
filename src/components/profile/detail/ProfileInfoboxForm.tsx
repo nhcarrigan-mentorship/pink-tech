@@ -66,6 +66,19 @@ export default function ProfileInfoboxForm({
   const [saveError, setSaveError] = useState<Error | null>(null);
   const { updateProfileInContext } = useProfilesContext();
 
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    displayName: null,
+    bio: null,
+    email: null,
+    role: null,
+    company: null,
+    location: null,
+    linkedin: null,
+    github: null,
+    website: null,
+    expertise: null,
+  });
+
   function normalizeUrl(url: string) {
     if (!url) return url;
     const trimmed = url.trim();
