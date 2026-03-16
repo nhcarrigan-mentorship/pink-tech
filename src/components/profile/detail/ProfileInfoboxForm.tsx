@@ -28,6 +28,19 @@ interface ProfileInfoboxFormProps {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type FormErrors = {
+  displayName: string | null;
+  bio: string | null;
+  email: string | null;
+  role: string | null;
+  company: string | null;
+  location: string | null;
+  linkedin: string | null;
+  github: string | null;
+  website: string | null;
+  expertise: string | null;
+};
+
 export default function ProfileInfoboxForm({
   profile,
   isEditing,
