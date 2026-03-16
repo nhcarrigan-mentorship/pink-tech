@@ -15,6 +15,13 @@ import {
   USERNAME_MIN,
 } from "../../utils/validators";
 
+type FormValues = {
+  name: null | string;
+  email: null | string;
+  username: null | string;
+  password: null | string;
+};
+
 export default function SignUpForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
