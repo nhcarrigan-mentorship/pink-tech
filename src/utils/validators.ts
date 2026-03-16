@@ -194,7 +194,7 @@ export function validateLocation(location: string): string | null {
 export function validateName(value: string): string | null {
   const trimmed = value.trim();
 
-  if (trimmed.length < 1) return null;
+  if (trimmed.length < 1) return "Name cannot be empty.";
   if (trimmed.length < NAME_MIN || trimmed.length > NAME_MAX)
     return "Name must be between 2 and 141 characters.";
   if (!/^[\p{L}\p{M}'\-. ]+$/u.test(trimmed))
