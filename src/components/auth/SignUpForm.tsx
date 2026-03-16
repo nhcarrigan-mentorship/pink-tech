@@ -23,6 +23,13 @@ type FormValues = {
 };
 
 export default function SignUpForm() {
+  const [formValues, setFormValues] = useState<FormValues>({
+    name: null,
+    email: null,
+    username: null,
+    password: null,
+  });
+  
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
