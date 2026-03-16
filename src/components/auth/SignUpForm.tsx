@@ -22,6 +22,13 @@ type FormValues = {
   password: null | string;
 };
 
+type FormErrors = {
+  name: null | string;
+  email: null | string;
+  username: null | string;
+  password: null | string;
+};
+
 export default function SignUpForm() {
   const [formValues, setFormValues] = useState<FormValues>({
     name: null,
@@ -29,7 +36,14 @@ export default function SignUpForm() {
     username: null,
     password: null,
   });
-  
+
+  const [formErrors, setFormErrors] = useState<FormValues>({
+    name: null,
+    email: null,
+    username: null,
+    password: null,
+  });
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -45,6 +59,12 @@ export default function SignUpForm() {
   const navigate = useNavigate();
   const { signup } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
+
+  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+
+    const { name, value } = e.target;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
