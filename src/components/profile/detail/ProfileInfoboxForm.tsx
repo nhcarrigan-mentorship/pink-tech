@@ -41,6 +41,20 @@ type FormErrors = {
   expertise: string | null;
 };
 
+const fieldValidators: Partial<
+  Record<keyof FormErrors, (value: string) => string | null>
+> = {
+  bio: validateBio,
+  company: validateCompany,
+  displayName: validateName,
+  email: validateEmail,
+  github: validateGithub,
+  linkedin: validateLinkedin,
+  location: validateLocation,
+  role: validateRole,
+  website: validateWebsite,
+};
+
 export default function ProfileInfoboxForm({
   profile,
   isEditing,
@@ -48,16 +62,7 @@ export default function ProfileInfoboxForm({
 }: ProfileInfoboxFormProps) {
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
-  const [nameError, setNameError] = useState<string | null>(null);
-  const [bioError, setBioError] = useState<string | null>(null);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [roleError, setRoleError] = useState<string | null>(null);
-  const [companyError, setCompanyError] = useState<string | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [linkedinError, setLinkedinError] = useState<string | null>(null);
-  const [githubError, setGithubError] = useState<string | null>(null);
-  const [websiteError, setWebsiteError] = useState<string | null>(null);
-  const [expertiseError, setExpertiseError] = useState<string | null>(null);
+  // const [nameError, setNameError] = useState<string | null>(null);
   const [expertiseInput, setExpertiseInput] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -123,9 +128,9 @@ export default function ProfileInfoboxForm({
 
     const invalidExpertise = validateExpertise(expertise, profile.expertise);
     if (invalidExpertise) {
-      setExpertiseError(invalidExpertise);
+      setFormErrors((prev) => ({ ...prev, expertise: invalidExpertise }));
     } else {
-      setExpertiseError(null);
+      setFormErrors((prev) => ({ ...prev, expertise: null }));
     }
   }
 
@@ -183,65 +188,11 @@ export default function ProfileInfoboxForm({
   ) {
     const { name, value } = e.target;
 
-    if (name === "displayName") {
-      const invalidName = validateName(value);
-      if (invalidName) {
-        setNameError(invalidName);
-      } else {
-        setNameError(null);
-      }
-    }
+    // Get the validator that matches field input
+    const validator = fieldValidators[name as keyof FormErrors];
 
-    if (name === "bio") {
-      const invalidBio = validateBio(value);
-      if (invalidBio) setBioError(invalidBio);
-      else {
-        setBioError(null);
-      }
-    }
-
-    if (name === "email") {
-      const invalidEmail = validateEmail(value);
-      if (invalidEmail) setEmailError(invalidEmail);
-      else {
-        setEmailError(null);
-      }
-    }
-
-    if (name === "linkedin") {
-      const invalid = validateLinkedin(value);
-      if (invalid) setLinkedinError(invalid);
-      else setLinkedinError(null);
-    }
-
-    if (name === "github") {
-      const invalid = validateGithub(value);
-      if (invalid) setGithubError(invalid);
-      else setGithubError(null);
-    }
-
-    if (name === "website") {
-      const invalid = validateWebsite(value);
-      if (invalid) setWebsiteError(invalid);
-      else setWebsiteError(null);
-    }
-
-    if (name === "role") {
-      const invalid = validateRole(value);
-      if (invalid) setRoleError(invalid);
-      else setRoleError(null);
-    }
-
-    if (name === "company") {
-      const invalid = validateCompany(value);
-      if (invalid) setCompanyError(invalid);
-      else setCompanyError(null);
-    }
-
-    if (name === "location") {
-      const invalid = validateLocation(value);
-      if (invalid) setLocationError(invalid);
-      else setLocationError(null);
+    if (validator) {
+      setFormErrors((prev) => ({ ...prev, [name]: validator(value) }));
     }
 
     setEditedProfile({
@@ -388,9 +339,9 @@ export default function ProfileInfoboxForm({
             onChange={onInputChange}
             className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
           ></input>
-          {nameError && (
+          {formErrors.displayName && (
             <p className="text-red-600 font-semibold mt-2" role="alert">
-              {nameError}
+              {formErrors.displayName}
             </p>
           )}
         </div>
@@ -416,9 +367,9 @@ export default function ProfileInfoboxForm({
             >
               Remove Bio
             </button>
-            {bioError && (
+            {formErrors.bio && (
               <p className="text-red-600 font-semibold" role="alert">
-                {bioError}
+                {formErrors.bio}
               </p>
             )}
           </div>
@@ -454,9 +405,9 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              {roleError && (
+              {formErrors.role && (
                 <p className="text-red-600 font-semibold" role="alert">
-                  {roleError}
+                  {formErrors.role}
                 </p>
               )}
             </div>
@@ -487,9 +438,9 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              {companyError && (
+              {formErrors.company && (
                 <p className="text-red-600 font-semibold" role="alert">
-                  {companyError}
+                  {formErrors.company}
                 </p>
               )}
             </div>
@@ -521,9 +472,9 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              {locationError && (
+              {formErrors.location && (
                 <p className="text-red-600 font-semibold" role="alert">
-                  {locationError}
+                  {formErrors.location}
                 </p>
               )}
             </div>
@@ -555,9 +506,9 @@ export default function ProfileInfoboxForm({
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              {emailError && (
+              {formErrors.email && (
                 <p className="text-red-600 font-semibold" role="alert">
-                  {emailError}
+                  {formErrors.email}
                 </p>
               )}
             </div>
@@ -597,19 +548,19 @@ export default function ProfileInfoboxForm({
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-                {key === "linkedin" && linkedinError && (
+                {key === "linkedin" && formErrors.linkedin && (
                   <p className="text-red-600 font-semibold" role="alert">
-                    {linkedinError}
+                    {formErrors.linkedin}
                   </p>
                 )}
-                {key === "github" && githubError && (
+                {key === "github" && formErrors.github && (
                   <p className="text-red-600 font-semibold" role="alert">
-                    {githubError}
+                    {formErrors.github}
                   </p>
                 )}
-                {key === "website" && websiteError && (
+                {key === "website" && formErrors.website && (
                   <p className="text-red-600 font-semibold" role="alert">
-                    {websiteError}
+                    {formErrors.website}
                   </p>
                 )}
               </div>
@@ -649,7 +600,7 @@ export default function ProfileInfoboxForm({
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  if (!expertiseError) addExpertise();
+                  if (!formErrors.expertise) addExpertise();
                 }
               }}
               className="flex-1 w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
@@ -658,16 +609,18 @@ export default function ProfileInfoboxForm({
             ></input>
             <button
               type="button"
-              disabled={isSaving || isUploadingImage || expertiseError != null}
+              disabled={
+                isSaving || isUploadingImage || formErrors.expertise != null
+              }
               onClick={() => addExpertise()}
               className="min-w-[36px] min-h-[36px] flex justify-center items-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Plus className="w-4 h-4" />
             </button>
           </div>
-          {expertiseError && (
+          {formErrors.expertise && (
             <p className="text-red-600 font-semibold" role="alert">
-              {expertiseError}
+              {formErrors.expertise}
             </p>
           )}
         </div>
@@ -679,15 +632,7 @@ export default function ProfileInfoboxForm({
             disabled={
               isSaving ||
               isUploadingImage ||
-              nameError != null ||
-              emailError != null ||
-              bioError != null ||
-              linkedinError != null ||
-              githubError != null ||
-              websiteError != null ||
-              roleError != null ||
-              companyError != null ||
-              locationError != null
+              Object.values(formErrors).some(Boolean)
             }
             className="flex-1 min-h-[44px] py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
