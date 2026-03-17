@@ -288,11 +288,10 @@ export default function useProfiles() {
       );
       if (existing && existing.content) return;
 
-      // Deduplicate across hook instances and renders by using a module-level
-      // promise cache. This avoids duplicate requests caused by StrictMode
-      // double-mounts or multiple components requesting the same profile.
-      if (fullProfilePromiseCache.has(normalizedUsername)) {
-        await fullProfilePromiseCache.get(normalizedUsername);
+      // Reuse in-flight promise
+      const cached = fullProfilePromiseCache.get(normalizedUsername);
+      if (cached) {
+        await cached;
         return;
       }
 
