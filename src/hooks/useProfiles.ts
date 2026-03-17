@@ -295,6 +295,7 @@ export default function useProfiles() {
         return;
       }
 
+      // Create promise
       const promise = (async () => {
         try {
           const supabase = await getPublicSupabase();
@@ -323,7 +324,16 @@ export default function useProfiles() {
         }
       })();
 
+      // Store first
       fullProfilePromiseCache.set(normalizedUsername, promise);
+
+      // Attach cleanup
+      promise.finally(() => {
+        if (fullProfilePromiseCache.get(normalizedUsername) === promise) {
+          fullProfilePromiseCache.delete(normalizedUsername);
+        }
+      });
+
       await promise;
     },
     [profiles, updateProfileInContext],
