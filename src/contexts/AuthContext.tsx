@@ -7,6 +7,7 @@ import camelcaseKeys from "camelcase-keys";
 interface AuthContextType {
   user: UserProfile | null;
   isAuthenticated: boolean;
+  sessionLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (
     email: string,
@@ -261,6 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isAuthenticated: !!user,
+        sessionLoading,
         login,
         signup,
         logout,
