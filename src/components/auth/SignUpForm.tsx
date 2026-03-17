@@ -30,7 +30,7 @@ type FormErrors = {
   password: null | string;
 };
 
-const FieldValidators = {
+const fieldValidators = {
   name: validateName,
   email: validateEmail,
   username: validateUsername,
@@ -68,7 +68,7 @@ export default function SignUpForm() {
     const { name, value } = e.target;
 
     // Get the validator that matches field input
-    const validator = FieldValidators[name as keyof FormValues];
+    const validator = fieldValidators[name as keyof FormValues];
 
     if (validator) {
       setFormValues((prev) => ({ ...prev, [name]: value }));
