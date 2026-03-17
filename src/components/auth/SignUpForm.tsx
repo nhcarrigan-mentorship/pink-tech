@@ -10,11 +10,11 @@ import {
   validateUsername,
   NAME_MAX,
   NAME_MIN,
-  PASSWORD_RULES,
   USERNAME_MAX,
   USERNAME_MIN,
 } from "../../utils/validators";
 import PasswordStrengthBar from "../ui/PasswordStrengthBar";
+import PasswordRequirements from "../ui/PasswordRequirements";
 
 type FormValues = {
   name: string;
@@ -277,32 +277,14 @@ export default function SignUpForm() {
           </div>
 
           {/* Strength bar */}
-          {password.length > 0 && <PasswordStrengthBar passwordStrength={getPasswordStrength(password)} />}
+          {password.length > 0 && (
+            <PasswordStrengthBar
+              passwordStrength={getPasswordStrength(password)}
+            />
+          )}
 
           {/* Requirements checklist */}
-          {password.length > 0 && (
-            <ul className="mt-2 space-y-1">
-              {PASSWORD_RULES.filter(
-                (r) => r.label !== "At most 128 characters",
-              ).map((rule) => {
-                const met = rule.test(password);
-                return (
-                  <li
-                    key={rule.label}
-                    className={`flex items-center gap-1.5 text-xs ${
-                      met ? "text-green-600" : "text-gray-400"
-                    }`}
-                  >
-                    <LazyIcon
-                      name={met ? "CircleCheck" : "Circle"}
-                      className="w-3.5 h-3.5 shrink-0"
-                    />
-                    {rule.label}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          {password.length > 0 && <PasswordRequirements password={password} />}
         </div>
 
         <button
