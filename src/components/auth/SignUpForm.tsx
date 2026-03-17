@@ -56,7 +56,7 @@ export default function SignUpForm() {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  
+
   const navigate = useNavigate();
   const { signup } = useAuth();
 
@@ -91,6 +91,7 @@ export default function SignUpForm() {
 
       setFormErrors(errors);
 
+      // Quit submitting when there's an error
       if (Object.values(errors).some(Boolean)) {
         setIsSigningUp(false);
         return;
@@ -98,7 +99,10 @@ export default function SignUpForm() {
 
       await signup(email, name, username, password);
       setEmailSent(true);
+
+      // Store pending email verification to current session
       sessionStorage.setItem("pendingVerification", email);
+
       navigate("/verify", { state: { email: email } });
     } catch (err) {
       setSubmitError(
@@ -124,6 +128,7 @@ export default function SignUpForm() {
         </p>
       </div>
 
+    {/* Submit Error */}
       {submitError && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
           {submitError}
@@ -297,6 +302,7 @@ export default function SignUpForm() {
           {password.length > 0 && <PasswordRequirements password={password} />}
         </div>
 
+        {/* Sign Up Button */}
         <button
           type="submit"
           className="w-full py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold cursor-pointer hover:from-pink-600 to-rose-600 hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -308,6 +314,7 @@ export default function SignUpForm() {
         </button>
       </form>
 
+      {/* Sign In Link */}
       <p className="mt-6 text-center text-gray-600 text-sm font-medium">
         Already have an account?{" "}
         <span className="text-pink-500 hover:text-pink-600">
