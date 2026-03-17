@@ -82,10 +82,20 @@ export default function SignUpForm() {
     setIsSigningUp(true);
 
     try {
-      const usernameValidationError = validateUsername(username);
-      if (usernameValidationError) throw new Error(usernameValidationError);
-      const passwordValidationError = validatePassword(password);
-      if (passwordValidationError) throw new Error(passwordValidationError);
+      const errors = {
+        name: validateName(name),
+        email: validateEmail(email),
+        username: validateUsername(username),
+        password: validatePassword(password),
+      };
+
+      setFormErrors(errors);
+
+      if (Object.values(errors).some(Boolean)) {
+        setIsSigningUp(false);
+        return;
+      }
+
       await signup(email, name, username, password);
       setEmailSent(true);
       sessionStorage.setItem("pendingVerification", email);
