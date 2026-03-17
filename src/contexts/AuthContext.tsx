@@ -71,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Try to get session from URL (after email verification redirect)
       try {
+        // @ts-ignore
         if (supabase.auth.getSessionFromUrl) {
           // @ts-ignore
           await supabase.auth.getSessionFromUrl({ storeSession: true });
@@ -84,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Clear user on sign out
           if (event === "SIGNED_OUT") {
             setUser(null);
+            setSessionLoading(false);
             return;
           }
 
@@ -141,6 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 ...camelcaseKeys(profileData, { deep: true }),
                 authEmail: signedInUser.email ?? null,
               });
+              setSessionLoading(false);
             } catch (err) {
               console.error("Auth state error:", err);
             }
