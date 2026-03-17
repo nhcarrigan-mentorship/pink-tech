@@ -24,28 +24,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
 
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const savedUser = localStorage.getItem("pinkTechUser");
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error("Failed to parse saved user:", error);
-        localStorage.removeItem("pinkTechUser");
-      }
-    }
-  }, []);
-
-  // Save user to localStorage whenever it changes
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("pinkTechUser", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("pinkTechUser");
-    }
-  }, [user]);
-
   const login = async (email: string, password: string) => {
     const supabase = await getSupabase();
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -236,7 +214,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
     }
   };
-  
+
   const updateProfile = (updates: Partial<UserProfile>) => {
     if (user) {
       setUser({ ...user, ...updates });
