@@ -62,60 +62,61 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Profile will be set by the onAuthStateChange listener (SIGNED_IN event).
   };
 
-  // Listen for auth state changes so we can create the user's profile after
-  // they verify their email and sign in via the verification link.
+  // Listen for auth changes (after email verification redirect)
   useEffect(() => {
-    // `cancelled` lets the async setup abort if the effect is torn down
-    // (e.g. React StrictMode double-mount) before getSupabase() resolves.
-    // `unsubscribe` is set once the listener is registered so the cleanup
-    // function can reach it synchronously on subsequent unmounts.
+    // Track if effect was cleaned up
     let cancelled = false;
+
+    // Will hold the unsubscribe function for cleanup
     let unsubscribe: (() => void) | null = null;
 
     (async () => {
       const supabase = await getSupabase();
 
-      // If the effect was cleaned up while we were awaiting, bail out and
-      // don't register a listener at all.
+      // Stop if component already unmounted
       if (cancelled) return;
 
-      // If the URL contains an auth session from the redirect, try to consume it.
+      // Try to get session from URL (after email verification redirect)
       try {
         // @ts-ignore
         if (supabase.auth.getSessionFromUrl) {
           // @ts-ignore
           await supabase.auth.getSessionFromUrl({ storeSession: true });
         }
-      } catch (err) {
-        // ignore — nothing to do if session isn't present in URL
+      } catch {
+        // Ignore if no session in URL
       }
 
       const { data } = supabase.auth.onAuthStateChange(
         (event: string, session: any) => {
+          // Clear user on sign out
           if (event === "SIGNED_OUT") {
             setUser(null);
             return;
           }
-          // USER_UPDATED fires when the verification link is clicked and the
-          // email is confirmed. SIGNED_IN fires on manual login. Handle both.
+
+          // Only handle sign in or email verification
           if (event !== "SIGNED_IN" && event !== "USER_UPDATED") return;
 
           const signedInUser = session?.user;
+
+          // No user → clear state
           if (!signedInUser) {
             setUser(null);
             return;
           }
 
+          // Wait until email is confirmed
           if (!signedInUser.email_confirmed_at) return;
 
-          // Defer async DB work so the auth lock is released first.
-          // Making the callback itself async and awaiting inside it
-          // deadlocks signInWithPassword in Supabase JS.
+          // Run async logic outside auth callback (avoid Supabase deadlock)
           setTimeout(async () => {
             try {
+              // Create profile if coming from signup flow
               const pending = localStorage.getItem("pendingProfile");
               if (pending) {
                 const parsed = JSON.parse(pending);
+
                 await supabase.from("profiles").upsert([
                   {
                     id: signedInUser.id,
@@ -124,10 +125,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     last_updated: new Date().toISOString(),
                   },
                 ]);
+
+                // Clear temporary signup data
                 localStorage.removeItem("pendingProfile");
                 localStorage.removeItem("pendingEmail");
               }
 
+              // Fetch full profile
               const { data: profileData, error: profileError } = await supabase
                 .from("profiles")
                 .select("*")
@@ -135,27 +139,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .single();
 
               if (profileError) {
-                console.error(
-                  "Failed to fetch profile after sign-in:",
-                  profileError,
-                );
+                console.error("Failed to fetch profile:", profileError);
                 setUser(null);
                 return;
               }
 
+              // Save user in state
               setUser({
                 ...camelcaseKeys(profileData, { deep: true }),
                 authEmail: signedInUser.email ?? null,
               });
             } catch (err) {
-              console.error("Error handling auth state change:", err);
+              console.error("Auth state error:", err);
             }
           }, 0);
         },
       );
 
-      // If the cleanup already ran while we were awaiting above, unsubscribe
-      // immediately rather than leaving a dangling listener.
+      // If effect already cleaned up, remove listener immediately
       if (cancelled) {
         data.subscription.unsubscribe();
         return;
@@ -169,7 +170,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       unsubscribe?.();
     };
   }, []);
-
   const signup = async (
     email: string,
     display_name: string,
@@ -178,7 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ) => {
     const supabase = await getSupabase();
 
-    // Validate username is is not taken
+    // Check if username already exists
     const { data: existingUsername, error: usernameCheckError } = await supabase
       .from("profiles")
       .select("username")
@@ -186,12 +186,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     if (usernameCheckError) throw usernameCheckError;
-    if (existingUsername)
-      throw new Error(
-        `The username is already taken. Please choose a different one.`,
-      );
 
-    // Same reasoning as login — do not wrap in withTimeout.
+    if (existingUsername) throw new Error("Username already taken");
+
+    // Create auth user
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -200,48 +198,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) throw error;
 
-    // Supabase silently succeeds for duplicate emails but returns an empty
-    // identities array instead of throwing. Detect and surface it here.
+    // Detect duplicate email (Supabase does not throw)
     if (!data.user?.identities?.length)
-      throw new Error(
-        "An account with this email already exists. Please sign in instead.",
-      );
+      throw new Error("Email already exists. Please sign in.");
 
     const user = data.user;
-    if (!user) throw new Error("No user returned from Supabase");
 
-    // Save the profile data temporarily — we'll create the profile after the
-    // user verifies their email and signs in (see auth state listener).
+    if (!user) throw new Error("No user returned");
+
+    // Save profile data for later (after email verification)
     const profileData = {
       display_name,
       username,
       last_updated: new Date().toISOString(),
     };
 
-    // localStorage writes are synchronous — no timeout needed.
     localStorage.setItem("pendingProfile", JSON.stringify(profileData));
+
+    // Save email (optional)
     try {
       localStorage.setItem("pendingEmail", email);
     } catch (e) {
-      console.warn("Could not persist pending email:", e);
+      console.warn("Failed to save email:", e);
     }
   };
 
   const logout = async () => {
-    // Sign out from Supabase — the SIGNED_OUT event fired by onAuthStateChange
-    // will call setUser(null). We intentionally do NOT call setUser(null) here
-    // synchronously, because doing so triggers an immediate re-render of
-    // ProtectedRoute which redirects to /login before navigate("/") can complete.
     try {
       const supabase = await getSupabase();
+
+      // Sign out (listener will clear user state)
       await supabase.auth.signOut();
     } catch (err) {
-      console.error("Error signing out from Supabase:", err);
-      // Fall back to clearing state manually if signOut fails.
+      console.error("Sign out failed:", err);
+
+      // Fallback: clear user manually
       setUser(null);
     }
   };
-
+  
   const updateProfile = (updates: Partial<UserProfile>) => {
     if (user) {
       setUser({ ...user, ...updates });
