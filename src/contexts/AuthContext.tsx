@@ -23,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
 
   const login = async (email: string, password: string) => {
     const supabase = await getSupabase();
@@ -54,9 +55,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Stop if component already unmounted
       if (cancelled) return;
 
+      // Get session from Supabase
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (cancelled) return;
+
+      // Set user to null if user does not exist in session
+      if (!session?.user) {
+        setUser(null);
+        setSessionLoading(false);
+        return;
+      }
+
       // Try to get session from URL (after email verification redirect)
       try {
-        // @ts-ignore
         if (supabase.auth.getSessionFromUrl) {
           // @ts-ignore
           await supabase.auth.getSessionFromUrl({ storeSession: true });
