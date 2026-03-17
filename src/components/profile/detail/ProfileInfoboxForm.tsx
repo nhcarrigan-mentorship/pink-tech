@@ -62,7 +62,6 @@ export default function ProfileInfoboxForm({
 }: ProfileInfoboxFormProps) {
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
-  // const [nameError, setNameError] = useState<string | null>(null);
   const [expertiseInput, setExpertiseInput] = useState<string | null>(null);
   const [newProfileFile, setNewProfileFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
