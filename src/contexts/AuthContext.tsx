@@ -23,9 +23,30 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Cached UI data from localStorage (non-auth-sensitive)
+  const cachedUser = localStorage.getItem("pinkTechUser");
+  const [uiCachedUser, setUiCachedUser] = useState<UserProfile | null>(
+    cachedUser ? JSON.parse(cachedUser) : null,
+  );
+
+  // Actual authenticated user state
   const [user, setUser] = useState<UserProfile | null>(null);
+
+  // Loading flag until Supabase confirms session
   const [sessionLoading, setSessionLoading] = useState(true);
 
+  // Sync authenticated user to localStorage for future UI caching
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("pinkTechUser", JSON.stringify(user));
+      setUiCachedUser(user); // Update UI cache immediately
+    } else {
+      localStorage.removeItem("pinkTechUser");
+      setUiCachedUser(null);
+    }
+  }, [user]);
+
+  // Login method
   const login = async (email: string, password: string) => {
     const supabase = await getSupabase();
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -56,12 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Stop if component already unmounted
       if (cancelled) return;
 
-      // Get session from Supabase
+      // Get current session on mount
       const {
         data: { session },
       } = await supabase.auth.getSession();
-
-      if (cancelled) return;
 
       // Set user to null if user does not exist in session
       if (!session?.user) {
