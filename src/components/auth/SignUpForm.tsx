@@ -52,15 +52,15 @@ export default function SignUpForm() {
     password: null,
   });
 
-  const { name, email, username, password } = formValues;
-
   const [showPassword, setShowPassword] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [submitError, setSubmitError] = useState("");
-
+  const [emailSent, setEmailSent] = useState(false);
+  
   const navigate = useNavigate();
   const { signup } = useAuth();
-  const [emailSent, setEmailSent] = useState(false);
+
+  const { name, email, username, password } = formValues;
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
