@@ -16,10 +16,10 @@ import {
 } from "../../utils/validators";
 
 type FormValues = {
-  name: null | string;
-  email: null | string;
-  username: null | string;
-  password: null | string;
+  name: string;
+  email: string;
+  username: string;
+  password: string;
 };
 
 type FormErrors = {
@@ -38,10 +38,10 @@ const FieldValidators = {
 
 export default function SignUpForm() {
   const [formValues, setFormValues] = useState<FormValues>({
-    name: null,
-    email: null,
-    username: null,
-    password: null,
+    name: "",
+    email: "",
+    username: "",
+    password: "",
   });
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
@@ -81,13 +81,13 @@ export default function SignUpForm() {
     setIsSigningUp(true);
 
     try {
-      const usernameValidationError = validateUsername(username ?? "");
+      const usernameValidationError = validateUsername(username);
       if (usernameValidationError) throw new Error(usernameValidationError);
-      const passwordValidationError = validatePassword(password ?? "");
+      const passwordValidationError = validatePassword(password);
       if (passwordValidationError) throw new Error(passwordValidationError);
-      await signup(email ?? "", name ?? "", username ?? "", password ?? "");
+      await signup(email, name, username, password);
       setEmailSent(true);
-      sessionStorage.setItem("pendingVerification", email ?? "");
+      sessionStorage.setItem("pendingVerification", email);
       navigate("/verify", { state: { email: email } });
     } catch (err) {
       setSubmitError(
@@ -143,7 +143,7 @@ export default function SignUpForm() {
               id="email"
               minLength={NAME_MIN}
               maxLength={NAME_MAX}
-              value={email ?? ""}
+              value={email}
               autoComplete="email"
               required
               onChange={(e) => {
@@ -177,7 +177,7 @@ export default function SignUpForm() {
               id="name"
               autoComplete="name"
               required
-              value={name ?? ""}
+              value={name}
               onChange={(e) => {
                 onInputChange(e);
               }}
@@ -211,7 +211,7 @@ export default function SignUpForm() {
               required
               minLength={USERNAME_MIN}
               maxLength={USERNAME_MAX}
-              value={username ?? ""}
+              value={username}
               onChange={(e) => onInputChange(e)}
               onBlur={(e) => {
                 const msg = validateUsername(e.target.value);
@@ -249,7 +249,7 @@ export default function SignUpForm() {
               type={showPassword ? "text" : "password"}
               name="password"
               id="password"
-              value={password ?? ""}
+              value={password}
               autoComplete="new-password"
               required
               onChange={(e) => {
@@ -279,7 +279,7 @@ export default function SignUpForm() {
           {password ??
             ("".length > 0 &&
               (() => {
-                const strength = getPasswordStrength(password ?? "");
+                const strength = getPasswordStrength(password);
                 const levels = [
                   { min: 0, label: "", bars: 0 },
                   { min: 1, label: "Very weak", bars: 1 },
@@ -337,7 +337,7 @@ export default function SignUpForm() {
                 {PASSWORD_RULES.filter(
                   (r) => r.label !== "At most 128 characters",
                 ).map((rule) => {
-                  const met = rule.test(password ?? "");
+                  const met = rule.test(password);
                   return (
                     <li
                       key={rule.label}
