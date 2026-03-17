@@ -360,7 +360,9 @@ export default function SignUpForm() {
         <button
           type="submit"
           className="w-full py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold cursor-pointer hover:from-pink-600 to-rose-600 hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          disabled={isSigningUp || emailSent}
+          disabled={
+            isSigningUp || emailSent || Object.values(formErrors).some(Boolean)
+          }
         >
           {isSigningUp ? "Signing Up" : "Sign Up"}
         </button>
