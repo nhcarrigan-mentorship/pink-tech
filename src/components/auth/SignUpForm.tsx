@@ -29,6 +29,13 @@ type FormErrors = {
   password: null | string;
 };
 
+const FieldValidators = {
+  name: validateName,
+  email: validateEmail,
+  username: validateUsername,
+  password: validatePassword,
+};
+
 export default function SignUpForm() {
   const [formValues, setFormValues] = useState<FormValues>({
     name: null,
@@ -37,24 +44,18 @@ export default function SignUpForm() {
     password: null,
   });
 
-  const [formErrors, setFormErrors] = useState<FormValues>({
+  const [formErrors, setFormErrors] = useState<FormErrors>({
     name: null,
     email: null,
     username: null,
     password: null,
   });
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { name, email, username, password } = formValues;
+
   const [showPassword, setShowPassword] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState("");
-  const [usernameError, setUsernameError] = useState<Error | null>(null);
-  const [emailError, setEmailError] = useState<Error | null>(null);
-  const [nameError, setNameError] = useState<Error | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { signup } = useAuth();
@@ -64,6 +65,14 @@ export default function SignUpForm() {
     e.preventDefault();
 
     const { name, value } = e.target;
+
+    // Get the validator that matches field input
+    const validator = FieldValidators[name as keyof FormValues];
+
+    if (validator) {
+      setFormValues((prev) => ({ ...prev, [name]: value }));
+      setFormErrors((prev) => ({ ...prev, [name]: validator(value) }));
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,14 +81,14 @@ export default function SignUpForm() {
     setIsSigningUp(true);
 
     try {
-      const usernameValidationError = validateUsername(username);
+      const usernameValidationError = validateUsername(username ?? "");
       if (usernameValidationError) throw new Error(usernameValidationError);
-      const passwordValidationError = validatePassword(password);
+      const passwordValidationError = validatePassword(password ?? "");
       if (passwordValidationError) throw new Error(passwordValidationError);
-      await signup(email, name, username, password);
+      await signup(email ?? "", name ?? "", username ?? "", password ?? "");
       setEmailSent(true);
-      sessionStorage.setItem("pendingVerification", email);
-      navigate("/verify", { state: { email } });
+      sessionStorage.setItem("pendingVerification", email ?? "");
+      navigate("/verify", { state: { email: email } });
     } catch (err) {
       setError(
         err instanceof Error
@@ -134,24 +143,19 @@ export default function SignUpForm() {
               id="email"
               minLength={NAME_MIN}
               maxLength={NAME_MAX}
-              value={email}
+              value={email ?? ""}
               autoComplete="email"
               required
               onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailError(
-                  validateEmail(e.target.value)
-                    ? new Error(validateEmail(e.target.value)!)
-                    : null,
-                );
+                onInputChange(e);
               }}
               placeholder="you@example.com"
               disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-pink-200 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
-          {emailError && (
-            <p className="mt-1.5 text-xs text-red-600">{emailError.message}</p>
+          {formErrors["email"] && (
+            <p className="mt-1.5 text-xs text-red-600">{formErrors["email"]}</p>
           )}
         </div>
 
@@ -173,22 +177,17 @@ export default function SignUpForm() {
               id="name"
               autoComplete="name"
               required
-              value={name}
+              value={name ?? ""}
               onChange={(e) => {
-                setName(e.target.value);
-                setNameError(
-                  validateName(e.target.value)
-                    ? new Error(validateName(e.target.value)!)
-                    : null,
-                );
+                onInputChange(e);
               }}
               placeholder="Jane Smith"
               disabled={isSigningUp}
               className="w-full pl-11 pr-4 py-3 border border-pink-200 rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             ></input>
           </div>
-          {nameError && (
-            <p className="mt-1.5 text-xs text-red-600">{nameError.message}</p>
+          {formErrors["name"] && (
+            <p className="mt-1.5 text-xs text-red-600">{formErrors["name"]}</p>
           )}
         </div>
 
@@ -212,29 +211,25 @@ export default function SignUpForm() {
               required
               minLength={USERNAME_MIN}
               maxLength={USERNAME_MAX}
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                setUsernameError(
-                  validateUsername(e.target.value)
-                    ? new Error(validateUsername(e.target.value)!)
-                    : null,
-                );
-              }}
+              value={username ?? ""}
+              onChange={(e) => onInputChange(e)}
               onBlur={(e) => {
                 const msg = validateUsername(e.target.value);
-                setUsernameError(msg ? new Error(msg) : null);
+                setFormErrors((prev) => ({
+                  ...prev,
+                  username: msg,
+                }));
               }}
               placeholder="janesmith"
               disabled={isSigningUp}
               className={`w-full pl-11 pr-4 py-3 border rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                usernameError ? "border-red-400" : "border-pink-200"
+                formErrors["username"] ? "border-red-400" : "border-pink-200"
               }`}
             ></input>
           </div>
-          {usernameError && (
+          {formErrors["username"] && (
             <p className="mt-1.5 text-xs text-red-600">
-              {usernameError.message}
+              {formErrors["username"]}
             </p>
           )}
         </div>
@@ -254,17 +249,16 @@ export default function SignUpForm() {
               type={showPassword ? "text" : "password"}
               name="password"
               id="password"
-              value={password}
+              value={password ?? ""}
               autoComplete="new-password"
               required
               onChange={(e) => {
-                setPassword(e.target.value);
-                setPasswordError(validatePassword(e.target.value));
+                onInputChange(e);
               }}
               placeholder="••••••••"
               disabled={isSigningUp}
               className={`w-full pl-11 pr-11 py-3 border rounded-lg outline-pink-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                passwordError ? "border-red-400" : "border-pink-200"
+                formErrors["password"] ? "border-red-400" : "border-pink-200"
               }`}
             ></input>
 
@@ -282,83 +276,85 @@ export default function SignUpForm() {
           </div>
 
           {/* Strength bar */}
-          {password.length > 0 &&
-            (() => {
-              const strength = getPasswordStrength(password);
-              const levels = [
-                { min: 0, label: "", bars: 0 },
-                { min: 1, label: "Very weak", bars: 1 },
-                { min: 2, label: "Weak", bars: 2 },
-                { min: 3, label: "Fair", bars: 3 },
-                { min: 5, label: "Strong", bars: 4 },
-                { min: 6, label: "Very strong", bars: 5 },
-              ];
-              const level = [...levels]
-                .reverse()
-                .find((l) => strength >= l.min)!;
-              const colors = [
-                "",
-                "bg-red-500",
-                "bg-orange-400",
-                "bg-yellow-400",
-                "bg-lime-500",
-                "bg-green-500",
-              ];
-              const textColors = [
-                "",
-                "text-red-500",
-                "text-orange-400",
-                "text-yellow-500",
-                "text-lime-600",
-                "text-green-600",
-              ];
-              return (
-                <div className="mt-2">
-                  <div className="flex gap-1 mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`h-1.5 flex-1 rounded-full transition-colors ${
-                          i < level.bars ? colors[level.bars] : "bg-gray-200"
-                        }`}
-                      />
-                    ))}
+          {password ??
+            ("".length > 0 &&
+              (() => {
+                const strength = getPasswordStrength(password ?? "");
+                const levels = [
+                  { min: 0, label: "", bars: 0 },
+                  { min: 1, label: "Very weak", bars: 1 },
+                  { min: 2, label: "Weak", bars: 2 },
+                  { min: 3, label: "Fair", bars: 3 },
+                  { min: 5, label: "Strong", bars: 4 },
+                  { min: 6, label: "Very strong", bars: 5 },
+                ];
+                const level = [...levels]
+                  .reverse()
+                  .find((l) => strength >= l.min)!;
+                const colors = [
+                  "",
+                  "bg-red-500",
+                  "bg-orange-400",
+                  "bg-yellow-400",
+                  "bg-lime-500",
+                  "bg-green-500",
+                ];
+                const textColors = [
+                  "",
+                  "text-red-500",
+                  "text-orange-400",
+                  "text-yellow-500",
+                  "text-lime-600",
+                  "text-green-600",
+                ];
+                return (
+                  <div className="mt-2">
+                    <div className="flex gap-1 mb-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`h-1.5 flex-1 rounded-full transition-colors ${
+                            i < level.bars ? colors[level.bars] : "bg-gray-200"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    {level.label && (
+                      <p
+                        className={`text-xs font-medium ${textColors[level.bars]}`}
+                      >
+                        {level.label}
+                      </p>
+                    )}
                   </div>
-                  {level.label && (
-                    <p
-                      className={`text-xs font-medium ${textColors[level.bars]}`}
-                    >
-                      {level.label}
-                    </p>
-                  )}
-                </div>
-              );
-            })()}
+                );
+              })())}
 
           {/* Requirements checklist */}
-          {password.length > 0 && (
-            <ul className="mt-2 space-y-1">
-              {PASSWORD_RULES.filter(
-                (r) => r.label !== "At most 128 characters",
-              ).map((rule) => {
-                const met = rule.test(password);
-                return (
-                  <li
-                    key={rule.label}
-                    className={`flex items-center gap-1.5 text-xs ${
-                      met ? "text-green-600" : "text-gray-400"
-                    }`}
-                  >
-                    <LazyIcon
-                      name={met ? "CircleCheck" : "Circle"}
-                      className="w-3.5 h-3.5 shrink-0"
-                    />
-                    {rule.label}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          {password ??
+            ("".length > 0 && (
+              <ul className="mt-2 space-y-1">
+                {PASSWORD_RULES.filter(
+                  (r) => r.label !== "At most 128 characters",
+                ).map((rule) => {
+                  const met = rule.test(password ?? "");
+                  return (
+                    <li
+                      key={rule.label}
+                      className={`flex items-center gap-1.5 text-xs ${
+                        met ? "text-green-600" : "text-gray-400"
+                      }`}
+                    >
+                      <LazyIcon
+                        name={met ? "CircleCheck" : "Circle"}
+                        className="w-3.5 h-3.5 shrink-0"
+                      />
+                      {rule.label}
+                    </li>
+                  );
+                })}
+              </ul>
+            ))}
         </div>
 
         <button
