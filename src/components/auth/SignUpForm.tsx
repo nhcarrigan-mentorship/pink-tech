@@ -55,7 +55,7 @@ export default function SignUpForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const [error, setError] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
   const navigate = useNavigate();
   const { signup } = useAuth();
@@ -77,7 +77,7 @@ export default function SignUpForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setSubmitError("");
     setIsSigningUp(true);
 
     try {
@@ -90,7 +90,7 @@ export default function SignUpForm() {
       sessionStorage.setItem("pendingVerification", email ?? "");
       navigate("/verify", { state: { email: email } });
     } catch (err) {
-      setError(
+      setSubmitError(
         err instanceof Error
           ? err.message
           : "An error occurred while signing up",
@@ -113,9 +113,9 @@ export default function SignUpForm() {
         </p>
       </div>
 
-      {error && (
+      {submitError && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-          {error}
+          {submitError}
         </div>
       )}
 
