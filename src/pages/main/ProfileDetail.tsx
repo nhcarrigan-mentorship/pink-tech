@@ -20,8 +20,9 @@ export default function ProfileDetail() {
   const [noticeDismissed, setNoticeDismissed] = useState(false);
   const [isFetchingProfile, setIsFetchingProfile] = useState(false);
 
-  const { isAuthenticated, user } = useAuth();
-  const isOwner = isAuthenticated && user?.id === profile?.id;
+  const { isAuthenticated, user, uiCachedUser } = useAuth();
+  const displayUser = user ?? uiCachedUser;
+  const isOwner = isAuthenticated && displayUser?.id === profile?.id;
 
   useEffect(() => {
     if (noticeDismissed) return;

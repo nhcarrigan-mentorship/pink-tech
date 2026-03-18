@@ -6,7 +6,8 @@ import getSupabase from "../../../config/supabaseClient";
 import { validateUsername } from "../../../utils/validators";
 
 export default function AccountSettings() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, uiCachedUser } = useAuth();
+  const displayUser = user ?? uiCachedUser;
   const [username, setUsername] = useState<string | null>(null);
   const [editingUsername, setEditingUsername] = useState(false);
   const [savingUsername, setSavingUsername] = useState(false);
@@ -14,12 +15,12 @@ export default function AccountSettings() {
 
   // Populate username
   useEffect(() => {
-    if (user?.username) setUsername(user.username);
-  }, [user?.username]);
+    if (displayUser?.username) setUsername(displayUser.username);
+  }, [displayUser?.username]);
 
   async function saveUsername(e: React.FormEvent) {
     // Exit form when username is the same
-    if (username === user?.username) {
+    if (username === displayUser?.username) {
       setEditingUsername(false);
       return;
     }
@@ -55,7 +56,7 @@ export default function AccountSettings() {
   }
 
   function startEditing() {
-    setUsername(user?.username ?? null);
+    setUsername(displayUser?.username ?? null);
     setEditingUsername(true);
   }
 
@@ -98,7 +99,7 @@ export default function AccountSettings() {
               <p className="text-pink-700 font-bold text-xs uppercase tracking-wide mb-0.5">
                 Name
               </p>
-              <p>{user?.displayName}</p>
+              <p>{displayUser?.displayName}</p>
             </div>
 
             {/* Username - inline editable */}
@@ -169,7 +170,7 @@ export default function AccountSettings() {
                   Username
                 </p>
                 <div className="flex justify-between">
-                  <p>@{user?.username}</p>
+                  <p>@{displayUser?.username}</p>
                   <button
                     className="inline-flex items-center gap-1 text-sm text-pink-600 font-bold cursor-pointer hover:text-pink-700 transition-colors disabled:cursor-not-allowed"
                     onClick={startEditing}
@@ -186,7 +187,7 @@ export default function AccountSettings() {
               <p className="text-pink-700 font-bold text-xs uppercase tracking-wide mb-0.5">
                 Email
               </p>
-              <p>{user?.authEmail}</p>
+              <p>{displayUser?.authEmail}</p>
             </div>
 
             {/* Password — read-only */}

@@ -5,7 +5,9 @@ import LazyIcon from "../../components/ui/LazyIcon";
 export default function DesktopNavigationMenu() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout, user, uiCachedUser } = useAuth();
+  const displayUser = user ?? uiCachedUser;
+  const showAuthenticated = isAuthenticated || !!uiCachedUser;
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -40,12 +42,12 @@ export default function DesktopNavigationMenu() {
         <LazyIcon name="Search" className="w-4 h-4" />
         <span>Search</span>
       </Link>
-      {isAuthenticated ? (
+      {showAuthenticated ? (
         <>
           <Link
-            to={`/${user?.username}`}
+            to={`/${displayUser?.username}`}
             className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-              isActive(`/${user?.username}`)
+              isActive(`/${displayUser?.username}`)
                 ? "bg-pink-50 text-pink-700"
                 : "text-gray-600 hover:bg-gray-50"
             }`}

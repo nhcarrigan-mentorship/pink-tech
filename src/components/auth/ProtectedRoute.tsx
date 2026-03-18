@@ -4,13 +4,13 @@ import { useAuth } from "../../contexts/AuthContext";
 import LoadingState from "../ui/LoadingState";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated, sessionLoading } = useAuth();
+  const { isAuthenticated, sessionLoading, uiCachedUser } = useAuth();
   const location = useLocation();
 
-  if (sessionLoading) {
+  if (sessionLoading && !uiCachedUser) {
     return <LoadingState />;
   }
-  if (!isAuthenticated) {
+  if (!sessionLoading && !isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return <>{children}</>;

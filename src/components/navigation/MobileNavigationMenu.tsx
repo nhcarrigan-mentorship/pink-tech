@@ -6,7 +6,9 @@ export default function MobileNavigationMenu() {
   // Add a class to allow hiding when modal is open
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout, user, uiCachedUser } = useAuth();
+  const displayUser = user ?? uiCachedUser;
+  const showAuthenticated = isAuthenticated || !!uiCachedUser;
 
   const handleLogout = async () => {
     navigate("/");
@@ -45,12 +47,12 @@ export default function MobileNavigationMenu() {
           <span className="text-xs font-medium">Search</span>
         </Link>
 
-        {isAuthenticated ? (
+        {showAuthenticated ? (
           <>
             <Link
-              to={`/${user?.username}`}
+              to={`/${displayUser?.username}`}
               className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-colors min-w-[70px] ${
-                isActive(`/${user?.username}`)
+                isActive(`/${displayUser?.username}`)
                   ? "text-pink-600"
                   : "text-gray-600"
               }`}
@@ -58,7 +60,7 @@ export default function MobileNavigationMenu() {
               <LazyIcon
                 name="User"
                 className={`w-6 h-6 ${
-                  isActive(`/${user?.username}`) ? "stroke-[2.5]" : ""
+                  isActive(`/${displayUser?.username}`) ? "stroke-[2.5]" : ""
                 }`}
               />
               <span className="text-xs font-medium">Profile</span>
