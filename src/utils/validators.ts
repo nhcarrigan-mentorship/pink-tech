@@ -255,7 +255,7 @@ export function validatePassword(value: string): string | null {
 }
 
 export function validateUsername(value: string): string | null {
-  if (value.length < 1) return null;
+  if (value.length < 1) return "Username cannot be empty.";
   if (value.length < USERNAME_MIN || value.length > USERNAME_MAX)
     return `Username must be between ${USERNAME_MIN} and ${USERNAME_MAX} characters.`;
   if (!/^[a-zA-Z0-9_-]+$/.test(value))
