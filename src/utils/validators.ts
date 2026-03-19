@@ -197,7 +197,7 @@ export function validateWebsite(url: string): string | null {
 export function validateEmail(value: string): string | null {
   const trimmed = value.trim();
 
-  if (trimmed.length < 1) return null;
+  if (trimmed.length < 1) return "Email cannot be empty.";
   if (trimmed.length > EMAIL_MAX)
     return "Email must be 320 characters or fewer.";
   if (/\s/.test(trimmed)) return "Email must not contain spaces.";
