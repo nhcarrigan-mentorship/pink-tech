@@ -214,8 +214,8 @@ export function validateEmail(value: string): string | null {
     return "Email local part must not start or end with a dot.";
   if (local.includes(".."))
     return "Email local part must not contain consecutive dots.";
-  if (!/^[A-Za-z0-9._-]+$/.test(local))
-    return "Email local part may only include letters, numbers, dots, underscores, and hyphens.";
+  if (!/^[A-Za-z0-9._+-]+$/.test(local))
+    return "Email local part may only include letters, numbers, dots, underscores, hyphens, and plus signs.";
 
   // Domain checks
   if (domain.length < 1 || domain.length > 255)
