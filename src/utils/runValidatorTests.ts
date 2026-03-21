@@ -1,6 +1,6 @@
 type Validator = (value: string) => string | null;
 
-interface ValidatorTestConfig {
+export interface ValidatorTestConfig {
   name: string; // test suite name (e.g., "validateEmail")
   valid: string[]; // array of valid inputs to test (e.g., "["test@example.com", "user+tag@domain.co.uk"]")
   invalid: { input: string; error?: string }[]; // array of invalid inputs + optional specific error messages
