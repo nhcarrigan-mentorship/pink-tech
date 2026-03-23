@@ -1,19 +1,17 @@
 type Validator = (value: string) => string | null;
 
 export interface ValidatorTestConfig {
-  name: string; // test suite name (e.g., "validateEmail")
-  valid: string[]; // array of valid inputs to test (e.g., "["test@example.com", "user+tag@domain.co.uk"]")
-  invalid: { inputs: string[]; error?: string }[]; // array of invalid inputs + optional specific error messages
-  // (e.g., [{ input: "", error: "Email is required" },
-  // { input: "invalid.com" }],  // no specific error)
+  name: string; // "validateEmail"
+  valid: string[]; // "["test@example.com", "user+tag@domain.co.uk"]"
+  invalid: { inputs: string[]; error?: string }[];
+  // [{ inputs: [""], error: "Email is required" }
 
   boundaries?: {
     valid?: string[];
     invalid?: string[];
   };
-  // optional boundary test cases
-  // (e.g.,  {valid: ["a@b.c"],  // shortest valid
-  // invalid: ["a".repeat(65) + "@test.com"]  // too long)
+  // {valid: ["a@b.c"],
+  // invalid: ["a".repeat(65) + "@test.com"]
 }
 
 export function runValidatorTests(
@@ -39,5 +37,16 @@ export function runValidatorTests(
         expect(result).not.toBeNull();
       }
     });
+    if (config.boundaries?.valid) {
+      it.each(config.boundaries.valid)("accepts boundary %s", (input) =>
+        expect(validator(input)).toBeNull(),
+      );
+    }
+
+    if (config.boundaries?.invalid) {
+      it.each(config.boundaries.invalid)("rejects boundary %s", (input) =>
+        expect(validator(input)).not.toBeNull(),
+      );
+    }
   });
 }
