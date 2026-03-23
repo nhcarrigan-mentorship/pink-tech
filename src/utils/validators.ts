@@ -44,8 +44,8 @@ export function getPasswordStrength(value: string): number {
 // === Profile Validators ===
 
 export function validateBio(bio: string): string | null {
-  if (bio.length < BIO_MIN || bio.length <= BIO_MAX) return null;
-  return `Bio must be ${BIO_MAX} characters or fewer.`;
+  if (bio.length <= BIO_MAX) return null;
+  else return "Bio must be 160 characters or fewer.";
 }
 
 export function validateCompany(company: string): string | null {
