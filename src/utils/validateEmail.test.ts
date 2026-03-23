@@ -7,7 +7,6 @@ import {
 const emailConfig: ValidatorTestConfig = {
   name: "validateEmail",
 
-  // ✅ VALID CASES
   valid: [
     "test@example.com",
     "user+tag@domain.co.uk",
@@ -15,86 +14,101 @@ const emailConfig: ValidatorTestConfig = {
     "a@b.cd", // shortest valid
   ],
 
-  // ❌ INVALID CASES (with exact errors when important)
   invalid: [
     // Empty / format
-    { input: "", error: "Email cannot be empty." },
-    { input: "invalid.com", error: "Please provide a valid email address." },
+    { inputs: [""], error: "Email cannot be empty." },
+    { inputs: ["invalid.com"], error: "Please provide a valid email address." },
     {
-      input: "a@b",
+      inputs: ["a@b"],
       error: "Email domain must include a top-level domain (e.g. .com).",
     },
 
     // Spaces
-    { input: "a b@email.com", error: "Email must not contain spaces." },
+    {
+      inputs: ["a b@email.com", "a  b@email.com"],
+      error: "Email must not contain spaces.",
+    },
 
     // Local part length
     {
-      input: "@email.com",
+      inputs: ["@email.com"],
       error: "Email local part should be 1–64 characters.",
     },
     {
-      input: `${"a".repeat(65)}@email.com`,
+      inputs: [
+        `${"a".repeat(65)}@email.com`,
+        `${"a".repeat(100)}@email.com`,
+        `${"a".repeat(120)}@email.com`,
+      ],
       error: "Email local part should be 1–64 characters.",
     },
 
     // Local part rules
     {
-      input: ".a@email.com",
+      inputs: [".a@email.com", "a.@email.com"],
       error: "Email local part must not start or end with a dot.",
     },
     {
-      input: "a.@email.com",
-      error: "Email local part must not start or end with a dot.",
-    },
-    {
-      input: "a..b@email.com",
+      inputs: ["a..b@email.com"],
       error: "Email local part must not contain consecutive dots.",
     },
     {
-      input: "john#doe@email.com",
+      inputs: [
+        "john#doe@email.com", // #
+        "john!doe@email.com", // !
+        "john$doe@email.com", // $
+        "john%doe@email.com", // %
+        "john^doe@email.com", // ^
+        "john&doe@email.com", // &
+        "john*doe@email.com", // *
+      ],
       error:
         "Email local part may only include letters, numbers, dots, underscores, hyphens, and plus signs.",
     },
 
     // Domain length
     {
-      input: `a@${"a".repeat(256)}.com`,
+      inputs: [`a@${"a".repeat(256)}.com`, `a@${"a".repeat(300)}.com`],
       error: "Please provide a valid email domain.",
     },
 
     // Domain label rules
     {
-      input: "a@-domain.com",
+      inputs: ["a@-domain.com", "a@domain-.com"],
       error: "Email domain labels must not start or end with a hyphen.",
     },
     {
-      input: "a@domain-.com",
-      error: "Email domain labels must not start or end with a hyphen.",
-    },
-    {
-      input: "a@do_main.com",
+      inputs: [
+        "a@do,main.com", // ,
+        "a@do;main.com", // ;
+        "a@do:main.com", // :
+        "a@do/main.com", // /
+        "a@do\\main.com", // \\
+        "a@do🙂main.com", // 🙂
+        "a@dómáin.com", // ó, á
+        "a@do©main.com", // ©
+      ],
       error: "Email domain may only include letters, numbers, and hyphens.",
     },
 
     // Label length
     {
-      input: `a@${"a".repeat(64)}.com`,
+      inputs: [
+        `a@${"a".repeat(64)}.com`,
+        `a@${"a".repeat(80)}.com`,
+        `a@${"a".repeat(100)}.com`,
+      ],
       error: "Each domain label should be 1–63 characters.",
     },
 
-    // TLD rules
+    // Top Level Domain rules
     {
-      input: "a@email.c",
-      error: "Top-level domain should be at least 2 letters.",
-    },
-    {
-      input: "a@email.123",
+      inputs: ["a@email.c", "a@email.123", "a@email.12a"],
       error: "Top-level domain should be at least 2 letters.",
     },
   ],
 
-  // ⚖️ BOUNDARY TESTS (critical)
+  // Boundary Tests
   boundaries: {
     valid: [
       `${"a".repeat(308)}@email.com`, // 320 chars total
