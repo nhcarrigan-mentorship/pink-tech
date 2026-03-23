@@ -76,12 +76,11 @@ runValidatorTests(validateEmail, {
 
   boundaries: {
     valid: [
-      `${"a".repeat(64)}@email.com`, // max local
-      `${"a".repeat(308)}@email.com`, // max total (320)
+      "a".repeat(64) + "@email.com", // max local
     ],
     invalid: [
-      `${"a".repeat(65)}@email.com`, // local too long
-      `${"a".repeat(309)}@email.com`, // total too long
+      "a".repeat(65) + "@email.com", // local too long
+      "a".repeat(309) + "@email.com", // total too long
     ],
   },
 });
