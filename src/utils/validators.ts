@@ -171,7 +171,7 @@ export function validateRole(role: string): string | null {
   if (trimmed.length < 2) return `Role must be at least 2 characters.`;
   if (trimmed.length > 60) return `Role must be 60 characters or fewer.`;
   if (!/^[\p{L}0-9 .\-,#&()]+$/u.test(trimmed))
-    return `Role should only include letters, numbers, spaces and . - , #, & ( ).`;
+    return `Role should only include letters, numbers, spaces and . - , # & ( ).`;
   return null;
 }
 
