@@ -138,18 +138,56 @@ export function validateLinkedin(url: string): string | null {
 export function validateLinks(markdown: string) {
   const LINK_REGEX = /\[[^\]]*\]\(([^)]+)\)/g;
   let m: RegExpExecArray | null;
+
   const allowed = ["http:", "https:", "mailto:", "tel:"];
+
   while ((m = LINK_REGEX.exec(markdown))) {
     try {
-      const url = m[1].trim();
-      // allow relative links
-      if (url.startsWith("/") || url.startsWith("#")) continue;
-      const parsed = new URL(url, "https://example.com");
+      const raw = m[1].trim();
+
+      // ✅ Allow relative links
+      if (raw.startsWith("/") || raw.startsWith("#")) continue;
+
+      // ❗ Reject malformed protocol like "://example.com"
+      if (/^:\/\//.test(raw)) return false;
+
+      // Detect protocol
+      const hasProtocol = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(raw);
+
+      let parsed: URL;
+
+      if (hasProtocol) {
+        parsed = new URL(raw);
+      } else {
+        // ❗ Must look like a domain if no protocol
+        if (!raw.includes(".")) return false;
+
+        parsed = new URL(`https://${raw}`);
+      }
+
+      // ✅ Protocol whitelist
       if (!allowed.includes(parsed.protocol)) return false;
+
+      // ❗ Extra strict checks
+      if (
+        (parsed.protocol === "http:" || parsed.protocol === "https:") &&
+        (!parsed.hostname || !parsed.hostname.includes("."))
+      ) {
+        return false;
+      }
+
+      // ❗ Prevent weird cases like "https://"
+      if (
+        (parsed.protocol === "http:" || parsed.protocol === "https:") &&
+        parsed.hostname === ""
+      ) {
+        return false;
+      }
     } catch {
       return false;
     }
   }
+
   return true;
 }
 
