@@ -1,4 +1,10 @@
-import { validateEmail } from "./validators";
+import {
+  validateEmail,
+  EMAIL_MAX,
+  EMAIL_LOCAL_MAX,
+  EMAIL_DOMAIN_MAX,
+  EMAIL_LABEL_MAX,
+} from "./validators";
 import { runValidatorTests } from "./runValidatorTests";
 
 runValidatorTests(validateEmail, {
@@ -57,13 +63,13 @@ runValidatorTests(validateEmail, {
 
     // Domain length
     {
-      inputs: [`a@${"a".repeat(256)}.com`],
+      inputs: [`a@${"a".repeat(EMAIL_DOMAIN_MAX + 1)}.com`],
       error: "Please provide a valid email domain.",
     },
 
     // Label length
     {
-      inputs: [`a@${"a".repeat(64)}.com`],
+      inputs: [`a@${"a".repeat(EMAIL_LABEL_MAX + 1)}.com`],
       error: "Each domain label should be 1–63 characters.",
     },
 
@@ -76,11 +82,11 @@ runValidatorTests(validateEmail, {
 
   boundaries: {
     valid: [
-      "a".repeat(64) + "@email.com", // max local
+      "a".repeat(EMAIL_LOCAL_MAX) + "@email.com", // max local
     ],
     invalid: [
-      "a".repeat(65) + "@email.com", // local too long
-      "a".repeat(309) + "@email.com", // total too long
+      "a".repeat(EMAIL_LOCAL_MAX + 1) + "@email.com", // local too long
+      "a".repeat(EMAIL_MAX - 11) + "@email.com", // total too long
     ],
   },
 });

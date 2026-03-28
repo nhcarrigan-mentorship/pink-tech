@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateBio } from "./validators";
+import { validateBio, BIO_MAX } from "./validators";
 
 runValidatorTests(validateBio, {
   name: "validateBio",
@@ -12,13 +12,13 @@ runValidatorTests(validateBio, {
     "🙂", // emoji
     "こんにちは", // unicode
     "Senior software engineer specialising in distributed systems.",
-    `${"a".repeat(160)}`, // max boundary
+    `${"a".repeat(BIO_MAX)}`, // max boundary
   ],
 
   invalid: [
     {
       inputs: [
-        "a".repeat(161), // just over
+        "a".repeat(BIO_MAX + 1), // just over
         "a".repeat(200), // far over
         "🙂".repeat(161), // unicode overflow
       ],
@@ -28,10 +28,10 @@ runValidatorTests(validateBio, {
 
   boundaries: {
     valid: [
-      `${"a".repeat(160)}`, // exact max
+      `${"a".repeat(BIO_MAX)}`, // exact max
     ],
     invalid: [
-      `${"a".repeat(161)}`, // just above max
+      `${"a".repeat(BIO_MAX + 1)}`, // just above max
     ],
   },
 });

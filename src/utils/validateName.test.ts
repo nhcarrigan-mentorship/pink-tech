@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateName } from "./validators";
+import { validateName, NAME_MIN, NAME_MAX } from "./validators";
 
 runValidatorTests(validateName, {
   name: "validateName",
@@ -27,7 +27,7 @@ runValidatorTests(validateName, {
     // Length
     {
       inputs: ["J"],
-      error: "Name must be between 2 and 141 characters.",
+      error: `Name must be between ${NAME_MIN} and ${NAME_MAX} characters.`,
     },
 
     // Invalid characters

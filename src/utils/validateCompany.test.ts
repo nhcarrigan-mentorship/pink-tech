@@ -1,4 +1,4 @@
-import { validateCompany } from "./validators";
+import { validateCompany, COMPANY_MAX } from "./validators";
 import { runValidatorTests } from "./runValidatorTests";
 
 runValidatorTests(validateCompany, {
@@ -9,7 +9,7 @@ runValidatorTests(validateCompany, {
     "Café & Co.",
     "Startup (2024)",
     "José",
-    "a".repeat(80),
+    "a".repeat(COMPANY_MAX),
   ],
   invalid: [
     {
@@ -20,5 +20,4 @@ runValidatorTests(validateCompany, {
   ],
 });
 
-
-//  "a".repeat(81);
+//  "a".repeat(COMPANY_MAX + 1);

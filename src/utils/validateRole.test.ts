@@ -1,13 +1,13 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateRole } from "./validators";
+import { validateRole, ROLE_MIN, ROLE_MAX } from "./validators";
 runValidatorTests(validateRole, {
   name: "validateRole",
 
   valid: [
     "", // empty allowed
     "   ", // whitespace → trimmed → valid
-    "A".repeat(2), // min boundary
-    "A".repeat(60), // max boundary
+    "A".repeat(ROLE_MIN), // min boundary
+    "A".repeat(ROLE_MAX), // max boundary
     "Staff Engineer",
     "Senior Software Engineer",
     "QA Tester II",
@@ -23,13 +23,13 @@ runValidatorTests(validateRole, {
     // Min length
     {
       inputs: ["A"],
-      error: "Role must be at least 2 characters.",
+      error: `Role must be at least ${ROLE_MIN} characters.`,
     },
 
     // Max length
     {
-      inputs: ["A".repeat(61)],
-      error: "Role must be 60 characters or fewer.",
+      inputs: ["A".repeat(ROLE_MAX + 1)],
+      error: `Role must be ${ROLE_MAX} characters or fewer.`,
     },
 
     // Invalid characters
@@ -47,12 +47,12 @@ runValidatorTests(validateRole, {
 
   boundaries: {
     valid: [
-      "A".repeat(2), // exact min
-      "A".repeat(60), // exact max
+      "A".repeat(ROLE_MIN), // exact min
+      "A".repeat(ROLE_MAX), // exact max
     ],
     invalid: [
       "A", // below min
-      "A".repeat(61), // above max
+      "A".repeat(ROLE_MAX + 1), // above max
     ],
   },
 });

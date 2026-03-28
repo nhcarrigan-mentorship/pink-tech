@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateLocation } from "./validators";
+import { validateLocation, LOCATION_MIN, LOCATION_MAX } from "./validators";
 
 runValidatorTests(validateLocation, {
   name: "validateLocation",
@@ -14,15 +14,18 @@ runValidatorTests(validateLocation, {
     "Paris (Île-de-France)",
     "St. John's",
     "Quezon City",
-    "A".repeat(100), // max boundary
+    "A".repeat(LOCATION_MAX), // max boundary
   ],
   invalid: [
     // Min length
-    { inputs: ["a"], error: "Location must be at least 2 characters." },
+    {
+      inputs: ["a"],
+      error: `Location must be at least ${LOCATION_MIN} characters.`,
+    },
     // Max length
     {
-      inputs: ["a".repeat(101)],
-      error: "Location must be 100 characters or fewer.",
+      inputs: ["a".repeat(LOCATION_MAX + 1)],
+      error: `Location must be ${LOCATION_MAX} characters or fewer.`,
     },
 
     // Invalid characters
@@ -42,11 +45,11 @@ runValidatorTests(validateLocation, {
   boundaries: {
     valid: [
       "LA", // exact min (2)
-      "A".repeat(100), // exact max
+      "A".repeat(LOCATION_MAX), // exact max
     ],
     invalid: [
       "a", // below min
-      "A".repeat(101), // above max
+      "A".repeat(LOCATION_MAX + 1), // above max
     ],
   },
 });
