@@ -257,7 +257,7 @@ export function validateEmail(value: string): string | null {
 }
 
 export function validatePassword(value: string): string | null {
-  if (value.length < 1) return null;
+  if (!value.trim()) return null;
   if (value.length > PASSWORD_MAX)
     return `Password must be at most ${PASSWORD_MAX} characters.`;
   if (value.length < PASSWORD_MIN)
