@@ -3,6 +3,10 @@ export const BIO_MIN = 1;
 
 export const EMAIL_MAX = 320;
 
+const EXPERTISE_MIN = 2;
+const EXPERTISE_MAX = 40;
+const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
+
 export const NAME_MIN = 2;
 export const NAME_MAX = 141;
 
@@ -62,10 +66,6 @@ export function validateExpertise(
   expertise: string,
   profileExpertise: string[] | null | undefined,
 ) {
-  const EXPERTISE_MIN = 2;
-  const EXPERTISE_MAX = 40;
-  const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
-
   const trimmed = expertise.trim();
 
   if (!trimmed.length) return null;
