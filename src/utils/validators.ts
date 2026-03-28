@@ -2,6 +2,9 @@ export const BIO_MAX = 160;
 export const BIO_MIN = 1;
 
 export const EMAIL_MAX = 320;
+export const EMAIL_LOCAL_MAX = 64;
+export const EMAIL_DOMAIN_MAX = 255;
+export const EMAIL_LABEL_MAX = 63;
 
 export const EXPERTISE_MIN = 2;
 export const EXPERTISE_MAX = 40;
@@ -223,7 +226,7 @@ export function validateEmail(value: string): string | null {
   const [local, domain] = parts;
 
   // Local-part checks
-  if (local.length < 1 || local.length > 64)
+  if (local.length < 1 || local.length > EMAIL_LOCAL_MAX)
     return "Email local part should be 1–64 characters.";
   if (local.startsWith(".") || local.endsWith("."))
     return "Email local part must not start or end with a dot.";
@@ -233,13 +236,13 @@ export function validateEmail(value: string): string | null {
     return "Email local part may only include letters, numbers, dots, underscores, hyphens, and plus signs.";
 
   // Domain checks
-  if (domain.length < 1 || domain.length > 255)
+  if (domain.length < 1 || domain.length > EMAIL_DOMAIN_MAX)
     return "Please provide a valid email domain.";
   const labels = domain.split(".").filter(Boolean);
   if (labels.length < 2)
     return "Email domain must include a top-level domain (e.g. .com).";
   for (const label of labels) {
-    if (label.length < 1 || label.length > 63)
+    if (label.length < 1 || label.length > EMAIL_LABEL_MAX)
       return "Each domain label should be 1–63 characters.";
     if (!/^[A-Za-z0-9-]+$/.test(label))
       return "Email domain may only include letters, numbers, and hyphens.";
