@@ -16,6 +16,15 @@ export const PASSWORD_MAX = 128;
 export const USERNAME_MIN = 3;
 export const USERNAME_MAX = 20;
 
+export const COMPANY_MIN = 2;
+export const COMPANY_MAX = 80;
+
+export const LOCATION_MIN = 2;
+export const LOCATION_MAX = 100;
+
+export const ROLE_MIN = 2;
+export const ROLE_MAX = 60;
+
 export const PASSWORD_RULES = [
   {
     label: "At least 8 characters",
@@ -55,8 +64,10 @@ export function validateBio(bio: string): string | null {
 export function validateCompany(company: string): string | null {
   const trimmed = company.trim();
   if (!trimmed) return null;
-  if (trimmed.length < 2) return `Company must be at least 2 characters.`;
-  if (trimmed.length > 80) return `Company must be 80 characters or fewer.`;
+  if (trimmed.length < COMPANY_MIN)
+    return `Company must be at least ${COMPANY_MIN} characters.`;
+  if (trimmed.length > COMPANY_MAX)
+    return `Company must be ${COMPANY_MAX} characters or fewer.`;
   if (!/^[\p{L}0-9 .\-&,()]+$/u.test(trimmed))
     return `Company should only include letters, numbers, spaces and . - , & ( ).`;
   return null;
@@ -142,8 +153,10 @@ export function validateLinks(markdown: string) {
 export function validateLocation(location: string): string | null {
   const trimmed = location.trim();
   if (!trimmed) return null;
-  if (trimmed.length < 2) return `Location must be at least 2 characters.`;
-  if (trimmed.length > 100) return `Location must be 100 characters or fewer.`;
+  if (trimmed.length < LOCATION_MIN)
+    return `Location must be at least ${LOCATION_MIN} characters.`;
+  if (trimmed.length > LOCATION_MAX)
+    return `Location must be ${LOCATION_MAX} characters or fewer.`;
   if (!/^[\p{L}0-9 .,'\-()]+$/u.test(trimmed))
     return `Location should only include letters, numbers, commas, and punctuation.`;
   return null;
@@ -168,8 +181,10 @@ export function validateName(value: string): string | null {
 export function validateRole(role: string): string | null {
   const trimmed = role.trim();
   if (!trimmed) return null;
-  if (trimmed.length < 2) return `Role must be at least 2 characters.`;
-  if (trimmed.length > 60) return `Role must be 60 characters or fewer.`;
+  if (trimmed.length < ROLE_MIN)
+    return `Role must be at least ${ROLE_MIN} characters.`;
+  if (trimmed.length > ROLE_MAX)
+    return `Role must be ${ROLE_MAX} characters or fewer.`;
   if (!/^[\p{L}0-9 .\-,#&()]+$/u.test(trimmed))
     return `Role should only include letters, numbers, spaces and . - , # & ( ).`;
   return null;
