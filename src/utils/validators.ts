@@ -94,8 +94,8 @@ export function validateGithub(url: string): string | null {
     if (segments.length < 1)
       return "Please provide a GitHub profile URL (e.g. github.com/username).";
     const username = segments[0];
-    if (!/^[A-Za-z0-9-]+$/.test(username))
-      return "GitHub username in the URL should only include letters, numbers, and hyphens.";
+    if (/^(?!-)(?!.*--)[A-Za-z0-9-]+(?<!-)$/.test(username))
+      return "GitHub username may only use letters, numbers, and single hyphens between characters.";
     return null;
   } catch (e) {
     return "Please provide a valid GitHub URL.";
