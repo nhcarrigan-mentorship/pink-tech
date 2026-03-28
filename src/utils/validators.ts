@@ -88,7 +88,7 @@ export function validateGithub(url: string): string | null {
       trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
     );
     const host = parsed.hostname.toLowerCase();
-    if (!host.includes("github.com"))
+    if (!/^(.+\.)?github\.com$/.test(host))
       return "Please provide a GitHub profile URL.";
     const segments = parsed.pathname.split("/").filter(Boolean);
     if (segments.length < 1)
