@@ -110,8 +110,8 @@ export function validateLinkedin(url: string): string | null {
       trimmed.startsWith("http") ? trimmed : `https://${trimmed}`,
     );
     const host = parsed.hostname.toLowerCase();
-    if (!host.includes("linkedin.com"))
-      return "Please provide a LinkedIn profile URL.";
+    if (!/^(.+\.)?linkedin\.com$/.test(host))
+      return "Please provide a valid LinkedIn URL.";
     const path = parsed.pathname || "";
     if (!path.startsWith("/in/") && !path.startsWith("/pub/"))
       return "LinkedIn profile URL should be a personal profile (e.g. /in/username).";
