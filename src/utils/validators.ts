@@ -280,7 +280,7 @@ export function validateUsername(value: string): string | null {
     return "Username can only contain letters, numbers, underscores, and hyphens.";
   if (/^[_-]|[_-]$/.test(value))
     return "Username cannot start or end with an underscore or hyphen.";
-  if (/[_-]{2}/.test(value))
+  if (/[-_]{2}/.test(value))
     return "Username cannot contain consecutive underscores or hyphens.";
   if (/^[0-9]/.test(value)) return "Username must start with a letter.";
   return null;
