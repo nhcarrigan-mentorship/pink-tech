@@ -3,9 +3,9 @@ export const BIO_MIN = 1;
 
 export const EMAIL_MAX = 320;
 
-const EXPERTISE_MIN = 2;
-const EXPERTISE_MAX = 40;
-const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
+export const EXPERTISE_MIN = 2;
+export const EXPERTISE_MAX = 40;
+export const EXPERTISE_REGEX = /^[\p{L}0-9 .#\+\-\/&()]+$/u;
 
 export const NAME_MIN = 2;
 export const NAME_MAX = 141;
