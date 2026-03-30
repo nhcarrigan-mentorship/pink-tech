@@ -4,20 +4,16 @@ import { getPublicSupabase, getSupabase } from "../config/supabaseClient";
 import type { UserProfile } from "../types/UserProfile";
 import { upsertProfile, removeProfileById } from "../utils/profileUtils";
 
-// Module-level promise cache to deduplicate fetches across hook instances
+// Cache for full profile fetches to avoid duplicate requests
 const fullProfilePromiseCache: Map<
   string,
   Promise<UserProfile | null>
 > = new Map();
-// Module-level promise to deduplicate the initial profiles list fetch
+// Promise to avoid duplicate initial profile list fetches
 let profilesListPromise: Promise<void> | null = null;
-// Module-level cache so remounted hook instances (e.g. React StrictMode
-// double-mount) immediately receive already-fetched profiles instead of
-// seeing an empty list or having to refetch.
+// Cache for profiles to share between hook instances
 export let profilesCache: UserProfile[] | null = null;
-// Tracks whether profilesCache was populated by a full list fetch (as opposed
-// to a single-profile update from updateProfileInContext/fetchFullProfile).
-// fetchProfiles must only short-circuit on a full-list cache, not a partial one.
+// Flag to track if full list was fetched
 let profilesListFetched = false;
 
 export default function useProfiles() {
@@ -26,26 +22,19 @@ export default function useProfiles() {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchProfiles = async () => {
-    // If the full profiles list was already fetched (e.g. from a previous mount),
-    // skip the network round-trip and just make sure local state is in sync.
-    // Note: profilesCache may be set by updateProfileInContext with only a single
-    // profile — we must not short-circuit on that partial cache.
+    // Use cached data if available
     if (profilesCache && profilesListFetched) {
       setProfiles(profilesCache);
       return;
     }
 
+    // Wait for ongoing fetch if any
     if (profilesListPromise) {
-      // A fetch is already in-flight (e.g. React StrictMode double-mount).
-      // Mirror the loading state on this instance and wait for it to finish.
       setLoading(true);
       try {
         await profilesListPromise;
-        // Seed this instance's state from the module-level cache that the
-        // original fetch will have populated.
         if (profilesCache) setProfiles(profilesCache);
       } catch (err) {
-        // Swallow AbortErrors (session change cancelled the in-flight request).
         if ((err as any)?.name !== "AbortError") {
           setError(err as Error);
           console.error(err);
@@ -59,19 +48,12 @@ export default function useProfiles() {
     setLoading(true);
 
     profilesListPromise = (async () => {
-      // Use an AbortController so the timeout actually cancels the underlying
-      // fetch request. Promise.race alone only ignores the result — the fetch
-      // keeps running, holds Supabase's internal resources, and each successive
-      // attempt adds another ghost request that piles up and causes lock
-      // contention. Aborting via signal tears down the network request entirely.
+      // Abort fetch after 15 seconds
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       try {
-        // Only fetch the fields needed for lists and cards to avoid
-        // pulling large `content` blobs on initial app load.
-        // Use the public (anon-only) client so this query is never blocked by
-        // the GoTrue token-refresh lock that the standard client acquires.
+        // Fetch basic profile fields only
         const supabase = await getPublicSupabase();
 
         const { data, error } = await supabase
@@ -82,23 +64,15 @@ export default function useProfiles() {
           .abortSignal(controller.signal);
 
         if (error) {
-          // AbortError is returned (not thrown) by Supabase when signOut()
-          // cancels in-flight requests. It's an expected cancellation, not a
-          // real failure — swallow it silently.
           if (error.message?.includes("AbortError")) {
-            console.debug("Profiles fetch aborted (session change):", error);
+            console.debug("Profiles fetch aborted:", error);
           } else {
             setError(error);
             console.error(error);
           }
         } else if (data) {
           const parsed = camelcaseKeys(data, { deep: true }) as UserProfile[];
-          // Preserve `content` from any profiles already fully fetched
-          // (e.g. fetchFullProfile completed before this list fetch).
-          // IMPORTANT: set profilesCache synchronously here (not inside the
-          // setProfiles callback) so that the profilesListPromise branch in
-          // any concurrent fetchProfiles call reads the correct full-list cache
-          // immediately after awaiting, rather than a stale single-profile cache.
+          // Merge with existing full profiles
           const currentCache = profilesCache ?? [];
           const merged = parsed.map((p) => {
             const existing = currentCache.find(
@@ -111,12 +85,8 @@ export default function useProfiles() {
           setProfiles(merged);
         }
       } catch (err) {
-        // AbortError is thrown by Supabase when it cancels in-flight requests
-        // (e.g. during supabase.auth.signOut()). That's an expected cancellation,
-        // not a real failure — swallow it silently instead of surfacing it as a
-        // user-visible error.
         if ((err as any)?.name === "AbortError") {
-          console.debug("Profiles fetch aborted (session change):", err);
+          console.debug("Profiles fetch aborted:", err);
         } else {
           setError(err as Error);
           console.error(err);
@@ -131,13 +101,12 @@ export default function useProfiles() {
     return profilesListPromise;
   };
 
-  // Get profiles from Supabase
+  // Fetch profiles on mount
   useEffect(() => {
     fetchProfiles();
   }, []);
 
-  // Subscribe to realtime changes for `profiles` so external updates
-  // (from other tabs, users, or server-side edits) are reflected in UI.
+  // Subscribe to realtime profile changes
   useEffect(() => {
     let mounted = true;
     let channel: any;
@@ -153,7 +122,7 @@ export default function useProfiles() {
               deep: true,
             }) as unknown as UserProfile;
 
-            // DELETE: remove from list; otherwise upsert into list
+            // Handle delete or upsert
             const isDelete = !payload.new && payload.old;
             if (isDelete) {
               setProfiles((prev) => {
@@ -169,7 +138,7 @@ export default function useProfiles() {
               });
             }
           } catch (err) {
-            console.error("profiles realtime handler error:", err);
+            console.error("Realtime handler error:", err);
           }
         };
 
@@ -207,6 +176,7 @@ export default function useProfiles() {
     };
   }, []);
 
+  // Update a profile in the list
   const updateProfile = useCallback((updated: UserProfile) => {
     setProfiles((prev) => {
       const next = upsertProfile(prev, updated);
@@ -215,8 +185,10 @@ export default function useProfiles() {
     });
   }, []);
 
+  // Refetch all profiles
   const refetch = useCallback(fetchProfiles, []);
 
+  // Remove a profile by ID
   const removeProfile = useCallback((id: string) => {
     setProfiles((prev) => {
       const next = removeProfileById(prev, id);
@@ -225,25 +197,26 @@ export default function useProfiles() {
     });
   }, []);
 
+  // Fetch full profile data for a username
   const fetchFullProfile = useCallback(
     async (username: string) => {
       if (!username) return;
       const normalizedUsername = username.toLowerCase();
 
-      // If a profile already exists with full content, skip.
+      // Skip if already have full content
       const existing = profiles.find(
         (p) => p.username.toLowerCase() === normalizedUsername,
       );
       if (existing && existing.content) return;
 
-      // Reuse in-flight promise
+      // Use cached promise if available
       const cached = fullProfilePromiseCache.get(normalizedUsername);
       if (cached) {
         await cached;
         return;
       }
 
-      // Create promise
+      // Fetch full profile
       const promise = (async () => {
         try {
           const supabase = await getPublicSupabase();
@@ -272,10 +245,10 @@ export default function useProfiles() {
         }
       })();
 
-      // Store first
+      // Cache the promise
       fullProfilePromiseCache.set(normalizedUsername, promise);
 
-      // Attach cleanup
+      // Clean up cache after
       promise.finally(() => {
         if (fullProfilePromiseCache.get(normalizedUsername) === promise) {
           fullProfilePromiseCache.delete(normalizedUsername);
@@ -287,6 +260,7 @@ export default function useProfiles() {
     [profiles, updateProfile],
   );
 
+  // Return hook API
   return {
     profiles,
     loading,
