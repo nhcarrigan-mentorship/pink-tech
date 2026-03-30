@@ -1,7 +1,9 @@
 import type { UserProfile } from "../types/UserProfile";
 
-// Helper: merge updated fields into an existing profile without
-// overwriting properties with `undefined` values coming from updates.
+/**
+ * Merges updated fields into an existing profile.
+ * Only overwrites fields that are not undefined.
+ */
 export function mergeProfile(
   base: UserProfile,
   updated: Partial<UserProfile> | any,
@@ -17,6 +19,11 @@ export function mergeProfile(
   return result as UserProfile;
 }
 
+/**
+ * Adds or updates a profile in the array.
+ * If the profile exists (by ID), it merges the updates.
+ * If not, it adds the new profile at the beginning.
+ */
 export function upsertProfile(
   profiles: UserProfile[],
   updated: UserProfile,
@@ -37,6 +44,9 @@ export function upsertProfile(
   }
 }
 
+/**
+ * Removes a profile from the array by ID.
+ */
 export function removeProfileById(
   profiles: UserProfile[],
   id: string,
