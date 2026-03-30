@@ -2,6 +2,7 @@ import camelcaseKeys from "camelcase-keys";
 import { useState, useEffect, useCallback } from "react";
 import { getPublicSupabase, getSupabase } from "../config/supabaseClient";
 import type { UserProfile } from "../types/UserProfile";
+import { upsertProfile, removeProfileById } from "../utils/profileUtils";
 
 // Module-level promise cache to deduplicate fetches across hook instances
 const fullProfilePromiseCache: Map<
@@ -13,7 +14,7 @@ let profilesListPromise: Promise<void> | null = null;
 // Module-level cache so remounted hook instances (e.g. React StrictMode
 // double-mount) immediately receive already-fetched profiles instead of
 // seeing an empty list or having to refetch.
-let profilesCache: UserProfile[] | null = null;
+export let profilesCache: UserProfile[] | null = null;
 // Tracks whether profilesCache was populated by a full list fetch (as opposed
 // to a single-profile update from updateProfileInContext/fetchFullProfile).
 // fetchProfiles must only short-circuit on a full-list cache, not a partial one.
@@ -23,23 +24,6 @@ export default function useProfiles() {
   const [profiles, setProfiles] = useState<UserProfile[]>(profilesCache ?? []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-
-  // Helper: merge updated fields into an existing profile without
-  // overwriting properties with `undefined` values coming from updates.
-  function mergeProfile(
-    base: UserProfile,
-    updated: Partial<UserProfile> | any,
-  ): UserProfile {
-    const result: any = { ...base };
-    if (!updated) return result as UserProfile;
-    for (const key of Object.keys(updated)) {
-      const v = (updated as any)[key];
-      if (v !== undefined) result[key] = v;
-    }
-    if ((updated as any).id !== undefined)
-      result.id = String((updated as any).id);
-    return result as UserProfile;
-  }
 
   const fetchProfiles = async () => {
     // If the full profiles list was already fetched (e.g. from a previous mount),
@@ -173,34 +157,13 @@ export default function useProfiles() {
             const isDelete = !payload.new && payload.old;
             if (isDelete) {
               setProfiles((prev) => {
-                const next = prev.filter(
-                  (p) => String(p.id) !== String(updated.id),
-                );
+                const next = removeProfileById(prev, String(updated.id));
                 profilesCache = next;
                 return next;
               });
             } else {
               setProfiles((prev) => {
-                const exists = prev.some(
-                  (p) => String(p.id) === String(updated.id),
-                );
-                let next: UserProfile[];
-                if (exists) {
-                  next = prev.map((p) =>
-                    String(p.id) === String(updated.id)
-                      ? mergeProfile(p, updated)
-                      : p,
-                  );
-                } else {
-                  // Insert new items at the front to keep list visible
-                  next = [
-                    {
-                      ...(updated as any),
-                      id: String((updated as any).id),
-                    } as UserProfile,
-                    ...prev,
-                  ];
-                }
+                const next = upsertProfile(prev, updated);
                 profilesCache = next;
                 return next;
               });
@@ -244,34 +207,19 @@ export default function useProfiles() {
     };
   }, []);
 
-  const refetch = useCallback(fetchProfiles, []);
-
-  const updateProfileInContext = useCallback((updated: UserProfile) => {
+  const updateProfile = useCallback((updated: UserProfile) => {
     setProfiles((prev) => {
-      const exists = prev.some(
-        (p) => String(p.id) === String((updated as any).id),
-      );
-      const next = exists
-        ? prev.map((p) =>
-            String(p.id) === String((updated as any).id)
-              ? mergeProfile(p, updated)
-              : p,
-          )
-        : [
-            ...prev,
-            {
-              ...(updated as any),
-              id: String((updated as any).id),
-            } as UserProfile,
-          ];
+      const next = upsertProfile(prev, updated);
       profilesCache = next;
       return next;
     });
   }, []);
 
-  const removeProfileFromContext = useCallback((id: string) => {
+  const refetch = useCallback(fetchProfiles, []);
+
+  const removeProfile = useCallback((id: string) => {
     setProfiles((prev) => {
-      const next = prev.filter((p) => String(p.id) !== String(id));
+      const next = removeProfileById(prev, id);
       profilesCache = next;
       return next;
     });
@@ -314,7 +262,7 @@ export default function useProfiles() {
             const full = camelcaseKeys(data, {
               deep: true,
             }) as unknown as UserProfile;
-            updateProfileInContext(full);
+            updateProfile(full);
             return full;
           }
           return null;
@@ -336,7 +284,7 @@ export default function useProfiles() {
 
       await promise;
     },
-    [profiles, updateProfileInContext],
+    [profiles, updateProfile],
   );
 
   return {
@@ -344,8 +292,8 @@ export default function useProfiles() {
     loading,
     error,
     refetch,
-    updateProfileInContext,
-    removeProfileFromContext,
+    updateProfile,
+    removeProfile,
     fetchFullProfile,
   };
 }
