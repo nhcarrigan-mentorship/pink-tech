@@ -4,7 +4,7 @@ import Home from "./pages/main/Home";
 import Layout from "./components/layout/Layout";
 import ProfileDetail from "./pages/main/ProfileDetail";
 import Login from "./pages/auth/Login";
-import Search from "./pages/main/Search";
+import Search from "./features/search/pages/Search";
 import SignUp from "./pages/auth/SignUp";
 import { ProfilesProvider } from "./contexts/ProfilesContext";
 import Verify from "./pages/auth/Verify";

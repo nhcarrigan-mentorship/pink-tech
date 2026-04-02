@@ -1,14 +1,17 @@
 import { useMemo, useState, useRef } from "react";
-import CallToAction from "../../components/layout/CallToAction";
-import SearchHeader from "../../features/search/components/SearchHeader";
-import FilteredProfiles from "../../features/search/results/FilteredProfiles";
-import ProfileSearchBar from "../../features/search/components/ProfileSearchBar";
-import MobileFilterModal from "../../features/search/responsive/MobileFilterModal";
-import { useProfilesContext } from "../../hooks/useProfilesContext";
-import LoadingState from "../../components/ui/LoadingState";
-import ErrorState from "../../components/ui/ErrorState";
+import CallToAction from "../../../components/layout/CallToAction";
+
+import SearchHeader from "../components/SearchHeader";
+import FilteredProfiles from "../results/FilteredProfiles";
+import ProfileSearchBar from "../components/ProfileSearchBar";
+import MobileFilterModal from "../responsive/MobileFilterModal";
+import { useProfilesContext } from "../../../hooks/useProfilesContext";
+import LoadingState from "../../../components/ui/LoadingState";
+
+import ErrorState from "../../../components/ui/ErrorState";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function Search() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
