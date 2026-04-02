@@ -1,4 +1,4 @@
-import LazyIcon from "../../ui/LazyIcon";
+import LazyIcon from "../../../../components/ui/LazyIcon";
 
 interface ProfileAuthorshipNoticeProps {
   isOwner: boolean;

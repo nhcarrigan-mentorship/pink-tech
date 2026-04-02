@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import toSnakeCaseObject from "../../../utils/snakeCase";
+import toSnakeCaseObject from "../../../../utils/snakeCase";
 import camelcaseKeys from "camelcase-keys";
-import type { UserProfile } from "../../../types/UserProfile";
-import { useProfilesContext } from "../../../hooks/useProfilesContext";
+import type { UserProfile } from "../../../../types/UserProfile";
+import { useProfilesContext } from "../../../../hooks/useProfilesContext";
 import ProfileImageEditor from "./ProfileImageEditor";
 import { socials } from "./ProfileSocials";
-import { getSupabase } from "../../../config/supabaseClient";
-import { uploadAvatar, getAvatarPublicUrl } from "../../../utils/avatarStorage";
+import { getSupabase } from "../../../../config/supabaseClient";
+import {
+  uploadAvatar,
+  getAvatarPublicUrl,
+} from "../../../../utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
-import LazyIcon from "../../ui/LazyIcon";
+import LazyIcon from "../../../../components/ui/LazyIcon";
 import {
   validateBio,
   validateCompany,
@@ -20,7 +23,7 @@ import {
   validateName,
   validateRole,
   validateWebsite,
-} from "../../../utils/validators";
+} from "../../../../utils/validators";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;

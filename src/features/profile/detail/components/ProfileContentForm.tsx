@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import type { UserProfile } from "../../../types/UserProfile";
-import { getSupabase } from "../../../config/supabaseClient";
-import { useProfilesContext } from "../../../hooks/useProfilesContext";
+import type { UserProfile } from "../../../../types/UserProfile";
+import { getSupabase } from "../../../../config/supabaseClient";
+import { useProfilesContext } from "../../../../hooks/useProfilesContext";
 import camelcaseKeys from "camelcase-keys";
 import DOMPurify from "dompurify";
-import { validateLinks } from "../../../utils/validators";
+import { validateLinks } from "../../../../utils/validators";
 
 interface ProfileContentForm {
   profile: UserProfile;

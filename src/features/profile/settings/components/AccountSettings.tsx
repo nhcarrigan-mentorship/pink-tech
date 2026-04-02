@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import LazyIcon from "../../ui/LazyIcon";
-import { useAuth } from "../../../contexts/AuthContext";
 import { Check, X } from "lucide-react";
-import getSupabase from "../../../config/supabaseClient";
-import { validateUsername } from "../../../utils/validators";
+import LazyIcon from "../../../../components/ui/LazyIcon";
+import { useAuth } from "../../../../contexts/AuthContext";
+import getSupabase from "../../../../config/supabaseClient";
+import { validateUsername } from "../../../../utils/validators";
 
 export default function AccountSettings() {
   const { user, updateProfile, uiCachedUser } = useAuth();

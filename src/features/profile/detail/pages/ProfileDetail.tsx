@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import BackNavigation from "../../components/navigation/BackNavigation";
-import ProfileAuthorshipNotice from "../../components/profile/detail/ProfileAuthorshipNotice";
-import ProfileCard from "../../components/profile/detail/ProfileCard";
-import ProfileNotFound from "../../features/search/results/ProfileNotFound";
-import { useProfilesContext } from "../../hooks/useProfilesContext";
-import ErrorState from "../../components/ui/ErrorState";
-import LoadingState from "../../components/ui/LoadingState";
+import { useAuth } from "../../../../contexts/AuthContext";
+import BackNavigation from "../../../../components/navigation/BackNavigation";
+import ProfileNotFound from "../../../search/results/ProfileNotFound";
+import { useProfilesContext } from "../../../../hooks/useProfilesContext";
+import ErrorState from "../../../../components/ui/ErrorState";
+import LoadingState from "../../../../components/ui/LoadingState";
+import ProfileAuthorshipNotice from "../components/ProfileAuthorshipNotice";
+import ProfileCard from "../components/ProfileCard";
 
 export default function ProfileDetail() {
   const { username } = useParams();

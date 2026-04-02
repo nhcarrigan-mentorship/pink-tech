@@ -1,5 +1,5 @@
-import type { UserProfile } from "../../../types/UserProfile";
-import ImageWithFallback from "../../ui/ImageWithFallback";
+import ImageWithFallback from "../../../../components/ui/ImageWithFallback";
+import type { UserProfile } from "../../../../types/UserProfile";
 import { Edit } from "lucide-react";
 
 interface ProfileImageEditor {

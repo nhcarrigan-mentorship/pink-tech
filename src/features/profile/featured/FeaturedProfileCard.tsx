@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import LazyIcon from "../../ui/LazyIcon";
+import LazyIcon from "../../../components/ui/LazyIcon";
 import type { UserProfile } from "../../../types/UserProfile";
-import ImageWithFallback from "../../ui/ImageWithFallback";
+import ImageWithFallback from "../../../components/ui/ImageWithFallback";
 
 interface FeaturedProfileCardProps {
   profile: UserProfile;

@@ -1,10 +1,10 @@
-import type { UserProfile } from "../../../types/UserProfile";
+import type { UserProfile } from "../../../../types/UserProfile";
 import { useState } from "react";
 import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
-import ImageWithFallback from "../../ui/ImageWithFallback";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 import { socials } from "./ProfileSocials";
-import LazyIcon from "../../ui/LazyIcon";
+import ImageWithFallback from "../../../../components/ui/ImageWithFallback";
+import LazyIcon from "../../../../components/ui/LazyIcon";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;
