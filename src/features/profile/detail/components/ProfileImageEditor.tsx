@@ -1,6 +1,6 @@
-import ImageWithFallback from "../../../../shared/ui/ImageWithFallback";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { Edit } from "lucide-react";
+import ImageWithFallback from "../../../../shared/ui/display/ImageWithFallback";
 
 interface ProfileImageEditor {
   editedProfile: Partial<UserProfile>;

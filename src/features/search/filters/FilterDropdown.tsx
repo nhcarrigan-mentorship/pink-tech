@@ -1,4 +1,4 @@
-import LazyIcon from "../../../shared/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/display/LazyIcon";
 
 interface FilterDropdownProps {
   isOpen: boolean;

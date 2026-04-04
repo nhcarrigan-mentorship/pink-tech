@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion, type PanInfo } from "framer-motion";
-import LazyIcon from "../../../shared/ui/LazyIcon";
 import { useNavigate } from "react-router-dom";
 import { useProfilesContext } from "../../../hooks/useProfilesContext";
 import FeaturedProfileCard from "./FeaturedProfileCard";
-import Pagination from "../../../shared/ui/Pagination";
-import LoadingState from "../../../shared/ui/LoadingState";
-import ErrorState from "../../../shared/ui/ErrorState";
+import Pagination from "../../../shared/ui/display/Pagination";
+import LoadingState from "../../../shared/ui/feedback/LoadingState";
+import ErrorState from "../../../shared/ui/feedback/ErrorState";
+import LazyIcon from "../../../shared/ui/display/LazyIcon";
 
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;

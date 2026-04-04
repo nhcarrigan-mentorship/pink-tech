@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import LazyIcon from "../../shared/ui/LazyIcon";
+import LazyIcon from "../../shared/ui/display/LazyIcon";
 
 export default function ScrollToTopButton() {
   const [showScrollTop, setShowScrollTop] = useState(false);

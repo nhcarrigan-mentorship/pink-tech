@@ -4,8 +4,8 @@ import { useAuth } from "../../../../contexts/AuthContext";
 import BackNavigation from "../../../../components/navigation/BackNavigation";
 import ProfileNotFound from "../../../search/results/ProfileNotFound";
 import { useProfilesContext } from "../../../../hooks/useProfilesContext";
-import ErrorState from "../../../../shared/ui/ErrorState";
-import LoadingState from "../../../../shared/ui/LoadingState";
+import ErrorState from "../../../../shared/ui/feedback/ErrorState";
+import LoadingState from "../../../../shared/ui/feedback/LoadingState";
 import ProfileAuthorshipNotice from "../components/ProfileAuthorshipNotice";
 import ProfileCard from "../components/ProfileCard";
 

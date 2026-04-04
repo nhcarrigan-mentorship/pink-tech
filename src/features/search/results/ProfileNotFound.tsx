@@ -1,5 +1,5 @@
 import BackNavigation from "../../../components/navigation/BackNavigation";
-import LazyIcon from "../../../shared/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/display/LazyIcon";
 
 export default function ProfileNotFound() {
   return (

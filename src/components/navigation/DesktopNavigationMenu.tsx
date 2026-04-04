@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import LazyIcon from "../../shared/ui/LazyIcon";
+import LazyIcon from "../../shared/ui/display/LazyIcon";
 
 export default function DesktopNavigationMenu() {
   const location = useLocation();

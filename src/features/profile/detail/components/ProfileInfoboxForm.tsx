@@ -11,7 +11,6 @@ import {
   getAvatarPublicUrl,
 } from "../../../../utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
-import LazyIcon from "../../../../shared/ui/LazyIcon";
 import {
   validateBio,
   validateCompany,
@@ -24,6 +23,7 @@ import {
   validateRole,
   validateWebsite,
 } from "../../../../utils/validators";
+import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;

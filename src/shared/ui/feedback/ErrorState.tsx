@@ -1,4 +1,4 @@
-import LazyIcon from "./LazyIcon";
+import LazyIcon from "../display/LazyIcon";
 
 interface ErrorStateProps {
   heading?: string;

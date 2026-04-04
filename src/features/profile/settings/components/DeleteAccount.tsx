@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LazyIcon from "../../../../shared/ui/LazyIcon";
+import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 import { useAuth } from "../../../../contexts/AuthContext";
 import { useProfilesContext } from "../../../../hooks/useProfilesContext";
 
