@@ -5,7 +5,7 @@ import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
 import ProfileImageEditor from "./ProfileImageEditor";
 import { socials } from "./ProfileSocials";
-import { getSupabase } from "../../../../config/supabaseClient";
+import { getSupabase } from "../../../../shared/config/supabaseClient";
 import {
   uploadAvatar,
   getAvatarPublicUrl,
