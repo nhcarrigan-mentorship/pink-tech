@@ -26,8 +26,8 @@ export function ProfilesProvider({ children }: Props) {
     loading,
     error,
     refetch,
-    updateProfileInContext,
-    removeProfileFromContext,
+    updateProfile,
+    removeProfile,
     fetchFullProfile,
   } = useProfiles();
 
@@ -38,8 +38,8 @@ export function ProfilesProvider({ children }: Props) {
         loading,
         error,
         refetch,
-        updateProfileInContext,
-        removeProfileFromContext,
+        updateProfileInContext: updateProfile,
+        removeProfileFromContext: removeProfile,
         fetchFullProfile,
       }}
     >
