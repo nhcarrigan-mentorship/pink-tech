@@ -7,7 +7,7 @@ import ErrorState from "../../../../shared/ui/feedback/ErrorState";
 import LoadingState from "../../../../shared/ui/feedback/LoadingState";
 import ProfileNotFound from "../../../search/results/ProfileNotFound";
 import ProfileAuthorshipNotice from "../components/ProfileAuthorshipNotice";
-import ProfileCard from "../components/ProfileCard";
+import ProfileCard from "../components/ProfileDetailCard";
 
 export default function ProfileDetail() {
   const { username } = useParams();
