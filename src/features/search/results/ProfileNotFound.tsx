@@ -1,4 +1,4 @@
-import ErrorBackNavigation from "../../../components/navigation/ErrorBackNavigation";
+import BackNavigation from "../../../components/navigation/BackNavigation";
 import LazyIcon from "../../../components/ui/LazyIcon";
 
 export default function ProfileNotFound() {
@@ -11,7 +11,7 @@ export default function ProfileNotFound() {
       <p className="text-gray-600 text-center mb-4">
         The profile you're looking for doesn't exist or has been removed.
       </p>
-      <ErrorBackNavigation />
+      <BackNavigation variant="error" />
     </div>
   );
 }
