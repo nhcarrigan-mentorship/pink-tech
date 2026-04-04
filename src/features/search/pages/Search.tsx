@@ -5,7 +5,7 @@ import SearchHeader from "../components/SearchHeader";
 import FilteredProfiles from "../results/FilteredProfiles";
 import ProfileSearchBar from "../components/ProfileSearchBar";
 import MobileFilterModal from "../responsive/MobileFilterModal";
-import { useProfilesContext } from "../../../hooks/useProfilesContext";
+import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
 import LoadingState from "../../../shared/ui/feedback/LoadingState";
 
 import ErrorState from "../../../shared/ui/feedback/ErrorState";

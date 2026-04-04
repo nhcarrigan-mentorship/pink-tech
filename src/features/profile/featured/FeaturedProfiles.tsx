@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, type PanInfo } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useProfilesContext } from "../../../hooks/useProfilesContext";
+import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
 import FeaturedProfileCard from "./FeaturedProfileCard";
 import Pagination from "../../../shared/ui/display/Pagination";
 import LoadingState from "../../../shared/ui/feedback/LoadingState";

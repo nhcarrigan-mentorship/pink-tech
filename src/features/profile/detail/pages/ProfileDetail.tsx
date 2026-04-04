@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../../../../contexts/AuthContext";
 import BackNavigation from "../../../../shared/components/navigation/BackNavigation";
 import ProfileNotFound from "../../../search/results/ProfileNotFound";
-import { useProfilesContext } from "../../../../hooks/useProfilesContext";
+import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
 import ErrorState from "../../../../shared/ui/feedback/ErrorState";
 import LoadingState from "../../../../shared/ui/feedback/LoadingState";
 import ProfileAuthorshipNotice from "../components/ProfileAuthorshipNotice";
