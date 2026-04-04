@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import type { UserProfile } from "../types/UserProfile";
+import type { UserProfile } from "../shared/types/UserProfile";
 import useProfiles from "../hooks/useProfiles";
 
 type ProfilesContextType = {

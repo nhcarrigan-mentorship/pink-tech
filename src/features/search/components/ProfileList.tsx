@@ -1,4 +1,4 @@
-import type { UserProfile } from "../../../types/UserProfile";
+import type { UserProfile } from "../../../shared/types/UserProfile";
 import ProfileCard from "./ProfileCard";
 
 interface ProfileListProps {

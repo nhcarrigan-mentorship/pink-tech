@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { UserProfile } from "../../../../types/UserProfile";
+import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { getSupabase } from "../../../../config/supabaseClient";
 import { useProfilesContext } from "../../../../hooks/useProfilesContext";
 import camelcaseKeys from "camelcase-keys";

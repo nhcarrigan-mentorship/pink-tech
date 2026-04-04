@@ -1,4 +1,4 @@
-import type { UserProfile } from "../../../../types/UserProfile";
+import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { useState } from "react";
 import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";

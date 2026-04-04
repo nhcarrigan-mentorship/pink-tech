@@ -1,5 +1,5 @@
 import LazyIcon from "../../../../components/ui/LazyIcon";
-import type { UserProfile } from "../../../../types/UserProfile";
+import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { useEffect, useState, type ReactNode } from "react";
 import { Edit } from "lucide-react";
 import ProfileContentForm from "./ProfileContentForm";
