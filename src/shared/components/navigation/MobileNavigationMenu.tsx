@@ -1,6 +1,6 @@
-import LazyIcon from "../../ui/display/LazyIcon";
-import { useAuth } from "../../contexts/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import LazyIcon from "../../ui/display/LazyIcon";
 
 export default function MobileNavigationMenu() {
   // Add a class to allow hiding when modal is open

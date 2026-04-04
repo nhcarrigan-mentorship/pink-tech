@@ -1,6 +1,5 @@
-import { EXPERTISE_MAX, EXPERTISE_MIN } from "./validators";
 import { runValidatorTests } from "./runValidatorTests";
-import { validateExpertise } from "./validators";
+import { EXPERTISE_MAX, EXPERTISE_MIN, validateExpertise } from "./validators";
 
 const existing = ["React", "JavaScript"];
 const wrapper = (expertise: string) => validateExpertise(expertise, existing);

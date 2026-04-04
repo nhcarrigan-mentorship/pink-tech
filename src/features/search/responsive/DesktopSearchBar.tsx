@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
+import ProfilesCount from "../components/ProfilesCount";
 import SearchInput from "../components/SearchInput";
 import ActiveFilters from "../filters/ActiveFilters";
 import FilterButton from "../filters/FilterButton";
 import FilterDropdown from "../filters/FilterDropdown";
-import ProfilesCount from "../components/ProfilesCount";
 
 interface DesktopSearchBarProps {
   searchQuery: string;

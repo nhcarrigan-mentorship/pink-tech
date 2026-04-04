@@ -1,16 +1,16 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
-import Home from "./pages/main/Home";
-import ProfileDetail from "./features/profile/detail/pages/ProfileDetail";
-import Login from "./features/auth/pages/Login";
-import Search from "./features/search/pages/Search";
-import SignUp from "./features/auth/pages/SignUp";
-import { ProfilesProvider } from "./shared/contexts/ProfilesContext";
-import Verify from "./features/auth/pages/Verify";
-import Settings from "./features/profile/settings/pages/Settings";
-import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import GuestRoute from "./features/auth/components/GuestRoute";
+import ProtectedRoute from "./features/auth/components/ProtectedRoute";
+import Login from "./features/auth/pages/Login";
+import SignUp from "./features/auth/pages/SignUp";
+import Verify from "./features/auth/pages/Verify";
+import ProfileDetail from "./features/profile/detail/pages/ProfileDetail";
+import Settings from "./features/profile/settings/pages/Settings";
+import Search from "./features/search/pages/Search";
+import Home from "./pages/main/Home";
 import Layout from "./shared/components/Layout";
+import { ProfilesProvider } from "./shared/contexts/ProfilesContext";
 
 function App() {
   return (

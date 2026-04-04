@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 import { useAuth } from "../../../../shared/contexts/AuthContext";
 import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
+import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 
 export default function DeleteAccount() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);

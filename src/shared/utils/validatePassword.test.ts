@@ -1,6 +1,5 @@
-import { PASSWORD_MAX, PASSWORD_MIN } from "./validators";
 import { runValidatorTests } from "./runValidatorTests";
-import { validatePassword } from "./validators";
+import { PASSWORD_MAX, PASSWORD_MIN, validatePassword } from "./validators";
 
 runValidatorTests(validatePassword, {
   name: "validatePassword",

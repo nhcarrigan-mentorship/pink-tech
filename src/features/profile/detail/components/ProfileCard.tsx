@@ -1,6 +1,6 @@
+import type { UserProfile } from "../../../../shared/types/UserProfile";
 import ProfileContent from "./ProfileContent";
 import ProfileInfobox from "./ProfileInfobox";
-import type { UserProfile } from "../../../../shared/types/UserProfile";
 
 interface ProfileCardProps {
   profile: UserProfile;

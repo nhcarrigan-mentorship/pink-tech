@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
 import Footer from "./Footer";
+import Header from "./Header";
 import MobileNavigationMenu from "./navigation/MobileNavigationMenu";
 import ScrollToTopButton from "./navigation/ScrollToTopButton";
 

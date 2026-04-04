@@ -1,6 +1,6 @@
 import { Search, Sparkles } from "lucide-react";
-import { useState, useMemo } from "react";
 import type { FormEvent } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
 

@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
-import type { UserProfile } from "../types/UserProfile";
 import useProfiles from "../hooks/useProfiles";
+import type { UserProfile } from "../types/UserProfile";
 
 type ProfilesContextType = {
   profiles: UserProfile[];

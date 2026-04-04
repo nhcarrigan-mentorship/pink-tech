@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import LazyIcon from "../../ui/display/LazyIcon";
 
 export default function ScrollToTopButton() {

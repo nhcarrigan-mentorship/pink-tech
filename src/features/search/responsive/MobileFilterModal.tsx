@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // Custom event to hide/show mobile nav
 import LazyIcon from "../../../shared/ui/display/LazyIcon";
 

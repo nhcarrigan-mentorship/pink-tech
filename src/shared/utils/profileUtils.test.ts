@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { mergeProfile, upsertProfile, removeProfileById } from "./profileUtils";
+import { describe, expect, it } from "vitest";
 import type { UserProfile } from "../shared/types/UserProfile";
+import { mergeProfile, removeProfileById, upsertProfile } from "./profileUtils";
 
 describe("mergeProfile", () => {
   const baseProfile: UserProfile = {

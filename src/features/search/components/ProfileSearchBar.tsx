@@ -1,7 +1,7 @@
 import { useState } from "react";
-import MobileSearchBar from "../responsive/MobileSearchBar";
 import ActiveFilters from "../filters/ActiveFilters";
 import DesktopSearchBar from "../responsive/DesktopSearchBar";
+import MobileSearchBar from "../responsive/MobileSearchBar";
 
 interface ProfileSearchBarProps {
   search: string;

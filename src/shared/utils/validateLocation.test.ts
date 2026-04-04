@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateLocation, LOCATION_MIN, LOCATION_MAX } from "./validators";
+import { LOCATION_MAX, LOCATION_MIN, validateLocation } from "./validators";
 
 runValidatorTests(validateLocation, {
   name: "validateLocation",

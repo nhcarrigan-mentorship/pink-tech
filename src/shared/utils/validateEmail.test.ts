@@ -1,11 +1,11 @@
+import { runValidatorTests } from "./runValidatorTests";
 import {
-  validateEmail,
-  EMAIL_MAX,
-  EMAIL_LOCAL_MAX,
   EMAIL_DOMAIN_MAX,
   EMAIL_LABEL_MAX,
+  EMAIL_LOCAL_MAX,
+  EMAIL_MAX,
+  validateEmail,
 } from "./validators";
-import { runValidatorTests } from "./runValidatorTests";
 
 runValidatorTests(validateEmail, {
   name: "validateEmail",

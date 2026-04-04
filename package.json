@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -47,6 +48,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^29.0.0",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "rollup-plugin-visualizer": "5.9.3",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",

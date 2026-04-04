@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import EmailVerificationNotice from "../components/EmailVerificationNotice";
 
 export default function Verify() {

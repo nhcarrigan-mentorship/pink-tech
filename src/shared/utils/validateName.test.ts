@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateName, NAME_MIN, NAME_MAX } from "./validators";
+import { NAME_MAX, NAME_MIN, validateName } from "./validators";
 
 runValidatorTests(validateName, {
   name: "validateName",

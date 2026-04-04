@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
-import LazyIcon from "../../../../shared/ui/display/LazyIcon";
-import { useAuth } from "../../../../shared/contexts/AuthContext";
+import { useEffect, useState } from "react";
 import getSupabase from "../../../../shared/config/supabaseClient";
+import { useAuth } from "../../../../shared/contexts/AuthContext";
+import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 import { validateUsername } from "../../../../shared/utils/validators";
 
 export default function AccountSettings() {

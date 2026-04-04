@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../../../../shared/contexts/AuthContext";
 import BackNavigation from "../../../../shared/components/navigation/BackNavigation";
-import ProfileNotFound from "../../../search/results/ProfileNotFound";
+import { useAuth } from "../../../../shared/contexts/AuthContext";
 import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
 import ErrorState from "../../../../shared/ui/feedback/ErrorState";
 import LoadingState from "../../../../shared/ui/feedback/LoadingState";
+import ProfileNotFound from "../../../search/results/ProfileNotFound";
 import ProfileAuthorshipNotice from "../components/ProfileAuthorshipNotice";
 import ProfileCard from "../components/ProfileCard";
 

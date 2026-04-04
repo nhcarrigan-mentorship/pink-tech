@@ -1,9 +1,14 @@
-import { useState, useEffect, createContext, useContext } from "react";
-import { type ReactNode } from "react";
-import type { UserProfile } from "../types/UserProfile";
-import { getSupabase } from "../config/supabaseClient";
-import camelcaseKeys from "camelcase-keys";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import camelcaseKeys from "camelcase-keys";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { getSupabase } from "../config/supabaseClient";
+import type { UserProfile } from "../types/UserProfile";
 
 interface AuthContextType {
   user: UserProfile | null;

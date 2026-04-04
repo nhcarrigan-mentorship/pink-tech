@@ -1,9 +1,9 @@
-import EmptyProfiles from "./EmptyProfiles";
-import ProfileList from "../components/ProfileList";
-import type { UserProfile } from "../../../shared/types/UserProfile";
 import { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import type { UserProfile } from "../../../shared/types/UserProfile";
 import Pagination from "../../../shared/ui/display/Pagination";
+import ProfileList from "../components/ProfileList";
+import EmptyProfiles from "./EmptyProfiles";
 
 interface FilteredProfilesProps {
   filteredProfiles: UserProfile[];

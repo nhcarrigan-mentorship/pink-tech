@@ -1,10 +1,10 @@
-import type { UserProfile } from "../../../../shared/types/UserProfile";
+import { Award, Building2, Edit, Mail, MapPin } from "lucide-react";
 import { useState } from "react";
-import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
-import ProfileInfoboxForm from "./ProfileInfoboxForm";
-import { socials } from "./ProfileSocials";
+import type { UserProfile } from "../../../../shared/types/UserProfile";
 import ImageWithFallback from "../../../../shared/ui/display/ImageWithFallback";
 import LazyIcon from "../../../../shared/ui/display/LazyIcon";
+import ProfileInfoboxForm from "./ProfileInfoboxForm";
+import { socials } from "./ProfileSocials";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;

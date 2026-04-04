@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateRole, ROLE_MIN, ROLE_MAX } from "./validators";
+import { ROLE_MAX, ROLE_MIN, validateRole } from "./validators";
 runValidatorTests(validateRole, {
   name: "validateRole",
 

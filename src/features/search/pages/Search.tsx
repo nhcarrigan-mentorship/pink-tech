@@ -1,15 +1,15 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import CallToAction from "../../../shared/components/CallToAction";
 
-import SearchHeader from "../components/SearchHeader";
-import FilteredProfiles from "../results/FilteredProfiles";
-import ProfileSearchBar from "../components/ProfileSearchBar";
-import MobileFilterModal from "../responsive/MobileFilterModal";
 import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
 import LoadingState from "../../../shared/ui/feedback/LoadingState";
+import ProfileSearchBar from "../components/ProfileSearchBar";
+import SearchHeader from "../components/SearchHeader";
+import MobileFilterModal from "../responsive/MobileFilterModal";
+import FilteredProfiles from "../results/FilteredProfiles";
 
-import ErrorState from "../../../shared/ui/feedback/ErrorState";
 import { useSearchParams } from "react-router-dom";
+import ErrorState from "../../../shared/ui/feedback/ErrorState";
 
 import { useAuth } from "../../../shared/contexts/AuthContext";
 

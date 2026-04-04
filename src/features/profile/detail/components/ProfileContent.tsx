@@ -1,9 +1,9 @@
-import LazyIcon from "../../../../shared/ui/display/LazyIcon";
-import type { UserProfile } from "../../../../shared/types/UserProfile";
-import { useEffect, useState, type ReactNode } from "react";
 import { Edit } from "lucide-react";
-import ProfileContentForm from "./ProfileContentForm";
+import { useEffect, useState, type ReactNode } from "react";
+import type { UserProfile } from "../../../../shared/types/UserProfile";
+import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 import LoadingState from "../../../../shared/ui/feedback/LoadingState";
+import ProfileContentForm from "./ProfileContentForm";
 
 // ReactMarkdown and remark-gfm are moderately large; lazy-load them when
 // profile content is actually needed to avoid adding them to the initial bundle.

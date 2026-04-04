@@ -1,6 +1,5 @@
-import { USERNAME_MIN, USERNAME_MAX } from "./validators";
 import { runValidatorTests } from "./runValidatorTests";
-import { validateUsername } from "./validators";
+import { USERNAME_MAX, USERNAME_MIN, validateUsername } from "./validators";
 
 runValidatorTests(validateUsername, {
   name: "validateUsername",

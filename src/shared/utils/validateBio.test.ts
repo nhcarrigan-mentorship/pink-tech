@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { validateBio, BIO_MAX } from "./validators";
+import { BIO_MAX, validateBio } from "./validators";
 
 runValidatorTests(validateBio, {
   name: "validateBio",

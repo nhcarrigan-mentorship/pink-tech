@@ -1,21 +1,21 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../shared/contexts/AuthContext";
-import { useState } from "react";
 import LazyIcon from "../../../shared/ui/display/LazyIcon";
 
+import PasswordRequirements from "../../../shared/ui/forms/PasswordRequirements";
+import PasswordStrengthBar from "../../../shared/ui/forms/PasswordStrengthBar";
 import {
   getPasswordStrength,
-  validateEmail,
-  validateName,
-  validatePassword,
-  validateUsername,
   NAME_MAX,
   NAME_MIN,
   USERNAME_MAX,
   USERNAME_MIN,
+  validateEmail,
+  validateName,
+  validatePassword,
+  validateUsername,
 } from "../../../shared/utils/validators";
-import PasswordStrengthBar from "../../../shared/ui/forms/PasswordStrengthBar";
-import PasswordRequirements from "../../../shared/ui/forms/PasswordRequirements";
 
 type FormValues = {
   name: string;

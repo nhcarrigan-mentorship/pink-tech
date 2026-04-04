@@ -1,5 +1,5 @@
-import { validateCompany, COMPANY_MAX } from "./validators";
 import { runValidatorTests } from "./runValidatorTests";
+import { COMPANY_MAX, validateCompany } from "./validators";
 
 runValidatorTests(validateCompany, {
   name: "validateCompany",

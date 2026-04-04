@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
-import toSnakeCaseObject from "../../../../shared/utils/snakeCase";
 import camelcaseKeys from "camelcase-keys";
-import type { UserProfile } from "../../../../shared/types/UserProfile";
-import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
-import ProfileImageEditor from "./ProfileImageEditor";
-import { socials } from "./ProfileSocials";
-import { getSupabase } from "../../../../shared/config/supabaseClient";
-import {
-  uploadAvatar,
-  getAvatarPublicUrl,
-} from "../../../../shared/utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getSupabase } from "../../../../shared/config/supabaseClient";
+import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
+import type { UserProfile } from "../../../../shared/types/UserProfile";
+import LazyIcon from "../../../../shared/ui/display/LazyIcon";
+import {
+  getAvatarPublicUrl,
+  uploadAvatar,
+} from "../../../../shared/utils/avatarStorage";
+import toSnakeCaseObject from "../../../../shared/utils/snakeCase";
 import {
   validateBio,
   validateCompany,
@@ -23,7 +22,8 @@ import {
   validateRole,
   validateWebsite,
 } from "../../../../shared/utils/validators";
-import LazyIcon from "../../../../shared/ui/display/LazyIcon";
+import ProfileImageEditor from "./ProfileImageEditor";
+import { socials } from "./ProfileSocials";
 
 interface ProfileInfoboxFormProps {
   profile: UserProfile;
