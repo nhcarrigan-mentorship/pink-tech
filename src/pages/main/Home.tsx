@@ -1,4 +1,4 @@
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../shared/contexts/AuthContext";
 import CallToAction from "../../shared/components/CallToAction";
 import { HomeSearch } from "../../features/search/components/HomeSearch";
 import FeaturedProfiles from "../../features/profile/featured/FeaturedProfiles";

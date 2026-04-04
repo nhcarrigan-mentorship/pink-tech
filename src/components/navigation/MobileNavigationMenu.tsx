@@ -1,5 +1,5 @@
-import LazyIcon from "../../ui/display/LazyIcon";
-import { useAuth } from "../../contexts/AuthContext";
+import LazyIcon from "../../shared/ui/display/LazyIcon";
+import { useAuth } from "../../shared/contexts/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function MobileNavigationMenu() {

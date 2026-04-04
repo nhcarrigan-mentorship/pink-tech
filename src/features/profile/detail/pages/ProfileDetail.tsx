@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../../../../contexts/AuthContext";
+import { useAuth } from "../../../../shared/contexts/AuthContext";
 import BackNavigation from "../../../../shared/components/navigation/BackNavigation";
 import ProfileNotFound from "../../../search/results/ProfileNotFound";
 import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";

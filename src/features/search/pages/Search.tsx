@@ -11,7 +11,7 @@ import LoadingState from "../../../shared/ui/feedback/LoadingState";
 import ErrorState from "../../../shared/ui/feedback/ErrorState";
 import { useSearchParams } from "react-router-dom";
 
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "../../../shared/contexts/AuthContext";
 
 export default function Search() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);

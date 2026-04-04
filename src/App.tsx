@@ -5,7 +5,7 @@ import ProfileDetail from "./features/profile/detail/pages/ProfileDetail";
 import Login from "./features/auth/pages/Login";
 import Search from "./features/search/pages/Search";
 import SignUp from "./features/auth/pages/SignUp";
-import { ProfilesProvider } from "./contexts/ProfilesContext";
+import { ProfilesProvider } from "./shared/contexts/ProfilesContext";
 import Verify from "./features/auth/pages/Verify";
 import Settings from "./features/profile/settings/pages/Settings";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
