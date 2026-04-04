@@ -1,8 +1,7 @@
-import DesktopNavigationMenu from "../navigation/DesktopNavigationMenu";
-import HomeNavigation from "../navigation/HomeNavigation";
+import DesktopNavigationMenu from "../../components/navigation/DesktopNavigationMenu";
+import HomeNavigation from "../../components/navigation/HomeNavigation";
 
 export default function Header() {
-
   return (
     <header className="sticky top-0 z-50">
       <nav className="bg-white border-b border-gray-200">

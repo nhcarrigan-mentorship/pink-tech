@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
-import MobileNavigationMenu from "../navigation/MobileNavigationMenu";
-import ScrollToTopButton from "../navigation/ScrollToTopButton";
+import MobileNavigationMenu from "../../components/navigation/MobileNavigationMenu";
+import ScrollToTopButton from "../../components/navigation/ScrollToTopButton";
 
 export default function Layout() {
   return (

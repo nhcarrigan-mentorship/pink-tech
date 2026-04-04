@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import LazyIcon from "../ui/LazyIcon";
+import LazyIcon from "../../components/ui/LazyIcon";
 
 export default function CallToAction() {
   return (

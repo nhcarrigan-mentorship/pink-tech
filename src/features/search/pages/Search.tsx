@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef } from "react";
-import CallToAction from "../../../components/layout/CallToAction";
+import CallToAction from "../../../shared/components/CallToAction";
 
 import SearchHeader from "../components/SearchHeader";
 import FilteredProfiles from "../results/FilteredProfiles";
