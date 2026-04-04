@@ -3,11 +3,11 @@ import type { UserProfile } from "../../../shared/types/UserProfile";
 import ImageWithFallback from "../../../shared/ui/display/ImageWithFallback";
 import LazyIcon from "../../../shared/ui/display/LazyIcon";
 
-interface ProfileCardProps {
+interface ProfileSearchCardProps {
   profile: UserProfile;
 }
 
-export default function ProfileCard({ profile }: ProfileCardProps) {
+export default function ProfileSearchCard({ profile }: ProfileSearchCardProps) {
   return (
     <Link
       to={`/${profile.username}`}

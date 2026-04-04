@@ -1,5 +1,5 @@
 import type { UserProfile } from "../../../shared/types/UserProfile";
-import ProfileCard from "./ProfileCard";
+import ProfileCard from "./ProfileSearchCard";
 
 interface ProfileListProps {
   filteredProfiles: UserProfile[];
