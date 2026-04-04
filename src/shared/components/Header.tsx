@@ -1,5 +1,5 @@
-import DesktopNavigationMenu from "../../components/navigation/DesktopNavigationMenu";
-import HomeNavigation from "../../components/navigation/HomeNavigation";
+import DesktopNavigationMenu from "./navigation/DesktopNavigationMenu";
+import HomeNavigation from "./navigation/HomeNavigation";
 
 export default function Header() {
   return (
