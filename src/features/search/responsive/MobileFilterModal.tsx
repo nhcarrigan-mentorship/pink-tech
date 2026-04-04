@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 // Custom event to hide/show mobile nav
-import LazyIcon from "../../../components/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/LazyIcon";
 
 interface MobileFilterModalProps {
   isOpen: boolean;

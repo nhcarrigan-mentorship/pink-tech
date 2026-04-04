@@ -3,7 +3,7 @@ import ProfileList from "../components/ProfileList";
 import type { UserProfile } from "../../../shared/types/UserProfile";
 import { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import Pagination from "../../../components/ui/Pagination";
+import Pagination from "../../../shared/ui/Pagination";
 
 interface FilteredProfilesProps {
   filteredProfiles: UserProfile[];

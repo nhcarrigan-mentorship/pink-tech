@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useState } from "react";
-import LazyIcon from "../../../components/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/LazyIcon";
 import {
   getPasswordStrength,
   validateEmail,
@@ -13,8 +13,8 @@ import {
   USERNAME_MAX,
   USERNAME_MIN,
 } from "../../../utils/validators";
-import PasswordStrengthBar from "../../../components/ui/PasswordStrengthBar";
-import PasswordRequirements from "../../../components/ui/PasswordRequirements";
+import PasswordStrengthBar from "../../../shared/ui/PasswordStrengthBar";
+import PasswordRequirements from "../../../shared/ui/PasswordRequirements";
 
 type FormValues = {
   name: string;

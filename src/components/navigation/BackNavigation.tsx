@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import LazyIcon from "../ui/LazyIcon";
+import LazyIcon from "../../shared/ui/LazyIcon";
 
 interface BackNavigationProps {
   variant?: string;

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import LazyIcon from "../../../components/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/LazyIcon";
 
 interface EmailVerificationNoticeProps {
   email: string;

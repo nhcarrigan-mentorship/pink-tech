@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
-import LoadingState from "../../../components/ui/LoadingState";
+import LoadingState from "../../../shared/ui/LoadingState";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, sessionLoading, uiCachedUser } = useAuth();

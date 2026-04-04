@@ -1,4 +1,4 @@
-import ImageWithFallback from "../../../../components/ui/ImageWithFallback";
+import ImageWithFallback from "../../../../shared/ui/ImageWithFallback";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { Edit } from "lucide-react";
 

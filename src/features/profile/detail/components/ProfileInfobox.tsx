@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Edit, Award, Building2, MapPin, Mail } from "lucide-react";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 import { socials } from "./ProfileSocials";
-import ImageWithFallback from "../../../../components/ui/ImageWithFallback";
-import LazyIcon from "../../../../components/ui/LazyIcon";
+import ImageWithFallback from "../../../../shared/ui/ImageWithFallback";
+import LazyIcon from "../../../../shared/ui/LazyIcon";
 
 interface ProfileInfoboxProps {
   isOwner: boolean;

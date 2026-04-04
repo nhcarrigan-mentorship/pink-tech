@@ -11,7 +11,7 @@ import {
   getAvatarPublicUrl,
 } from "../../../../utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
-import LazyIcon from "../../../../components/ui/LazyIcon";
+import LazyIcon from "../../../../shared/ui/LazyIcon";
 import {
   validateBio,
   validateCompany,

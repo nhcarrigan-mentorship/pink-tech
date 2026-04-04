@@ -1,4 +1,4 @@
-import LazyIcon from "../ui/LazyIcon";
+import LazyIcon from "../../shared/ui/LazyIcon";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 

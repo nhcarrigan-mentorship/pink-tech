@@ -1,4 +1,4 @@
-import LazyIcon from "../../../components/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/LazyIcon";
 
 interface ActiveFiltersProps {
   selectedExpertise: string[];

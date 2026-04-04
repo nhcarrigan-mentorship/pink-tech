@@ -6,9 +6,9 @@ import FilteredProfiles from "../results/FilteredProfiles";
 import ProfileSearchBar from "../components/ProfileSearchBar";
 import MobileFilterModal from "../responsive/MobileFilterModal";
 import { useProfilesContext } from "../../../hooks/useProfilesContext";
-import LoadingState from "../../../components/ui/LoadingState";
+import LoadingState from "../../../shared/ui/LoadingState";
 
-import ErrorState from "../../../components/ui/ErrorState";
+import ErrorState from "../../../shared/ui/ErrorState";
 import { useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../../../contexts/AuthContext";

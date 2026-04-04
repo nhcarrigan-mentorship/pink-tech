@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import LazyIcon from "../../../components/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/LazyIcon";
 import type { UserProfile } from "../../../shared/types/UserProfile";
-import ImageWithFallback from "../../../components/ui/ImageWithFallback";
+import ImageWithFallback from "../../../shared/ui/ImageWithFallback";
 
 interface ProfileCardProps {
   profile: UserProfile;

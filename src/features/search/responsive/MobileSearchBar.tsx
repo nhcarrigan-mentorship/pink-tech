@@ -1,4 +1,4 @@
-import LazyIcon from "../../../components/ui/LazyIcon";
+import LazyIcon from "../../../shared/ui/LazyIcon";
 import SearchInput from "../components/SearchInput";
 
 interface MobileSearchBarProps {
