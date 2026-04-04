@@ -135,7 +135,7 @@ export default function ProfileDetail() {
 
   return (
     <>
-      <BackNavigation />
+      {profile && <BackNavigation />}
       <div className="py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{content}</div>
       </div>
