@@ -66,11 +66,9 @@ pink-tech/
     │   ├── snakeCase.ts              # camelCase ↔ snake_case conversion utilities
     │   └── validators.ts             # Username and password validation rules
     ├── contexts/
-    │   ├── AuthContext.tsx           # Auth state (session, cached user, login/logout)
-    │   └── ProfilesContext.tsx       # Global profiles list with search + filter state
+    │   └── AuthContext.tsx           # Auth state (session, cached user, login/logout)
     ├── hooks/
-    │   ├── useProfiles.ts            # Raw hook: fetches and filters profiles from Supabase
-    │   └── useProfilesContext.ts     # Convenience hook to consume ProfilesContext
+    │   └── useProfiles.ts            # Fetches and manages profiles from Supabase
     ├── pages/
     │   ├── auth/
     │   │   ├── Login.tsx             # Sign-in page

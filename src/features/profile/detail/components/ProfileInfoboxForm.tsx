@@ -2,7 +2,7 @@ import camelcaseKeys from "camelcase-keys";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getSupabase } from "../../../../shared/config/supabaseClient";
-import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../../shared/hooks/useProfiles";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 import {
@@ -71,7 +71,7 @@ export default function ProfileInfoboxForm({
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
-  const { updateProfileInContext } = useProfilesContext();
+  const { updateProfile } = useProfiles();
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     displayName: null,
@@ -294,7 +294,7 @@ export default function ProfileInfoboxForm({
       }) as unknown as UserProfile;
 
       // keep global profiles list in sync
-      updateProfileInContext(updated);
+      updateProfile(updated);
 
       // update local profile state
       setEditedProfile(updated);

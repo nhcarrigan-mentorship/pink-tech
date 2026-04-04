@@ -2,14 +2,14 @@ import { Search, Sparkles } from "lucide-react";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../shared/hooks/useProfiles";
 
 const MAX_QUICK_SEARCHES = 5;
 
 export function HomeSearch() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const { profiles } = useProfilesContext();
+  const { profiles } = useProfiles();
 
   const quickSearches = useMemo(() => {
     const counts = new Map<string, number>();

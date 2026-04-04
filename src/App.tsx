@@ -10,47 +10,44 @@ import Settings from "./features/profile/settings/pages/Settings";
 import Search from "./features/search/pages/Search";
 import Home from "./pages/main/Home";
 import Layout from "./shared/components/Layout";
-import { ProfilesProvider } from "./shared/contexts/ProfilesContext";
 
 function App() {
   return (
-    <ProfilesProvider>
-      <BrowserRouter>
-        <Toaster position="top-center" richColors />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/:username" element={<ProfileDetail />} />
-            <Route path="/search" element={<Search />} />
-            <Route
-              path="/login"
-              element={
-                <GuestRoute>
-                  <Login />
-                </GuestRoute>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <GuestRoute>
-                  <SignUp />
-                </GuestRoute>
-              }
-            />
-            <Route path="/verify" element={<Verify />} />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ProfilesProvider>
+    <BrowserRouter>
+      <Toaster position="top-center" richColors />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/:username" element={<ProfileDetail />} />
+          <Route path="/search" element={<Search />} />
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <GuestRoute>
+                <SignUp />
+              </GuestRoute>
+            }
+          />
+          <Route path="/verify" element={<Verify />} />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

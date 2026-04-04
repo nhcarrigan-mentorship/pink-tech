@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { UserProfile } from "../shared/types/UserProfile";
+import type { UserProfile } from "../types/UserProfile";
 import { mergeProfile, removeProfileById, upsertProfile } from "./profileUtils";
 
 describe("mergeProfile", () => {

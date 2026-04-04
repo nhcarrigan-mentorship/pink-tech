@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../shared/contexts/AuthContext";
-import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../../shared/hooks/useProfiles";
 import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 
 export default function DeleteAccount() {
@@ -10,7 +10,7 @@ export default function DeleteAccount() {
   const [deleteError, setDeleteError] = useState<Error | null>(null);
 
   const { user, deleteProfile } = useAuth();
-  const { removeProfileFromContext } = useProfilesContext();
+  const { removeProfile } = useProfiles();
   const navigate = useNavigate();
 
   async function handleDelete() {
@@ -19,7 +19,7 @@ export default function DeleteAccount() {
 
     try {
       await deleteProfile();
-      if (user?.id) removeProfileFromContext(user.id);
+      if (user?.id) removeProfile(user.id);
       navigate("/");
     } catch (err) {
       const normalized = err instanceof Error ? err : new Error(String(err));

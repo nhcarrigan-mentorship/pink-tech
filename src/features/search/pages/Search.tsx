@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import CallToAction from "../../../shared/components/CallToAction";
 
-import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../shared/hooks/useProfiles";
 import LoadingState from "../../../shared/ui/feedback/LoadingState";
 import ProfileSearchBar from "../components/ProfileSearchBar";
 import SearchHeader from "../components/SearchHeader";
@@ -19,7 +19,7 @@ export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("q") ?? "";
   const selectedExpertise = searchParams.getAll("expertise");
-  const { profiles, loading, error, refetch } = useProfilesContext();
+  const { profiles, loading, error, refetch } = useProfiles();
   const { isAuthenticated } = useAuth();
 
   function handleSearch(value: string) {

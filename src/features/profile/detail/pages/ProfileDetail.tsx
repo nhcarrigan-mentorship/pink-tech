@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BackNavigation from "../../../../shared/components/navigation/BackNavigation";
 import { useAuth } from "../../../../shared/contexts/AuthContext";
-import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../../shared/hooks/useProfiles";
 import ErrorState from "../../../../shared/ui/feedback/ErrorState";
 import LoadingState from "../../../../shared/ui/feedback/LoadingState";
 import ProfileNotFound from "../../../search/results/ProfileNotFound";
@@ -11,8 +11,7 @@ import ProfileCard from "../components/ProfileCard";
 
 export default function ProfileDetail() {
   const { username } = useParams();
-  const { profiles, loading, error, refetch, fetchFullProfile } =
-    useProfilesContext();
+  const { profiles, loading, error, refetch, fetchFullProfile } = useProfiles();
   const profile = profiles.find(
     (p) => p.username.toLowerCase() === username?.toLowerCase(),
   );

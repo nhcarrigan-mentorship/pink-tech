@@ -1,7 +1,7 @@
 import { motion, type PanInfo } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProfilesContext } from "../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../shared/hooks/useProfiles";
 import LazyIcon from "../../../shared/ui/display/LazyIcon";
 import Pagination from "../../../shared/ui/display/Pagination";
 import ErrorState from "../../../shared/ui/feedback/ErrorState";
@@ -10,7 +10,7 @@ import FeaturedProfileCard from "./FeaturedProfileCard";
 
 export default function FeaturedProfiles() {
   const FEATURED_COUNT = 5;
-  const { profiles, loading, error, refetch } = useProfilesContext();
+  const { profiles, loading, error, refetch } = useProfiles();
   const featuredProfiles = profiles
     .filter((profile) => profile.featured)
     .slice(0, FEATURED_COUNT);

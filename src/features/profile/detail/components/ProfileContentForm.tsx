@@ -2,7 +2,7 @@ import camelcaseKeys from "camelcase-keys";
 import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import { getSupabase } from "../../../../shared/config/supabaseClient";
-import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
+import useProfiles from "../../../../shared/hooks/useProfiles";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { validateLinks } from "../../../../shared/utils/validators";
 
@@ -17,7 +17,7 @@ export default function ProfileContentForm({
 }: ProfileContentForm) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
-  const { updateProfileInContext } = useProfilesContext();
+  const { updateProfile } = useProfiles();
 
   const defaultContent = `# ${profile.displayName}
 
@@ -90,7 +90,7 @@ export default function ProfileContentForm({
 
       if (data) {
         const updated = camelcaseKeys(data, { deep: true });
-        updateProfileInContext(updated);
+        updateProfile(updated);
       }
 
       success = true;
