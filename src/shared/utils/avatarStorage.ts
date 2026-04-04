@@ -1,4 +1,4 @@
-import { getSupabase } from "../config/supabaseClient";
+import getSupabase from "../../config/supabaseClient";
 
 export async function uploadAvatar(
   file: File,

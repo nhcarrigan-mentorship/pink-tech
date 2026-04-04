@@ -4,7 +4,7 @@ import { getSupabase } from "../../../../config/supabaseClient";
 import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
 import camelcaseKeys from "camelcase-keys";
 import DOMPurify from "dompurify";
-import { validateLinks } from "../../../../utils/validators";
+import { validateLinks } from "../../../../shared/utils/validators";
 
 interface ProfileContentForm {
   profile: UserProfile;

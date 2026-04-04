@@ -2,7 +2,7 @@ import camelcaseKeys from "camelcase-keys";
 import { useState, useEffect, useCallback } from "react";
 import { getPublicSupabase, getSupabase } from "../../config/supabaseClient";
 import type { UserProfile } from "../types/UserProfile";
-import { upsertProfile, removeProfileById } from "../../utils/profileUtils";
+import { upsertProfile, removeProfileById } from "../utils/profileUtils";
 
 // Cache for full profile fetches to avoid duplicate requests
 const fullProfilePromiseCache: Map<

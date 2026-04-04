@@ -1,4 +1,4 @@
-import { PASSWORD_RULES } from "../../../utils/validators";
+import { PASSWORD_RULES } from "../../utils/validators";
 import LazyIcon from "../display/LazyIcon";
 
 interface PasswordRequirementsProps {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import toSnakeCaseObject from "../../../../utils/snakeCase";
+import toSnakeCaseObject from "../../../../shared/utils/snakeCase";
 import camelcaseKeys from "camelcase-keys";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { useProfilesContext } from "../../../../shared/hooks/useProfilesContext";
@@ -9,7 +9,7 @@ import { getSupabase } from "../../../../config/supabaseClient";
 import {
   uploadAvatar,
   getAvatarPublicUrl,
-} from "../../../../utils/avatarStorage";
+} from "../../../../shared/utils/avatarStorage";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
 import {
   validateBio,
@@ -22,7 +22,7 @@ import {
   validateName,
   validateRole,
   validateWebsite,
-} from "../../../../utils/validators";
+} from "../../../../shared/utils/validators";
 import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 
 interface ProfileInfoboxFormProps {

@@ -13,7 +13,7 @@ import {
   NAME_MIN,
   USERNAME_MAX,
   USERNAME_MIN,
-} from "../../../utils/validators";
+} from "../../../shared/utils/validators";
 import PasswordStrengthBar from "../../../shared/ui/forms/PasswordStrengthBar";
 import PasswordRequirements from "../../../shared/ui/forms/PasswordRequirements";
 
