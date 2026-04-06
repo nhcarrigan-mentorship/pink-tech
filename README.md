@@ -44,8 +44,6 @@ Create and edit your own public profile — control how you're represented in th
 
 ## Project Structure
 
-Source code is organized by **feature** (`src/features/`) and **shared** code (`src/shared/`). Features own their screens (`pages/`) and feature-specific UI (`components/` and subfolders). Shared holds the app shell, Supabase client, global hooks, design-system-style UI primitives, and utilities used across features.
-
 ```
 pink-tech/
 ├── public/                 # Static assets (favicon, Open Graph image, etc.)
