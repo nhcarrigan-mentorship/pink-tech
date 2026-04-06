@@ -9,11 +9,13 @@ import { socials } from "./ProfileSocials";
 interface ProfileInfoboxProps {
   isOwner: boolean;
   profile: UserProfile;
+  onProfileUpdated: (updated: UserProfile) => void;
 }
 
 export default function ProfileInfobox({
   profile,
   isOwner,
+  onProfileUpdated,
 }: ProfileInfoboxProps) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -40,6 +42,7 @@ export default function ProfileInfobox({
             profile={profile}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
+            onProfileUpdated={onProfileUpdated}
           />
         ) : (
           <div className="p-4 space-y-3 text-sm">

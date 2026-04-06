@@ -2,7 +2,6 @@ import camelcaseKeys from "camelcase-keys";
 import { Award, Building2, Mail, MapPin, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getSupabase } from "../../../../shared/config/supabaseClient";
-import useProfiles from "../../../../shared/hooks/useProfiles";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import LazyIcon from "../../../../shared/ui/display/LazyIcon";
 import {
@@ -29,6 +28,7 @@ interface ProfileInfoboxFormProps {
   profile: UserProfile;
   isEditing: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  onProfileUpdated: (updated: UserProfile) => void;
 }
 
 type FormErrors = {
@@ -62,6 +62,7 @@ export default function ProfileInfoboxForm({
   profile,
   isEditing,
   setIsEditing,
+  onProfileUpdated,
 }: ProfileInfoboxFormProps) {
   const [editedProfile, setEditedProfile] =
     useState<Partial<UserProfile>>(profile);
@@ -71,8 +72,6 @@ export default function ProfileInfoboxForm({
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
-  const { updateProfile } = useProfiles();
-
   const [formErrors, setFormErrors] = useState<FormErrors>({
     displayName: null,
     bio: null,
@@ -278,23 +277,29 @@ export default function ProfileInfoboxForm({
           );
       });
 
+      const updatedAt = new Date().toISOString();
+      changedFields.lastUpdated = updatedAt;
+
       console.log("updating profiles with", toSnakeCaseObject(changedFields));
       const supabase = await getSupabase();
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("profiles")
         .update(toSnakeCaseObject(changedFields))
-        .eq("id", profile.id)
-        .select()
-        .single();
+        .eq("id", profile.id);
 
       if (error) throw error;
 
-      const updated = camelcaseKeys(data, {
-        deep: true,
-      }) as unknown as UserProfile;
+      // Optimistically merge local state so UI updates immediately after save.
+      const updated = camelcaseKeys(
+        {
+          ...profile,
+          ...changedFields,
+        },
+        { deep: true },
+      ) as unknown as UserProfile;
 
       // keep global profiles list in sync
-      updateProfile(updated);
+      onProfileUpdated(updated);
 
       // update local profile state
       setEditedProfile(updated);

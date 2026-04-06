@@ -16,10 +16,54 @@ export let profilesCache: UserProfile[] | null = null;
 // Flag to track if full list was fetched
 let profilesListFetched = false;
 
+type ProfilesSubscriber = (next: UserProfile[]) => void;
+const profilesSubscribers = new Set<ProfilesSubscriber>();
+type RealtimeChangePayload = { new?: unknown; old?: unknown };
+type UnsubscribableChannel = { unsubscribe: () => void };
+
+function isAbortError(err: unknown): err is { name: string } {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "name" in err &&
+    (err as { name?: unknown }).name === "AbortError"
+  );
+}
+
+function toRealtimeChangePayload(payload: unknown): RealtimeChangePayload {
+  if (typeof payload !== "object" || payload === null) return {};
+  return payload as RealtimeChangePayload;
+}
+
+function setProfilesCache(next: UserProfile[]) {
+  profilesCache = next;
+  for (const sub of profilesSubscribers) {
+    try {
+      sub(next);
+    } catch (err) {
+      // Avoid breaking other subscribers if one throws
+      console.error("profiles subscriber error:", err);
+    }
+  }
+}
+
 export default function useProfiles() {
   const [profiles, setProfiles] = useState<UserProfile[]>(profilesCache ?? []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  // Keep multiple hook instances in sync via module-level cache notifications
+  useEffect(() => {
+    const subscriber: ProfilesSubscriber = (next) => setProfiles(next);
+    profilesSubscribers.add(subscriber);
+
+    // Ensure the latest cache is applied immediately on mount
+    if (profilesCache) setProfiles(profilesCache);
+
+    return () => {
+      profilesSubscribers.delete(subscriber);
+    };
+  }, []);
 
   const fetchProfiles = async () => {
     // Use cached data if available
@@ -35,7 +79,7 @@ export default function useProfiles() {
         await profilesListPromise;
         if (profilesCache) setProfiles(profilesCache);
       } catch (err) {
-        if ((err as any)?.name !== "AbortError") {
+        if (!isAbortError(err)) {
           setError(err as Error);
           console.error(err);
         }
@@ -80,12 +124,12 @@ export default function useProfiles() {
             );
             return existing?.content ? { ...p, content: existing.content } : p;
           });
-          profilesCache = merged;
+          setProfilesCache(merged);
           profilesListFetched = true;
           setProfiles(merged);
         }
       } catch (err) {
-        if ((err as any)?.name === "AbortError") {
+        if (isAbortError(err)) {
           console.debug("Profiles fetch aborted:", err);
         } else {
           setError(err as Error);
@@ -109,31 +153,32 @@ export default function useProfiles() {
   // Subscribe to realtime profile changes
   useEffect(() => {
     let mounted = true;
-    let channel: any;
+    let channel: UnsubscribableChannel | null = null;
 
     (async () => {
       try {
         const supabase = await getSupabase();
-        const handleChange = (payload: any) => {
+        const handleChange = (payload: unknown) => {
           if (!mounted) return;
           try {
-            const raw = payload.new || payload.old;
+            const normalizedPayload = toRealtimeChangePayload(payload);
+            const raw = normalizedPayload.new || normalizedPayload.old;
             const updated = camelcaseKeys(raw || {}, {
               deep: true,
             }) as unknown as UserProfile;
 
             // Handle delete or upsert
-            const isDelete = !payload.new && payload.old;
+            const isDelete = !normalizedPayload.new && normalizedPayload.old;
             if (isDelete) {
               setProfiles((prev) => {
                 const next = removeProfileById(prev, String(updated.id));
-                profilesCache = next;
+                setProfilesCache(next);
                 return next;
               });
             } else {
               setProfiles((prev) => {
                 const next = upsertProfile(prev, updated);
-                profilesCache = next;
+                setProfilesCache(next);
                 return next;
               });
             }
@@ -170,7 +215,7 @@ export default function useProfiles() {
       try {
         if (channel && typeof channel.unsubscribe === "function")
           channel.unsubscribe();
-      } catch (e) {
+      } catch {
         /* ignore */
       }
     };
@@ -180,7 +225,7 @@ export default function useProfiles() {
   const updateProfile = useCallback((updated: UserProfile) => {
     setProfiles((prev) => {
       const next = upsertProfile(prev, updated);
-      profilesCache = next;
+      setProfilesCache(next);
       return next;
     });
   }, []);
@@ -192,7 +237,7 @@ export default function useProfiles() {
   const removeProfile = useCallback((id: string) => {
     setProfiles((prev) => {
       const next = removeProfileById(prev, id);
-      profilesCache = next;
+      setProfilesCache(next);
       return next;
     });
   }, []);

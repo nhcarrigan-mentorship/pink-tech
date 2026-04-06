@@ -11,7 +11,8 @@ import ProfileCard from "../components/ProfileDetailCard";
 
 export default function ProfileDetail() {
   const { username } = useParams();
-  const { profiles, loading, error, refetch, fetchFullProfile } = useProfiles();
+  const { profiles, loading, error, refetch, fetchFullProfile, updateProfile } =
+    useProfiles();
   const profile = profiles.find(
     (p) => p.username.toLowerCase() === username?.toLowerCase(),
   );
@@ -115,7 +116,11 @@ export default function ProfileDetail() {
       <div className="flex-1 py-2">
         <BackNavigation />
         <ProfileAuthorshipNotice isOwner={isOwner} position="top" />
-        <ProfileCard profile={profile} isOwner={isOwner} />
+        <ProfileCard
+          profile={profile}
+          isOwner={isOwner}
+          onProfileUpdated={updateProfile}
+        />
         {/* Notice Banner - Bottom (abstracted) */}
         {!isOwner && showBottomNotice && !noticeDismissed && (
           <ProfileAuthorshipNotice

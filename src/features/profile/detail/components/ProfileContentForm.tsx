@@ -1,23 +1,22 @@
-import camelcaseKeys from "camelcase-keys";
 import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import { getSupabase } from "../../../../shared/config/supabaseClient";
-import useProfiles from "../../../../shared/hooks/useProfiles";
 import type { UserProfile } from "../../../../shared/types/UserProfile";
 import { validateLinks } from "../../../../shared/utils/validators";
 
 interface ProfileContentForm {
   profile: UserProfile;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  onProfileUpdated: (updated: UserProfile) => void;
 }
 
 export default function ProfileContentForm({
   profile,
   setIsEditing,
+  onProfileUpdated,
 }: ProfileContentForm) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<Error | null>(null);
-  const { updateProfile } = useProfiles();
 
   const defaultContent = `# ${profile.displayName}
 
@@ -76,22 +75,22 @@ export default function ProfileContentForm({
       // Save to Supabase
       const supabase = await getSupabase();
       const updatedAt = new Date().toISOString();
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from("profiles")
         .update({
           content: stripped != "" ? stripped : null,
           last_updated: updatedAt,
         })
-        .eq("id", profile.id)
-        .select()
-        .single();
+        .eq("id", profile.id);
 
-      if (error) setSaveError(error);
+      if (error) throw error;
 
-      if (data) {
-        const updated = camelcaseKeys(data, { deep: true });
-        updateProfile(updated);
-      }
+      // Keep hook cache in sync even when update response has no selected row.
+      onProfileUpdated({
+        ...profile,
+        content: stripped !== "" ? stripped : null,
+        lastUpdated: updatedAt,
+      });
 
       success = true;
     } catch (err) {

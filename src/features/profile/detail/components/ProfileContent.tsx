@@ -13,11 +13,13 @@ type RemarkGfmType = any;
 interface ProfileContentProps {
   isOwner: boolean;
   profile: UserProfile;
+  onProfileUpdated: (updated: UserProfile) => void;
 }
 
 export default function ProfileContent({
   profile,
   isOwner,
+  onProfileUpdated,
 }: ProfileContentProps) {
   const [ReactMarkdown, setReactMarkdown] = useState<ReactMarkdownType | null>(
     null,
@@ -52,7 +54,11 @@ export default function ProfileContent({
     : undefined;
 
   return isEditing ? (
-    <ProfileContentForm profile={profile} setIsEditing={setIsEditing} />
+    <ProfileContentForm
+      profile={profile}
+      setIsEditing={setIsEditing}
+      onProfileUpdated={onProfileUpdated}
+    />
   ) : (
     <article className="prose prose-gray w-full">
       {/* Profile Last Updated */}
