@@ -271,9 +271,20 @@ export default function useProfiles() {
             .ilike("username", normalizedUsername)
             .single();
 
+          // Supabase returns 406 if no rows found with .single()
           if (error) {
-            console.error("fetchFullProfile error:", error);
-            return null;
+            if (
+              error.code === "PGRST116" ||
+              error.message?.includes(
+                "Cannot coerce the result to a single JSON object",
+              )
+            ) {
+              // No profile found, not a real error
+              return null;
+            } else {
+              console.error("fetchFullProfile error:", error);
+              return null;
+            }
           }
 
           if (data) {
