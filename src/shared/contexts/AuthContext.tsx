@@ -115,10 +115,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Fetch full profile asynchronously (avoid Supabase callback deadlock)
           setTimeout(async () => {
             try {
+              let profileData, profileError;
               const pending = localStorage.getItem("pendingProfile");
               if (pending) {
                 const parsed = JSON.parse(pending);
-
                 await supabase.from("profiles").upsert([
                   {
                     id: signedInUser.id,
@@ -127,16 +127,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     last_updated: new Date().toISOString(),
                   },
                 ]);
-
                 localStorage.removeItem("pendingProfile");
                 localStorage.removeItem("pendingEmail");
               }
 
-              const { data: profileData, error: profileError } = await supabase
+              // Try to fetch profile
+              ({ data: profileData, error: profileError } = await supabase
                 .from("profiles")
                 .select("*")
                 .eq("id", signedInUser.id)
-                .single();
+                .single());
+
+              // If profile is missing, upsert a minimal row
+              if (
+                profileError &&
+                (profileError.code === "PGRST116" ||
+                  profileError.message?.includes(
+                    "Cannot coerce the result to a single JSON object",
+                  ))
+              ) {
+                const minimalProfile = {
+                  id: signedInUser.id,
+                  display_name:
+                    signedInUser.user_metadata?.name ||
+                    signedInUser.email?.split("@")[0] ||
+                    "",
+                  username:
+                    signedInUser.user_metadata?.username ||
+                    signedInUser.email?.split("@")[0] ||
+                    "",
+                  last_updated: new Date().toISOString(),
+                };
+                await supabase.from("profiles").upsert([minimalProfile]);
+                // Try fetching again
+                ({ data: profileData, error: profileError } = await supabase
+                  .from("profiles")
+                  .select("*")
+                  .eq("id", signedInUser.id)
+                  .single());
+              }
 
               if (!profileError && profileData) {
                 setUser({
