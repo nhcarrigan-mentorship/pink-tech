@@ -29,8 +29,8 @@ export default function ProfileContent({
 
   useEffect(() => {
     let mounted = true;
-    if (!profile?.content) return;
-    // Load on-demand
+    if (!profile) return;
+    // Load on-demand - always load when profile exists to handle empty content properly
     Promise.all([import("react-markdown"), import("remark-gfm")]).then(
       ([rm, gfm]) => {
         if (mounted) {
@@ -42,7 +42,7 @@ export default function ProfileContent({
     return () => {
       mounted = false;
     };
-  }, [profile?.content]);
+  }, [profile]);
   const isoString = profile?.lastUpdated;
 
   const formattedDate = isoString

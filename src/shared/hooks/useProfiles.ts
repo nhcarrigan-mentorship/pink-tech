@@ -248,11 +248,11 @@ export default function useProfiles() {
       if (!username) return;
       const normalizedUsername = username.toLowerCase();
 
-      // Skip if already have full content
+      // Skip if already have full profile data (including empty content)
       const existing = profiles.find(
         (p) => p.username.toLowerCase() === normalizedUsername,
       );
-      if (existing && existing.content) return;
+      if (existing && "content" in existing) return;
 
       // Use cached promise if available
       const cached = fullProfilePromiseCache.get(normalizedUsername);
