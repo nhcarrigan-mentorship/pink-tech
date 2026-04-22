@@ -216,14 +216,20 @@ export default function ProfileInfoboxForm({
       // only include fields that are present on `edited` and differ from the original
       if (!(key in edited)) continue;
 
-      const editedVal = edited[key];
+      let editedVal = edited[key];
       const originalVal = original[key];
 
       // If the value is `undefined`, treat it as "no change"
-
       if (editedVal === undefined) continue;
-      if (editedVal != originalVal) {
-        changed[key] = editedVal;
+
+      // Trim strings and save (null if empty)
+      if (typeof editedVal === "string") {
+        const trimmedVal = editedVal.trim();
+        const valueToSave = trimmedVal === "" ? null : trimmedVal;
+
+        if (valueToSave != originalVal) {
+          changed[key] = valueToSave;
+        }
       }
     }
 
@@ -283,11 +289,12 @@ export default function ProfileInfoboxForm({
       console.log("updating profiles with", toSnakeCaseObject(changedFields));
       const supabase = await getSupabase();
 
-      // Update existing profile
+      // Use upsert to insert if missing, update if exists
       const { error } = await supabase
         .from("profiles")
-        .update(toSnakeCaseObject(changedFields))
-        .eq("id", profile.id);
+        .upsert([{ ...toSnakeCaseObject(changedFields), id: profile.id }], {
+          onConflict: "id",
+        });
 
       if (error) throw error;
 
