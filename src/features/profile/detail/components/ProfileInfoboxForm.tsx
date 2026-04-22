@@ -292,12 +292,11 @@ export default function ProfileInfoboxForm({
       console.log("updating profiles with", toSnakeCaseObject(changedFields));
       const supabase = await getSupabase();
 
-      // Use upsert to insert if missing, update if exists
+      // Update existing profile to avoid nullifying required fields
       const { error } = await supabase
         .from("profiles")
-        .upsert([{ ...toSnakeCaseObject(changedFields), id: profile.id }], {
-          onConflict: "id",
-        });
+        .update(toSnakeCaseObject(changedFields))
+        .eq("id", profile.id);
 
       if (error) throw error;
 
