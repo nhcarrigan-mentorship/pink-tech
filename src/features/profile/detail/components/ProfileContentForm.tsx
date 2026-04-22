@@ -51,6 +51,8 @@ export default function ProfileContentForm({
   async function onSave(e: React.FormEvent) {
     e.preventDefault();
 
+    const trimmedContent = content?.trim();
+
     // Skip saving when profile content remains the same
     if (content === profile.content) {
       setIsEditing(false);
@@ -62,7 +64,7 @@ export default function ProfileContentForm({
     setSaveError(null);
 
     try {
-      const raw = content ?? "";
+      const raw = trimmedContent ?? "";
 
       // Strip any raw HTML tags from the markdown input
       const stripped = DOMPurify.sanitize(raw, { ALLOWED_TAGS: [] });
