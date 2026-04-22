@@ -230,6 +230,9 @@ export default function ProfileInfoboxForm({
         if (valueToSave != originalVal) {
           changed[key] = valueToSave;
         }
+      } else if (editedVal === null && originalVal !== null) {
+        // Handle explicitly cleared fields (null values)
+        changed[key] = null;
       }
     }
 
