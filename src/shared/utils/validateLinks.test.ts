@@ -32,10 +32,38 @@ describe("validateLinks", () => {
     ).toBe(true);
   });
 
+  it("accepts bare domains by adding https", () => {
+    expect(validateLinks("[OK](google.com)")).toBe(true);
+  });
+
   // === INVALID ===
+  it("rejects URLs without domain dot", () => {
+    expect(validateLinks("[Bad](https://localhost)")).toBe(false);
+  });
+
+  it("rejects URLs with empty hostname", () => {
+    expect(validateLinks("[Bad](https://)")).toBe(false);
+    expect(validateLinks("[Bad](http://)")).toBe(false);
+  });
+
+  it("rejects slash-only URLs", () => {
+    expect(validateLinks("[Bad](https:///)")).toBe(false);
+    expect(validateLinks("[Bad](http:///)")).toBe(false);
+  });
+
+  it("covers malformed protocol URLs", () => {
+    expect(validateLinks("[Bad](https://:)")).toBe(false);
+  });
+
+  it("rejects bare invalid domains", () => {
+    expect(validateLinks("[Bad](invalid)")).toBe(false);
+  });
+
+  it("rejects empty hostname URLs", () => {
+    expect(validateLinks("[Bad](https://)")).toBe(false);
+  });
   it("rejects unsupported protocols", () => {
     expect(validateLinks("[Bad](ftp://example.com)")).toBe(false);
-
     expect(validateLinks("[JS](javascript:alert(1))")).toBe(false);
   });
 
