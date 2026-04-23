@@ -1,5 +1,5 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { COMPANY_MAX, validateCompany } from "./validators";
+import { COMPANY_MAX, COMPANY_MIN,   validateCompany } from "./validators";
 
 runValidatorTests(validateCompany, {
   name: "validateCompany",
@@ -18,6 +18,10 @@ runValidatorTests(validateCompany, {
         "Company should only include letters, numbers, spaces and . - , & ( ).",
     },
   ],
+  boundaries: {
+    valid: ["a".repeat(COMPANY_MAX)],
+    invalid: ["a".repeat(COMPANY_MIN - 1), "a".repeat(COMPANY_MAX + 1)],
+  },
 });
 
-//  "a".repeat(COMPANY_MAX + 1);
+//  ;
