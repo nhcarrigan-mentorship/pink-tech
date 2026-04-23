@@ -7,5 +7,6 @@ export default defineConfig({
       reporter: ["text", "html"], // console + browser report
       exclude: ["node_modules/", "dist/", "**/*.test.ts", "**/*.test.tsx"],
     },
+    globals: true,
   },
 });
