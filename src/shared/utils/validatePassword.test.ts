@@ -1,5 +1,10 @@
 import { runValidatorTests } from "./runValidatorTests";
-import { PASSWORD_MAX, PASSWORD_MIN, validatePassword } from "./validators";
+import {
+  PASSWORD_MAX,
+  PASSWORD_MIN,
+  PASSWORD_RULES,
+  validatePassword,
+} from "./validators";
 
 runValidatorTests(validatePassword, {
   name: "validatePassword",
@@ -64,4 +69,12 @@ runValidatorTests(validatePassword, {
       "Aa1!" + "a".repeat(PASSWORD_MAX - 3), // above max
     ],
   },
+});
+
+describe("PASSWORD_RULES execution", () => {
+  it("executes all rules", () => {
+    PASSWORD_RULES.forEach((rule) => {
+      rule.test("Aa1!aaaa");
+    });
+  });
 });
