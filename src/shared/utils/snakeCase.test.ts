@@ -30,6 +30,27 @@ describe("toSnakeCaseObject", () => {
       }),
     ).toEqual({ user_profile: { user_id: "12345", full_name: "Jane Doe" } });
   });
+  it("recursively converts objects inside arrays and leaves non-objects unchanged", () => {
+    expect(
+      toSnakeCaseObject({
+        auditTrail: [
+          { userID: "12345", fullName: "Jane Doe" },
+          "raw-string",
+          123,
+          null,
+          { nestedArray: [{ fooBar: "baz" }] },
+        ],
+      }),
+    ).toEqual({
+      audit_trail: [
+        { user_id: "12345", full_name: "Jane Doe" },
+        "raw-string",
+        123,
+        null,
+        { nested_array: [{ foo_bar: "baz" }] },
+      ],
+    });
+  });
   it("returns an empty object when given an empty object", () => {
     expect(toSnakeCaseObject({})).toEqual({});
   });
