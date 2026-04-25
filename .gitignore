@@ -25,3 +25,7 @@ dist-ssr
 .vercel
 .env
 .env*.local
+
+# Coverage files
+coverage/ 
+.nyc_output/
