@@ -46,6 +46,35 @@ describe("validateLinks", () => {
     expect(validateLinks("[Bad](http://)")).toBe(false);
   });
 
+  it("covers the extra guard for weird cases like https:// (hostname becomes empty)", () => {
+    // validateLinks reads `parsed.hostname` twice in the earlier strict check:
+    // 1) `!parsed.hostname`
+    // 2) `!parsed.hostname.includes(".")`
+    // Then it reads it again for the dedicated `parsed.hostname === ""` guard.
+    // We return a normal hostname for the first two reads, and "" on the third.
+    const OriginalURL = (globalThis as any).URL;
+
+    class FlakyURL {
+      protocol = "https:";
+      private reads = 0;
+
+      constructor(_raw: string) {}
+
+      get hostname() {
+        this.reads += 1;
+        if (this.reads <= 2) return "example.com";
+        return "";
+      }
+    }
+
+    try {
+      (globalThis as any).URL = FlakyURL;
+      expect(validateLinks("[Bad](https://example.com)")).toBe(false);
+    } finally {
+      (globalThis as any).URL = OriginalURL;
+    }
+  });
+
   it("rejects slash-only URLs", () => {
     expect(validateLinks("[Bad](https:///)")).toBe(false);
     expect(validateLinks("[Bad](http:///)")).toBe(false);
