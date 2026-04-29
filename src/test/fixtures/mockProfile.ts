@@ -9,7 +9,8 @@ export const mockProfile: UserProfile = {
 
   // optional / nullable fields
   authEmail: "jane.auth@email.com",
-  image: "https://example.com/avatar.jpg",
+  image:
+    "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=400&h=400&fit=crop",
   bio: "Frontend engineer passionate about building accessible UI.",
   role: "Frontend Engineer",
   company: "Tech Co",
