@@ -540,7 +540,7 @@ export default function ProfileInfoboxForm({
             {socials.map(({ key, placeholder, name }) => (
               <div key={key} className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <label htmlFor="role">
+                  <label htmlFor="website">
                     <span className="hidden">{key}</span>
                     <LazyIcon
                       name={name}
