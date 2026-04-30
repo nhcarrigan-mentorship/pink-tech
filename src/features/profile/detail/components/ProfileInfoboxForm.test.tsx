@@ -85,4 +85,19 @@ describe("ProfileInfoboxForm", () => {
     expect(screen.getByText("Testing")).toBeInTheDocument();
     expect(expertiseInput).toHaveValue("");
   });
+
+  it("removes an expertise", () => {
+    render(
+      <ProfileInfoboxForm
+        profile={mockProfile}
+        isEditing={true}
+        setIsEditing={vi.fn()}
+        onProfileUpdated={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /remove react/i }));
+
+    expect(screen.queryByText("React")).not.toBeInTheDocument();
+  });
 });
