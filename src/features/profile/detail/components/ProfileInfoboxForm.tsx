@@ -233,6 +233,13 @@ export default function ProfileInfoboxForm({
       } else if (editedVal === null && originalVal !== null) {
         // Handle explicitly cleared fields (null values)
         changed[key] = null;
+      } else if (Array.isArray(editedVal)) {
+        const originalArr = Array.isArray(originalVal) ? originalVal : [];
+        const editedArr = Array.isArray(editedVal) ? editedVal : [];
+
+        if (originalArr != editedArr) {
+          changed[key] = editedArr;
+        }
       }
     }
 
