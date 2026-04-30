@@ -592,7 +592,10 @@ export default function ProfileInfoboxForm({
             <div className="flex items-center flex-wrap gap-1 mt-3">
               {editedProfile.expertise?.map((expertise) => (
                 // Current expertise
-                <span className="inline-flex justify-center items-center gap-1 px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded">
+                <span
+                  key={expertise}
+                  className="inline-flex justify-center items-center gap-1 px-2 py-0.5 border border-pink-200 bg-white text-pink-700 text-xs rounded"
+                >
                   {expertise}
                   <button
                     type="button"
