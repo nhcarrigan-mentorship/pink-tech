@@ -86,6 +86,31 @@ describe("ProfileInfoboxForm", () => {
     expect(expertiseInput).toHaveValue("");
   });
 
+  it("adds a new expertise when pressing Enter", () => {
+    render(
+      <ProfileInfoboxForm
+        profile={mockProfile}
+        isEditing={true}
+        setIsEditing={vi.fn()}
+        onProfileUpdated={vi.fn()}
+      />,
+    );
+
+    const expertiseInput = screen.getByLabelText(/new expertise/i);
+
+    fireEvent.change(expertiseInput, {
+      target: { value: "Testing" },
+    });
+
+    fireEvent.keyDown(expertiseInput, {
+      key: "Enter",
+      code: "Enter",
+    });
+
+    expect(screen.getByText("Testing")).toBeInTheDocument();
+    expect(expertiseInput).toHaveValue("");
+  });
+
   it("removes an expertise", () => {
     render(
       <ProfileInfoboxForm
