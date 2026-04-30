@@ -601,7 +601,7 @@ export default function ProfileInfoboxForm({
                     type="button"
                     disabled={isSaving || isUploadingImage}
                     onClick={() => removeExpertise(expertise)}
-                    aria-label="Remove expertise"
+                    aria-label={`Remove ${expertise}`}
                     className="hover:bg-pink-100 transition-colors rounded-full p-0.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <X className="w-3.5 h-3.5" />
