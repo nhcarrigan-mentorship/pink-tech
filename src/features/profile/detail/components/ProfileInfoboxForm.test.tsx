@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { mockProfile } from "../../../../test/fixtures/mockProfile";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 
@@ -24,5 +25,42 @@ describe("ProfileInfoboxForm", () => {
       mockProfile.linkedin,
     );
     expect(screen.getByLabelText(/github/i)).toHaveValue(mockProfile.github);
+
+    mockProfile.expertise?.forEach((expertise) => {
+      expect(screen.getByText(expertise)).toBeInTheDocument();
+    });
+  });
+
+  it("shows validation errors for invalid input", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ProfileInfoboxForm
+        profile={mockProfile}
+        isEditing={true}
+        setIsEditing={vi.fn()}
+        onProfileUpdated={vi.fn()}
+      />,
+    );
+
+    await user.clear(screen.getByLabelText(/name/i));
+    expect(screen.getByText("Name cannot be empty.")).toBeInTheDocument();
+
+    await user.clear(screen.getByLabelText(/email/i));
+    await user.type(screen.getByLabelText(/email/i), "not-an-email");
+    expect(
+      screen.getByText("Please provide a valid email address."),
+    ).toBeInTheDocument();
+
+    await user.clear(screen.getByLabelText(/github/i));
+    await user.type(screen.getByLabelText(/github/i), "https://example.com/me");
+    expect(
+      screen.getByText("Please provide a GitHub profile URL."),
+    ).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText(/add expertise/i), "R");
+    expect(
+      screen.getByText("Expertise must be at least 2 characters."),
+    ).toBeInTheDocument();
   });
 });
