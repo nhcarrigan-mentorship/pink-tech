@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { mockProfile } from "../../../../test/fixtures/mockProfile";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 
@@ -58,9 +58,31 @@ describe("ProfileInfoboxForm", () => {
       screen.getByText("Please provide a GitHub profile URL."),
     ).toBeInTheDocument();
 
-    await user.type(screen.getByLabelText(/add expertise/i), "R");
+    await user.type(screen.getByLabelText(/new expertise/i), "R");
     expect(
       screen.getByText("Expertise must be at least 2 characters."),
     ).toBeInTheDocument();
+  });
+
+  it("adds a new expertise", () => {
+    render(
+      <ProfileInfoboxForm
+        profile={mockProfile}
+        isEditing={true}
+        setIsEditing={vi.fn()}
+        onProfileUpdated={vi.fn()}
+      />,
+    );
+
+    const expertiseInput = screen.getByLabelText(/new expertise/i);
+
+    fireEvent.change(expertiseInput, {
+      target: { value: "Testing" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /add expertise/i }));
+
+    expect(screen.getByText("Testing")).toBeInTheDocument();
+    expect(expertiseInput).toHaveValue("");
   });
 });
