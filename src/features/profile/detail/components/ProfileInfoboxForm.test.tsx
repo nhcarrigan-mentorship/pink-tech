@@ -125,4 +125,25 @@ describe("ProfileInfoboxForm", () => {
 
     expect(screen.queryByText("React")).not.toBeInTheDocument();
   });
+
+  it("cancels editing", () => {
+    const setIsEditing = vi.fn();
+
+    render(
+      <ProfileInfoboxForm
+        profile={mockProfile}
+        isEditing={true}
+        setIsEditing={setIsEditing}
+        onProfileUpdated={vi.fn()}
+      />,
+    );
+
+    const cancelButton = screen.getByRole("button", { name: "Cancel" });
+
+    fireEvent.click(cancelButton);
+
+    // expect(screen.queryByRole("form")).not.toBeInTheDocument();
+    expect(setIsEditing).toHaveBeenCalledWith(false);
+});
+;
 });
