@@ -3,16 +3,28 @@ import { userEvent } from "@testing-library/user-event";
 import { mockProfile } from "../../../../test/fixtures/mockProfile";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 
+const renderForm = (
+  props: Partial<React.ComponentProps<typeof ProfileInfoboxForm>> = {},
+) => {
+  const setIsEditing = vi.fn();
+  const onProfileUpdated = vi.fn();
+
+  render(
+    <ProfileInfoboxForm
+      profile={mockProfile}
+      isEditing={true}
+      setIsEditing={setIsEditing}
+      onProfileUpdated={onProfileUpdated}
+      {...props}
+    />,
+  );
+
+  return { setIsEditing, onProfileUpdated };
+};
+
 describe("ProfileInfoboxForm", () => {
   it("renders profile data in edit mode", () => {
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={vi.fn()}
-        onProfileUpdated={vi.fn()}
-      />,
-    );
+    renderForm();
     expect(screen.getByLabelText(/name/i)).toHaveValue(mockProfile.displayName);
     expect(screen.getByLabelText(/role/i)).toHaveValue(mockProfile.role);
     expect(screen.getByLabelText(/company/i)).toHaveValue(mockProfile.company);
@@ -34,14 +46,7 @@ describe("ProfileInfoboxForm", () => {
   it("shows validation errors for invalid input", async () => {
     const user = userEvent.setup();
 
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={vi.fn()}
-        onProfileUpdated={vi.fn()}
-      />,
-    );
+    renderForm();
 
     await user.clear(screen.getByLabelText(/name/i));
     expect(screen.getByText("Name cannot be empty.")).toBeInTheDocument();
@@ -65,14 +70,7 @@ describe("ProfileInfoboxForm", () => {
   });
 
   it("adds a new expertise", () => {
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={vi.fn()}
-        onProfileUpdated={vi.fn()}
-      />,
-    );
+    renderForm();
 
     const expertiseInput = screen.getByLabelText(/new expertise/i);
 
@@ -87,14 +85,7 @@ describe("ProfileInfoboxForm", () => {
   });
 
   it("adds a new expertise when pressing Enter", () => {
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={vi.fn()}
-        onProfileUpdated={vi.fn()}
-      />,
-    );
+    renderForm();
 
     const expertiseInput = screen.getByLabelText(/new expertise/i);
 
@@ -112,14 +103,7 @@ describe("ProfileInfoboxForm", () => {
   });
 
   it("removes an expertise", () => {
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={vi.fn()}
-        onProfileUpdated={vi.fn()}
-      />,
-    );
+    renderForm();
 
     fireEvent.click(screen.getByRole("button", { name: /remove react/i }));
 
@@ -127,16 +111,7 @@ describe("ProfileInfoboxForm", () => {
   });
 
   it("cancels editing", () => {
-    const setIsEditing = vi.fn();
-
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={setIsEditing}
-        onProfileUpdated={vi.fn()}
-      />,
-    );
+    const { setIsEditing } = renderForm();
 
     const cancelButton = screen.getByRole("button", { name: "Cancel" });
 
@@ -147,22 +122,11 @@ describe("ProfileInfoboxForm", () => {
   });
 
   it("skips saving when nothing changed", () => {
-    const setIsEditing = vi.fn();
-    const onProfileUpdated = vi.fn();
-
-    render(
-      <ProfileInfoboxForm
-        profile={mockProfile}
-        isEditing={true}
-        setIsEditing={setIsEditing}
-        onProfileUpdated={onProfileUpdated}
-      />,
-    );
+    const { setIsEditing, onProfileUpdated } = renderForm();
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
     expect(setIsEditing).toHaveBeenCalledWith(false);
     expect(onProfileUpdated).not.toHaveBeenCalled();
-
-  })
+  });
 });
