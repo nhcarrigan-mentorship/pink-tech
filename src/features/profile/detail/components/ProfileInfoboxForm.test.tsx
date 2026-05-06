@@ -144,6 +144,25 @@ describe("ProfileInfoboxForm", () => {
 
     // expect(screen.queryByRole("form")).not.toBeInTheDocument();
     expect(setIsEditing).toHaveBeenCalledWith(false);
-});
-;
+  });
+
+  it("skips saving when nothing changed", () => {
+    const setIsEditing = vi.fn();
+    const onProfileUpdated = vi.fn();
+
+    render(
+      <ProfileInfoboxForm
+        profile={mockProfile}
+        isEditing={true}
+        setIsEditing={setIsEditing}
+        onProfileUpdated={onProfileUpdated}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(setIsEditing).toHaveBeenCalledWith(false);
+    expect(onProfileUpdated).not.toHaveBeenCalled();
+
+  })
 });
