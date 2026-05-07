@@ -69,18 +69,24 @@ describe("ProfileInfoboxForm", () => {
     ).toBeInTheDocument();
   });
 
-  it("adds a new expertise", () => {
+  it("adds a new expertise", async () => {
+    const user = userEvent.setup();
+
     renderForm();
 
-    const expertiseInput = screen.getByLabelText(/new expertise/i);
-
-    fireEvent.change(expertiseInput, {
-      target: { value: "Testing" },
+    const expertiseInput = screen.getByRole("textbox", {
+      name: /new expertise/i,
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /add expertise/i }));
+    const newExpertise = "SQL";
 
-    expect(screen.getByText("Testing")).toBeInTheDocument();
+    await user.type(expertiseInput, newExpertise);
+
+    const addExpertise = screen.getByRole("button", { name: /add expertise/i });
+    await user.click(addExpertise);
+
+    // Assert added expertise is in the form and expertise input is cleared
+    expect(screen.getByText(newExpertise)).toBeInTheDocument();
     expect(expertiseInput).toHaveValue("");
   });
 
