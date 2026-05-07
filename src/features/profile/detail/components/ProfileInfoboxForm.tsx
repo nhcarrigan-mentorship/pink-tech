@@ -596,7 +596,10 @@ export default function ProfileInfoboxForm({
         <div className="mt-3 pb-3 space-y-2">
           <label className="text-pink-600 font-bold">Expertise</label>
           {editedProfile.expertise && (
-            <div className="flex items-center flex-wrap gap-1 mt-3">
+            <div
+              className="flex items-center flex-wrap gap-1 mt-3"
+              aria-label="Current expertise"
+            >
               {editedProfile.expertise?.map((expertise) => (
                 // Current expertise
                 <span
