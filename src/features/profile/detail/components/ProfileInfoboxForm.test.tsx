@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { mockProfile } from "../../../../test/fixtures/mockProfile";
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
@@ -90,33 +90,44 @@ describe("ProfileInfoboxForm", () => {
     expect(expertiseInput).toHaveValue("");
   });
 
-  it("adds a new expertise when pressing Enter", () => {
+  it("adds a new expertise when pressing Enter", async () => {
+    const user = userEvent.setup();
+
     renderForm();
 
     const expertiseInput = screen.getByLabelText(/new expertise/i);
 
-    fireEvent.change(expertiseInput, {
-      target: { value: "Testing" },
-    });
+    const newExpertise = "SQL";
 
-    fireEvent.keyDown(expertiseInput, {
-      key: "Enter",
-      code: "Enter",
-    });
+    await user.type(expertiseInput, newExpertise);
 
-    expect(screen.getByText("Testing")).toBeInTheDocument();
+    await user.keyboard("{Enter}");
+
+    expect(screen.getByText(newExpertise)).toBeInTheDocument();
     expect(expertiseInput).toHaveValue("");
   });
 
-  it("removes an expertise", () => {
+  it("removes an expertise", async () => {
+    const user = userEvent.setup();
+
     renderForm();
 
-    fireEvent.click(screen.getByRole("button", { name: /remove react/i }));
+    const expertise = "TypeScript";
+    const expertiseList = screen.getByLabelText(/current expertise/i);
 
-    expect(screen.queryByText("React")).not.toBeInTheDocument();
+    const removeExpertise = screen.getByRole("button", {
+      name: `Remove ${expertise}`,
+    });
+
+    await user.click(removeExpertise);
+
+    // Assert expertise not to be in the list
+    expect(
+      within(expertiseList).queryByText(expertise),
+    ).not.toBeInTheDocument();
   });
 
-  it("cancels editing", () => {
+  it("cancels editing", async () => {
     const { setIsEditing } = renderForm();
 
     const cancelButton = screen.getByRole("button", { name: "Cancel" });
@@ -127,12 +138,15 @@ describe("ProfileInfoboxForm", () => {
     expect(setIsEditing).toHaveBeenCalledWith(false);
   });
 
-  it("skips saving when nothing changed", () => {
+  it("skips saving when nothing changed", async () => {
+    const user = userEvent.setup();
+
     const { setIsEditing, onProfileUpdated } = renderForm();
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(setIsEditing).toHaveBeenCalledWith(false);
     expect(onProfileUpdated).not.toHaveBeenCalled();
   });
 });
+
