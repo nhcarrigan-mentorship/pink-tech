@@ -1,6 +1,23 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { mockProfile } from "../../../../test/fixtures/mockProfile";
+
+vi.mock("../../../../shared/config/supabaseClient", () => ({
+  getSupabase: vi.fn().mockResolvedValue({
+    from: vi.fn().mockReturnValue({
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockResolvedValue({ error: null }),
+      }),
+    }),
+  }),
+}));
+
 import ProfileInfoboxForm from "./ProfileInfoboxForm";
 
 const renderForm = (
@@ -134,7 +151,6 @@ describe("ProfileInfoboxForm", () => {
 
     fireEvent.click(cancelButton);
 
-    // expect(screen.queryByRole("form")).not.toBeInTheDocument();
     expect(setIsEditing).toHaveBeenCalledWith(false);
   });
 
@@ -148,5 +164,25 @@ describe("ProfileInfoboxForm", () => {
     expect(setIsEditing).toHaveBeenCalledWith(false);
     expect(onProfileUpdated).not.toHaveBeenCalled();
   });
-});
 
+  it("saves changed profile data", async () => {
+    const user = userEvent.setup();
+
+    const { setIsEditing, onProfileUpdated } = renderForm();
+
+    const newRole = "Backend Engineer";
+    const roleInput = screen.getByLabelText(/role/i);
+    const saveButton = screen.getByRole("button", { name: /save/i });
+
+    await user.clear(roleInput);
+    await user.type(roleInput, newRole);
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(setIsEditing).toHaveBeenCalledWith(false);
+      expect(onProfileUpdated).toHaveBeenCalledWith(
+        expect.objectContaining({ role: newRole }),
+      );
+    });
+  });
+});
