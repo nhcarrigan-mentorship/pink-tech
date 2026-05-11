@@ -8,11 +8,15 @@ import {
 import { userEvent } from "@testing-library/user-event";
 import { mockProfile } from "../../../../test/fixtures/mockProfile";
 
+const { mockEq } = vi.hoisted(() => ({
+  mockEq: vi.fn().mockResolvedValue({ error: null }),
+}));
+
 vi.mock("../../../../shared/config/supabaseClient", () => ({
   getSupabase: vi.fn().mockResolvedValue({
     from: vi.fn().mockReturnValue({
       update: vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
+        eq: mockEq,
       }),
     }),
   }),
@@ -184,5 +188,29 @@ describe("ProfileInfoboxForm", () => {
         expect.objectContaining({ role: newRole }),
       );
     });
+  });
+
+  it("Shows an error when saving fails", async () => {
+    mockEq.mockResolvedValueOnce({ error: new Error("Update failed") });
+
+    const { setIsEditing, onProfileUpdated } = renderForm();
+
+    const user = userEvent.setup();
+
+    const roleInput = screen.getByRole("textbox", { name: /role/i });
+    const saveButton = screen.getByRole("button", { name: /save/i });
+
+    await user.clear(roleInput);
+    await user.type(roleInput, "Developer Relations");
+    await user.click(saveButton);
+
+    expect(
+      await screen.findByText(
+        "Error saving your changes. Please try again later.",
+      ),
+    ).toBeInTheDocument();
+
+    expect(setIsEditing).not.toHaveBeenCalled();
+    expect(onProfileUpdated).not.toHaveBeenCalled();
   });
 });
