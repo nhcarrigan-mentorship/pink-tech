@@ -216,7 +216,7 @@ export default function ProfileInfoboxForm({
       // only include fields that are present on `edited` and differ from the original
       if (!(key in edited)) continue;
 
-      let editedVal = edited[key];
+      const editedVal = edited[key];
       const originalVal = original[key];
 
       // If the value is `undefined`, treat it as "no change"
