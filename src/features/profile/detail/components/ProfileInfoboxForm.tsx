@@ -449,7 +449,7 @@ export default function ProfileInfoboxForm({
                   name="company"
                   id="company"
                   value={editedProfile.company ?? ""}
-                  placeholder="Tech Company"
+                  placeholder="PinkTech"
                   onChange={onInputChange}
                   className="w-full mt-1 px-3 py-2 bg-white border border-pink-200 rounded-lg focus:outline-pink-500 transition-colors"
                 ></input>
