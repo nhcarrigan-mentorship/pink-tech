@@ -47,7 +47,7 @@ describe("LoginForm", () => {
     ).toBeInTheDocument();
   });
 
-  it("calls the login function when submitted", async () => {
+  it("logs in when submitted", async () => {
     mockLogin.mockResolvedValueOnce(undefined);
 
     renderWithProviders(<LoginForm />);
@@ -63,5 +63,6 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(mockLogin).toHaveBeenCalledWith(email, password);
+    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 });
