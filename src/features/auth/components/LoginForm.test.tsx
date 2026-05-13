@@ -65,4 +65,24 @@ describe("LoginForm", () => {
     expect(mockLogin).toHaveBeenCalledWith(email, password);
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
+
+  it("shows an error and skips navigate when login fails", async () => {
+    mockLogin.mockRejectedValueOnce(new Error("Invalid login credentials"));
+
+    renderWithProviders(<LoginForm />);
+
+    const user = userEvent.setup();
+    const email = "janedoe@email.com";
+    const password = "9A%L^NmrYAnG%K";
+
+    await user.type(screen.getByLabelText("Email Address"), email);
+    await user.type(screen.getByLabelText("Password"), password);
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
+
+    expect(
+      await screen.findByText("Invalid login credentials"),
+    ).toBeInTheDocument();
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 });
