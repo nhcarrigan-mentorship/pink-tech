@@ -85,4 +85,31 @@ describe("LoginForm", () => {
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it("disables submit while logging in", async () => {
+    let resolveLogin!: () => void;
+    const loginPromise = new Promise<void>((resolve) => {
+      resolveLogin = resolve;
+    });
+
+    mockLogin.mockResolvedValueOnce(loginPromise);
+
+    renderWithProviders(<LoginForm />);
+
+    const user = userEvent.setup();
+    const email = "janedoe@email.com";
+    const password = "9A%L^NmrYAnG%K";
+
+    await user.type(screen.getByLabelText("Email Address"), email);
+    await user.type(screen.getByLabelText("Password"), password);
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
+
+    const loadingButton = await screen.findByRole("button", {
+      name: /signing in/i,
+    });
+
+    expect(loadingButton).toBeDisabled();
+
+    resolveLogin();
+  });
 });
