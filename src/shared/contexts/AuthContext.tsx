@@ -176,6 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               }
             } catch (err) {
               console.error("Auth state error:", err);
+              setUser(null);
             } finally {
               setSessionLoading(false);
             }
