@@ -174,10 +174,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               } else {
                 setUser(null);
               }
-
-              setSessionLoading(false);
             } catch (err) {
               console.error("Auth state error:", err);
+            } finally {
+              setSessionLoading(false);
             }
           }, 0);
         },
