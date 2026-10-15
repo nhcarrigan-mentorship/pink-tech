@@ -87,7 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!session?.user) {
         setUser(null);
         setSessionLoading(false);
-        return;
       }
 
       // Try to get session from URL after email verification redirect
